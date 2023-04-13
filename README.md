@@ -1,2 +1,2 @@
 # WEC-DECIDER
-Wave Energy Converter Design Convergence Impact-Driven Engineering Roadmap - a systems-level multidisciplinary optimization tool for ocean wave energy
+You're reading this just because it's titled README? It's a good thing I didn't name it JumpOffABridge.txt
