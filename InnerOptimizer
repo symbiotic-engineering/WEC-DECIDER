@@ -1,0 +1,97 @@
+from datetime import datetime
+import autograd.numpy as np
+import capytaine as cpy
+import matplotlib.pyplot as plt
+from scipy.optimize import brute
+import wecopttool as wot
+import pygmsh
+import gmsh
+wb = wot.geom.WaveBot(r1=10,r2=3,h1=4,h2=1.2)  # use standard dimensions
+mesh_size_factor = 0.5 # 1.0 for default, smaller to refine mesh
+mesh = wb.mesh(mesh_size_factor)
+fb = cpy.FloatingBody.from_meshio(mesh, name="WaveBot")
+fb.add_translation_dof(name="Heave")
+ndof = fb.nb_dofs
+with pygmsh.occ.Geometry() as geomm:
+        gmsh.option.setNumber('Mesh.MeshSizeFactor', mesh_size_factor)
+        cyl = geomm.add_cylinder([0, 0, 0],
+                                [0, 0, -wb.h1],
+                                wb.r1)
+        cone = geomm.add_cone([0, 0, -wb.h1],
+                             [0, 0, -wb.h2],
+                             wb.r1, wb.r2)
+        geomm.translate(cyl, [0, 0, wb.freeboard])
+        geomm.translate(cone, [0, 0, wb.freeboard])
+        geomm.boolean_union([cyl, cone])
+        cyl2 = geomm.add_cylinder([0, 0, 0.1],[0, 0, -wb.h2-0.1], 3)
+        geomm.boolean_difference(cyl, cyl2)
+        rm3 = geomm.generate_mesh()
+def inner_function(f_max = 2000.0, p_max = 100.0, v_max = 10000.0, mesh = rm3,
+    wavefreq = 0.3, amplitude = 1):
+    fb = cpy.FloatingBody.from_meshio(mesh, name="WaveBot")
+    fb.add_translation_dof(name="Heave")
+    ndof = fb.nb_dofs
+    stiffness = wot.hydrostatics.stiffness_matrix(fb).values
+    mass = wot.hydrostatics.inertia_matrix(fb).values
+    f1 = 0.05
+    nfreq = 50
+    freq = wot.frequency(f1, nfreq, False) # False -> no zero frequency
+    bem_data = wot.run_bem(fb, freq)
+    name = ["PTO_Heave",]
+    kinematics = np.eye(ndof)
+    controller = None
+    loss = None
+    pto_impedance = None
+    pto = wot.pto.PTO(ndof, kinematics, controller, pto_impedance, loss, name)
+    f_add = {'PTO': pto.force_on_wec}
+    nsubsteps = 4
+    def const_f_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
+        f = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
+        return f_max - np.abs(f.flatten())
+    def const_p_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
+        p = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
+        return p_max - np.abs(p.flatten())
+    def const_v_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
+        v = pto.velocity(wec, x_wec, x_opt, waves, nsubsteps)
+        return v_max - np.abs(v.flatten())
+    ineq_cons1 = {'type': 'ineq',
+                 'fun': const_f_pto,
+                 }
+    ineq_cons2 = {'type': 'ineq',
+                 'fun': const_p_pto,
+                 }
+    ineq_cons3 = {'type': 'ineq',
+                 'fun': const_v_pto,
+                 }
+    constraints = [ineq_cons1,ineq_cons2,ineq_cons3]
+    wec = wot.WEC.from_bem(
+        bem_data,
+        inertia_matrix=mass,
+        hydrostatic_stiffness=stiffness,
+        constraints=constraints,
+        friction=None,
+        f_add=f_add,)
+    phase = 30
+    wavedir = 0
+    waves = wot.waves.regular_wave(f1, nfreq, wavefreq, amplitude, phase, wavedir)
+
+
+    obj_fun = pto.mechanical_average_power
+    nstate_opt = 2*nfreq
+
+
+    options = {'maxiter': 200}
+    scale_x_wec = 1e1
+    scale_x_opt = 1e-3
+    scale_obj = 1e-2
+    results = wec.solve(
+        waves,
+        obj_fun,
+        nstate_opt,
+        optim_options=options,
+        scale_x_wec=scale_x_wec,
+        scale_x_opt=scale_x_opt,
+        scale_obj=scale_obj,
+        )
+    return results.fun
+    
