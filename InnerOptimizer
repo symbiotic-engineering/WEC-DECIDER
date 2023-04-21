@@ -4,31 +4,41 @@ import capytaine as cpy
 import matplotlib.pyplot as plt
 from scipy.optimize import brute
 import wecopttool as wot
-import pygmsh
-import gmsh
-wb = wot.geom.WaveBot(r1=10,r2=3,h1=4,h2=1.2)  # use standard dimensions
-mesh_size_factor = 0.5 # 1.0 for default, smaller to refine mesh
-mesh = wb.mesh(mesh_size_factor)
-fb = cpy.FloatingBody.from_meshio(mesh, name="WaveBot")
-fb.add_translation_dof(name="Heave")
-ndof = fb.nb_dofs
-with pygmsh.occ.Geometry() as geomm:
-        gmsh.option.setNumber('Mesh.MeshSizeFactor', mesh_size_factor)
-        cyl = geomm.add_cylinder([0, 0, 0],
-                                [0, 0, -wb.h1],
-                                wb.r1)
-        cone = geomm.add_cone([0, 0, -wb.h1],
-                             [0, 0, -wb.h2],
-                             wb.r1, wb.r2)
-        geomm.translate(cyl, [0, 0, wb.freeboard])
-        geomm.translate(cone, [0, 0, wb.freeboard])
-        geomm.boolean_union([cyl, cone])
-        cyl2 = geomm.add_cylinder([0, 0, 0.1],[0, 0, -wb.h2-0.1], 3)
-        geomm.boolean_difference(cyl, cyl2)
-        rm3 = geomm.generate_mesh()
+
+Mensity = 5
+z = np.linspace(-4,-5.2,Mensity)
+x = 35*(z+4)/6 + 10
+y = 35*(z+4)/6 +10
+xyz = np.array([np.array([x,y,z]) for x,y,z in zip(x,y,z)])
+Frustum = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(xyz))
+
+w = np.linspace(0,-5.2,Mensity)
+u = 3-w+w
+v = 3-w+w
+uvw = np.array([np.array([u,v,w]) for u,v,w in zip(u,v,w)])
+Arr = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(uvw))
+Arr+=Frustum
+
+t = np.linspace(0,-4,Mensity)
+r = 10-t+t
+s = 10-t+t
+rst = np.array([np.array([r,s,t]) for r,s,t in zip(r,s,t)])
+ArrEm = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(rst))
+ArrEm+= Arr
+
+q = np.linspace(0,0,Mensity)
+o = 3-7*t/4
+p = 3-7*t/4
+opq = np.array([np.array([o,p,q]) for o,p,q in zip(o,p,q)])
+ArrEmThree = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(opq))
+ArrEmThree+=ArrEm
+
 def inner_function(f_max = 2000.0, p_max = 100.0, v_max = 10000.0, mesh = rm3,
     wavefreq = 0.3, amplitude = 1):
-    fb = cpy.FloatingBody.from_meshio(mesh, name="WaveBot")
+    if mesh == rm3:
+        fb = ArrEmThree
+    else:
+        fb = cpy.FloatingBody.from_meshio(mesh, name="WaveBot")
     fb.add_translation_dof(name="Heave")
     ndof = fb.nb_dofs
     stiffness = wot.hydrostatics.stiffness_matrix(fb).values
