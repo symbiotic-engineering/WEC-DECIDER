@@ -10,27 +10,27 @@ z = np.linspace(-4,-5.2,Mensity)
 x = 35*(z+4)/6 + 10
 y = 35*(z+4)/6 +10
 xyz = np.array([np.array([x,y,z]) for x,y,z in zip(x,y,z)])
-Frustum = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(xyz))
+Frustum = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(xyz, nphi=Mensity**2))
 
 w = np.linspace(0,-5.2,Mensity)
 u = 3-w+w
 v = 3-w+w
 uvw = np.array([np.array([u,v,w]) for u,v,w in zip(u,v,w)])
-Arr = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(uvw))
+Arr = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(uvw, nphi=Mensity**2))
 Arr+=Frustum
 
-t = np.linspace(0,-4,Mensity)
+t = np.linspace(0,-4,1+int(Mensity/2))
 r = 10-t+t
 s = 10-t+t
 rst = np.array([np.array([r,s,t]) for r,s,t in zip(r,s,t)])
-ArrEm = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(rst))
+ArrEm = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(rst, nphi=Mensity**2))
 ArrEm+= Arr
 
 q = np.linspace(0,0,Mensity)
-o = 3-7*t/4
-p = 3-7*t/4
+o = 3-35*w/26
+p = 3-35*w/26
 opq = np.array([np.array([o,p,q]) for o,p,q in zip(o,p,q)])
-ArrEmThree = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(opq))
+ArrEmThree = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(opq, nphi=Mensity**2))
 ArrEmThree+=ArrEm
 
 def inner_function(f_max = 2000.0, p_max = 100.0, v_max = 10000.0, mesh = rm3,
