@@ -130,3 +130,6 @@ dmypy.json
 .pyre/
 *.html
 openMDAO/.DS_Store
+
+# GenX output files
+**/Cases/
