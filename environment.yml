@@ -21,5 +21,6 @@ dependencies:
     - mhkit
     - gridstatus
     - wecopttool[geometry]
+    - omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master
 #    - GenX
 #    - pygenx
