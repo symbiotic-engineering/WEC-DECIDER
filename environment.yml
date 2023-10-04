@@ -13,12 +13,13 @@ dependencies:
   - requests
   - wecopttool
   - nrel-pysam
+  - pyxdsm
+  - openmdao
 #  - mpi4py 
 #  - petsc4py
   - pip:
     - mhkit
     - gridstatus
     - wecopttool[geometry]
-    - openmdao[all]
 #    - GenX
 #    - pygenx
