@@ -1,8 +1,6 @@
-
-import numpy as np
-from dynamics_simple import *
-from get_abc_symbolic import *
-from pick_which_root import *
+from modules.dynamics_python.dynamics_simple import  *
+from modules.dynamics_python.get_abc_symbolic import *
+from modules.dynamics_python.pick_which_root import *
 def dynamics(in_params,m_float,V_d,draft):
     # Use probabilistic sea states for power
     T, Hs = np.meshgrid(in_params['T'], in_params['Hs'])
