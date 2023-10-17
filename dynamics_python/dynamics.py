@@ -111,3 +111,5 @@ def get_multiplier(f_sat, m, b, k, w, r_b, r_k):
     # choose which of the two roots to use
     mult = pick_which_root(roots, idx_no_sat, a_quad, b_quad, c_quad)
     assert np.all(~np.isnan(mult))
+
+    return mult

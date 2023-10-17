@@ -107,32 +107,32 @@ def geometry(D_s, D_f, T_f, h_f, h_s, t_ft, t_fr, t_fc, t_fb, t_sr, t_dt,
     I_rp = np.pi * D_d ** 4 / 64
 
     # Totals
-    A_c = [A_f_c, A_vc_c, A_d_c]
-    A_lat_sub = [A_f_l, A_vc_l, A_d_l]
-    r_over_t = [0, D_s / (2 * t_sr), 0]
-    I = [I_f, I_vc, I_rp]
-    T = [T_f, T_s, h_d]
+    A_c = np.array([A_f_c, A_vc_c, A_d_c])
+    A_lat_sub = np.array([A_f_l, A_vc_l, A_d_l])
+    r_over_t = np.array([0, D_s / (2 * t_sr), 0])
+    I = np.array([I_f, I_vc, I_rp])
+    T = np.array([T_f, T_s, h_d])
     m_m = m_f_m + m_s_m
 
-    V_d = [V_f_d, V_vc_d, V_d_d]
-    mass = [m_f_m, m_vc_m, m_d_m]
+    V_d = np.array([V_f_d, V_vc_d, V_d_d])
+    mass = np.array([m_f_m, m_vc_m, m_d_m])
 
     # Metacentric Height Calculation
     CB_f = h_d + T_s - T_f / 2
     CB_vc = h_d + T_s / 2
     CB_d = h_d / 2
-    CBs = [CB_f, CB_vc, CB_d];
+    CBs = np.array([CB_f, CB_vc, CB_d])
     # centers of gravity, measured from keel (assume even mass distribution)
     CG_f = h_d + T_s - T_f + h_f / 2
     CG_vc = h_d + h_s / 2
     CG_d = h_d / 2
-    CGs = [CG_f, CG_vc, CG_d]
+    CGs = np.array([CG_f, CG_vc, CG_d])
 
     # center of buoyancy above the keel
-    KB = sum([a * b for a, b in zip(CBs, V_d)]) / sum(V_d)
+    KB = np.dot(CBs, V_d) / np.sum(V_d)
 
     # center of gravity above the keel
-    KG = sum([a * b for a, b in zip(CGs, mass)]) / sum(mass)
+    KG = np.dot(CGs, mass) / np.sum(mass)
 
     BM = I_f / sum(V_d)  # moment due to buoyant rotational stiffness
     GM = KB + BM - KG

@@ -1,5 +1,3 @@
-import numpy as np
-
 
 def get_abc_symbolic(f, m, b, k, w, r_b, r_k):
     """
