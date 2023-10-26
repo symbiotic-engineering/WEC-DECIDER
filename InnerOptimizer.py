@@ -3,6 +3,7 @@ import capytaine as cpy
 import matplotlib.pyplot as plt
 from scipy.optimize import brute
 import wecopttool as wot
+import math
 
 def body_from_profile(x,y,z,nphi):
     xyz = np.array([np.array([x,y,z]) for x,y,z in zip(x,y,z)])
@@ -75,6 +76,26 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
         scale_x_opt=scale_x_opt,
         scale_obj=scale_obj,
         )
+    
+    # graph for hyrdodynamics coefficients
+    fig, axes = plt.subplots(3,1)
+    bem_data['added_mass'].plot(ax = axes[0])
+    bem_data['radiation_damping'].plot(ax = axes[1])
+    axes[2].plot(bem_data['omega'],np.abs(np.squeeze(bem_data['diffraction_force'].values)), color = 'orange')
+    axes[2].set_ylabel('abs(diffraction_force)', color = 'orange')
+    axes[2].tick_params(axis ='y', labelcolor = 'orange')
+    ax2r = axes[2].twinx()
+    ax2r.plot(bem_data['omega'], np.abs(np.squeeze(bem_data['Froude_Krylov_force'].values)), color = 'blue')
+    ax2r.set_ylabel('abs(FK_force)', color = 'blue')
+    ax2r.tick_params(axis ='y', labelcolor = 'blue')
+
+    for axi in axes:
+        axi.set_title('')
+        axi.label_outer()
+        axi.grid()
+
+    axes[-1].set_xlabel('Frequency [rad/s]')
+
     return results.fun
 
 def make_RM3():
@@ -85,25 +106,25 @@ def make_RM3():
     mesh_density = 5
 
     z1 = np.linspace(-h_f,-h_f_2,mesh_density)
-    x1 = np.linspace(D_f/2, D_s/2,mesh_density)
+    x1 = np.linspace(D_f/2, D_s/2, mesh_density)    # /1,414 to account for the scaling of sqrt(2) 
     y1 = np.linspace(D_f/2, D_s/2,mesh_density)
-    bottom_frustum = body_from_profile(x1,y1,z1,mesh_density**2)
+    bottom_frustum = body_from_profile(x1/math.sqrt(2),y1/math.sqrt(2),z1,mesh_density**2)
 
     z2 = np.linspace(0,-h_f_2,mesh_density)
     x2 = np.full_like(z2, D_s/2)
     y2 = np.full_like(z2, D_s/2)
-    inner_surface = body_from_profile(x2,y2,z2,mesh_density**2)
+    inner_surface = body_from_profile(x2/math.sqrt(2),y2/math.sqrt(2),z2,mesh_density**2)
 
     z3 = np.linspace(0,-h_f,1+int(mesh_density/2))
     x3 = np.full_like(z3, D_f/2)
     y3 = np.full_like(z3, D_f/2)
-    outer_surface = body_from_profile(x3,y3,z3,mesh_density**2)
+    outer_surface = body_from_profile(x3/math.sqrt(2),y3/math.sqrt(2),z3,mesh_density**2)
     # the radius is 15 instead of 10 for some reason!?
 
     z4 = np.linspace(0,0,mesh_density)
     x4 = np.linspace(D_s/2, D_f/2, mesh_density)
     y4 = np.linspace(D_s/2, D_f/2, mesh_density)
-    top_surface = body_from_profile(x4,y4,z4, mesh_density**2)
+    top_surface = body_from_profile(x4/math.sqrt(2),y4/math.sqrt(2),z4, mesh_density**2)
 
     RM3 = bottom_frustum + inner_surface + outer_surface + top_surface
 
@@ -121,4 +142,3 @@ if __name__ == '__main__':
     #wavebot = cpy.FloatingBody.from_meshio(RM3, name="WaveBot")
 
     #inner_function(f_max = 2000.0, p_max = 100.0, v_max = 10000.0, fb=RM3, wavefreq = 0.3, amplitude = 1)
-
