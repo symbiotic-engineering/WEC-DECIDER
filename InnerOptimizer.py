@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import brute
 import wecopttool as wot
 import math
-from capytaine.meshes.quality import (merge_duplicates, heal_normals, remove_unused_vertices,heal_triangles, remove_degenerated_faces)
 
 
 def body_from_profile(x,y,z,nphi):
@@ -127,6 +126,11 @@ def make_RM3():
     x1 = np.linspace(D_s/2, D_f/2, mesh_density) 
     y1 = np.linspace(D_s/2, D_f/2,mesh_density)
     bottom_frustum = body_from_profile(x1,y1,z1,mesh_density**2)
+    
+    z1_1 = np.linspace(-h_f_2, -h_f_2,mesh_density)
+    x1_1 = np.linspace(0, D_s/2, mesh_density)
+    y1_1 = np.linspace(0, D_s/2, mesh_density)
+    bottom_surface = body_from_profile(x1_1,y1_1,z1_1, mesh_density**2)
 
     z2 = np.linspace(0, -h_f_2, mesh_density)
     x2 = np.full_like(z2, D_s/2)
@@ -139,11 +143,11 @@ def make_RM3():
     outer_surface = body_from_profile(x3,y3,z3,mesh_density**2)
 
     z4 = np.linspace(0,0,mesh_density)
-    x4 = np.linspace(D_f/2, D_s/2, mesh_density)
-    y4 = np.linspace(D_f/2, D_s/2, mesh_density)
+    x4 = np.linspace(D_f/2, 0, mesh_density)
+    y4 = np.linspace(D_f/2, 0, mesh_density)
     top_surface = body_from_profile(x4,y4,z4, mesh_density**2)
 
-    RM3 = bottom_frustum + outer_surface + top_surface + inner_surface
+    RM3 = bottom_frustum + outer_surface + top_surface + bottom_surface
 
     
     print('RM3 created')
@@ -156,4 +160,38 @@ if __name__ == '__main__':
     #wavebot = cpy.FloatingBody.from_meshio(RM3, name="WaveBot")
 
     #inner_function(f_max = 2000.0, p_max = 100.0, v_max = 10000.0, fb=RM3, wavefreq = 0.3, amplitude = 1)
+
+#outer loop
+f_max = 2000.0 
+p_max = 100.0 
+v_max = 10000.0
+f_ = np.linspace(900, f_max, 5)
+p_ = np.linspace(5, p_max, 5)
+v_ = np.linspace(10, v_max, 5)
+f = np.array([])
+p = np.array([])
+v = np.array([])
+X = np.array([])
+
+i = 1
+while i < 5:
+    j = 1
+    while j < 5:
+        k = 1
+        while k < 5:
+            res = inner_function(f_[i], p_[j], v_[k], fb=RM3, wavefreq = 0.3, amplitude = 1)
+            f = np.append(f, f_[i-1])
+            p = np.append(p, p_[j-1])
+            v = np.append(v, v_[k-1])
+            X = np.append(X, res)
+            k += 1
+        j += 1
+    i += 1
     
+ax = plt.subplot(projection="3d")
+sc = ax.scatter(f, v, p, c=X, marker='o', s=100, cmap="viridis")
+plt.colorbar(sc)
+ax.set_xlabel("f_max")
+ax.set_ylabel("p_max")
+ax.set_zlabel("v_max")
+plt.show()
