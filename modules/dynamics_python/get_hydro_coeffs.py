@@ -1,5 +1,7 @@
 import numpy as np
 def get_hydro_coeffs(r, k, draft):
+    # add the follow line to convert k as float:
+    # k = k.astype(float)
     # Froude Krylov force coefficient (diffraction is neglected)
     tuning_factor = 4.5  # tune to more closely match WAMIT results which include diffraction
 
@@ -7,6 +9,7 @@ def get_hydro_coeffs(r, k, draft):
                + (k ** 8 * r ** 10) / 737280 - (k ** 10 * r ** 12) / 88473600
 
     r_k_term = np.abs(r_k_term)  # get rid of any negatives that result at high frequencies
+
 
     gamma_over_rho_g = np.pi * np.exp(-k * draft * tuning_factor) * r_k_term
 

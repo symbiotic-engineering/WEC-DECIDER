@@ -12,13 +12,13 @@ def parameters():
     trimmed_jpd = trim_jpd(jpd)
 
     p = {
-        'rho_w': 1000,  # water density (kg/m3)
+        'rho_w': 1000.0,  # water density (kg/m3)
         'g': 9.8,  # acceleration of gravity (m/s2)
-        'JPD': trimmed_jpd[1:, 1:],  # joint probability distribution of wave (%)
-        'Hs': trimmed_jpd[1:, 0],  # wave height (m)
-        'Hs_struct': 11.9,  # 100 year wave height (m)
-        'T': trimmed_jpd[0, 1:],  # wave period (s)
-        'T_struct': 17.1,  # 100 year wave period (s)
+        'JPD': trimmed_jpd[1:, 1:].astype(float),  # joint probability distribution of wave (%)
+        'Hs': trimmed_jpd[1:, 0].astype(float),  # wave height (m)
+        'Hs_struct': np.array([11.9]),  # 100 year wave height (m)
+        'T': trimmed_jpd[0, 1:].astype(float),  # wave period (s)
+        'T_struct': np.array([17.1]),  # 100 year wave period (s)
         'sigma_y': np.array([36, 4.5, 30]) * ksi2pa,  # yield strength (Pa)
         'rho_m': np.array([8000, 2400, 8000]),  # material density (kg/m3)
         'E': np.array([200e9, 5000 * np.sqrt(4.5 * ksi2pa), 200e9]),  # young's modulus (Pa)
@@ -33,7 +33,7 @@ def parameters():
         'D_dt': 48.00 * in2m,  # damping plate support tube diameter (m)
         'theta_dt': np.arctan(17.5/15),  # angle from horizontal of damping plate support tubes (rad)
         'FOS_min': 1.5,  # minimum FOS (-)
-        'D_d_min': 30,  # minimum damping plate diameter
+        'D_d_min': 30.0,  # minimum damping plate diameter
         'FCR': 0.113,  # fixed charge rate (-)
         'N_WEC': 100,  # number of WECs in array (-)
         'D_d_over_D_s': 30/6,  # normalized damping plate diameter (-)

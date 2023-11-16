@@ -42,6 +42,8 @@ def geometry(D_s, D_f, T_f, h_f, h_s, t_ft, t_fr, t_fc, t_fb, t_sr, t_dt,
              D_d, D_dt, theta_dt, T_s, h_d, M, rho_m, rho_w, m_scale):
     num_gussets = 24
     num_gussets_loaded_lateral = 2
+    # convert index variable M to int instead of float
+    M = int(M)
 
     # Float cross-sectional and lateral area
     A_f_c = np.pi * (D_f + D_s) * t_fr + num_gussets * t_fc * (D_f - D_s) / 2
@@ -54,7 +56,7 @@ def geometry(D_s, D_f, T_f, h_f, h_s, t_ft, t_fr, t_fc, t_fb, t_sr, t_dt,
     V_sf_m = V_top_plate + V_bot_plate + V_rims_gussets
 
     m_f_m = V_sf_m * rho_m[M] * m_scale
-
+    #print("ad",rho_m)
     # Float hydrostatic calculations
     A_f = np.pi / 4 * (D_f ** 2 - D_s ** 2)
     V_f_d = A_f * T_f

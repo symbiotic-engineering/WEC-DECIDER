@@ -4,16 +4,43 @@ from scipy.signal import medfilt
 
 def pick_which_root(roots, idx_no_sat, a_quad, b_quad, c_quad):
     which_soln = (roots == np.real(roots)) & (roots > 0) & (roots <= 1)
+
+    def has_dimension(arr,dim):
+        return arr.ndim == dim
+
+    #print()
+
+
+
     both_ok = np.sum(which_soln, axis=2) == 2
+    # Check for the third dimension and act accordingly
+    #if has_dimension(which_soln,3):
+        # Sum along the third dimension and check if it equals 2
+    #    both_ok = np.sum(which_soln, axis=2) == 2
+    #else:
+        # Since we don't have a third dimension, check if all conditions are True for each row
+    #    both_ok = np.sum(which_soln, axis=0) == 2
+
     # temporarily mark the non - saturated solutions
     # as having one solution, to ensure the
     # logic below works correctly
-    which_soln[idx_no_sat] = True
+
+    #Jordan's change
+
+    #which_soln[idx_no_sat] = True
+    which_soln[idx_no_sat, 0] = True
 
     if np.any(both_ok): # two solutions
         mult = handle_two_solns(both_ok, which_soln, roots, idx_no_sat, a_quad, b_quad, c_quad)
     else:
-        num_solns = np.sum(which_soln, axis=2)
+        #if has_dimension(which_soln,3):
+        #num_solns = np.sum(which_soln, axis=2)
+        #[1,0] sum  = 1
+        num_solns = np.sum(which_soln, axis=-1)
+        #else:
+        #    num_solns = which_soln
+        #print("num_solns",num_solns)
+
         if not np.all(num_solns == 1):
             which_soln[num_solns == 0] = (roots[num_solns == 0] > 0) & (roots[num_solns == 0] <= 1.001)
             num_solns[num_solns == 0] = np.sum(which_soln[num_solns == 0], axis=2)
@@ -23,11 +50,16 @@ def pick_which_root(roots, idx_no_sat, a_quad, b_quad, c_quad):
 
     return mult
 
+
+
+
+
 # pick the specified roots using multidimensional logical indexing
 def get_relevant_soln(which_soln, roots, idx_no_sat):
     mult = np.zeros(idx_no_sat.shape)
 
     idx_3d_first_sol = np.copy(which_soln)
+    #print("idx_3d_first_sol",idx_3d_first_sol,idx_3d_first_sol.shape)
     idx_3d_first_sol[:, :, 1] = False
     idx_3d_second_sol = np.copy(which_soln)
     idx_3d_second_sol[:, :, 0] = False

@@ -1,3 +1,4 @@
+import numpy as np
 def var_bounds(p):
     b = {}
 
@@ -64,5 +65,19 @@ def var_bounds(p):
     }
 
     b['var_names'] = ['D_f', 'D_s_ratio', 'h_f_ratio', 'T_s_ratio', 'F_max', 'B_p', 'w_n', 'M']
+    b['constraint_names'] = ['float_too_heavy', 'float_too_light', 'spar_too_heavy', 'spar_too_light',
+                             'stability', 'FOS_float_yield', 'FOS_col_yield', 'FOS_plate', 'FOS_col_buckling',
+                             'pos_power', 'spar_damping', 'spar_height', 'LCOE_max', 'irrelevant_max_force']
 
+    # Modify nominal control inputs to so power and force matches actual
+
+    #pending
+    #F_max_nom, B_p_nom, w_n_nom = find_nominal_inputs(b, False)
+    #b['F_max_nom'] = F_max_nom
+    #b['B_p_nom'] = B_p_nom
+    #b['w_n_nom'] = w_n_nom
+
+    # Setting X_noms - this is a bit different in Python, using numpy array
+    #b['X_noms'] = np.array([b['D_f_nom'], b['D_s_ratio_nom'], b['h_f_ratio_nom'],
+    #                       b['T_s_ratio_nom'], b['F_max_nom'], b['B_p_nom'], b['w_n_nom']])
     return b
