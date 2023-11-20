@@ -19,8 +19,8 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
     stiffness = wot.hydrostatics.stiffness_matrix(fb).values
     mass = 208000
 
-    f1 = 0.02  #[Hz] 
-    nfreq = 50
+    f1 = 0.05 # Hz
+    nfreq = 20
     freq = wot.frequency(f1, nfreq, False) # False -> no zero frequency
     bem_data = wot.run_bem(fb, freq)
     
@@ -90,27 +90,42 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
         )
     
     # graph for hyrdodynamics coefficients
-    rho=1030
-    Added_mass_norm = bem_data['added_mass']/rho
-    radiation_dampin_normg = bem_data['radiation_damping']/(rho*f1*2*math.pi)
+    #rho=1030
+    #Added_mass_norm = bem_data['added_mass']/rho
+    #radiation_dampin_normg = bem_data['radiation_damping']/(rho*f1*2*math.pi)
     
-    fig, axes = plt.subplots(3,1)
-    Added_mass_norm.plot(ax = axes[0])
-    radiation_dampin_normg.plot(ax = axes[1])
-    axes[2].plot(bem_data['omega'],np.abs(np.squeeze(bem_data['diffraction_force'].values)), color = 'orange')
-    axes[2].set_ylabel('abs(diffraction_force)', color = 'orange')
-    axes[2].tick_params(axis ='y', labelcolor = 'orange')
-    ax2r = axes[2].twinx()
-    ax2r.plot(bem_data['omega'], np.abs(np.squeeze(bem_data['Froude_Krylov_force'].values)), color = 'blue')
-    ax2r.set_ylabel('abs(FK_force)', color = 'blue')
-    ax2r.tick_params(axis ='y', labelcolor = 'blue')
+    #fig, axes = plt.subplots(3,1)
+    #Added_mass_norm.plot(ax = axes[0])
+    #radiation_dampin_normg.plot(ax = axes[1])
+    #axes[2].plot(bem_data['omega'],np.abs(np.squeeze(bem_data['diffraction_force'].values)), color = 'orange')
+    #axes[2].set_ylabel('abs(diffraction_force)', color = 'orange')
+    #axes[2].tick_params(axis ='y', labelcolor = 'orange')
+    #ax2r = axes[2].twinx()
+    #ax2r.plot(bem_data['omega'], np.abs(np.squeeze(bem_data['Froude_Krylov_force'].values)), color = 'blue')
+    #ax2r.set_ylabel('abs(FK_force)', color = 'blue')
+    #ax2r.tick_params(axis ='y', labelcolor = 'blue')
 
-    for axi in axes:
-        axi.set_title('')
-        axi.label_outer()
-        axi.grid()
+    #for axi in axes:
+        #axi.set_title('')
+        #axi.label_outer()
+        #axi.grid()
 
-    axes[-1].set_xlabel('Frequency [rad/s]')
+    #axes[-1].set_xlabel('Frequency [rad/s]')
+    
+    
+    x_wec, x_opt = wec.decompose_state(results.x)
+    
+    #print(x_wec)
+    #print(len(x_wec))
+    #print(x_opt)
+    #print(len(x_opt))
+    
+    f = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
+    p = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
+    v = pto.velocity(wec, x_wec, x_opt, waves, nsubsteps)
+    print(f)
+    print(p)
+    print(v)
 
     return results.fun
 
@@ -126,11 +141,6 @@ def make_RM3():
     x1 = np.linspace(D_s/2, D_f/2, mesh_density) 
     y1 = np.linspace(D_s/2, D_f/2,mesh_density)
     bottom_frustum = body_from_profile(x1,y1,z1,mesh_density**2)
-    
-    z1_1 = np.linspace(-h_f_2, -h_f_2,mesh_density)
-    x1_1 = np.linspace(0, D_s/2, mesh_density)
-    y1_1 = np.linspace(0, D_s/2, mesh_density)
-    bottom_surface = body_from_profile(x1_1,y1_1,z1_1, mesh_density**2)
 
     z2 = np.linspace(0, -h_f_2, mesh_density)
     x2 = np.full_like(z2, D_s/2)
@@ -143,11 +153,11 @@ def make_RM3():
     outer_surface = body_from_profile(x3,y3,z3,mesh_density**2)
 
     z4 = np.linspace(0,0,mesh_density)
-    x4 = np.linspace(D_f/2, 0, mesh_density)
-    y4 = np.linspace(D_f/2, 0, mesh_density)
+    x4 = np.linspace(D_f/2, D_s/2, mesh_density)
+    y4 = np.linspace(D_f/2, D_s/2, mesh_density)
     top_surface = body_from_profile(x4,y4,z4, mesh_density**2)
 
-    RM3 = bottom_frustum + outer_surface + top_surface + bottom_surface
+    RM3 = bottom_frustum + outer_surface + top_surface + inner_surface
 
     
     print('RM3 created')
@@ -161,35 +171,29 @@ if __name__ == '__main__':
 
     #inner_function(f_max = 2000.0, p_max = 100.0, v_max = 10000.0, fb=RM3, wavefreq = 0.3, amplitude = 1)
 
+
+inner_function(f_max = 2000.0, p_max = 0.05, v_max = 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
+
+
 #outer loop
 f_max = 2000.0 
-p_max = 100.0 
-v_max = 10000.0
-f_ = np.linspace(900, f_max, 5)
-p_ = np.linspace(5, p_max, 5)
-v_ = np.linspace(10, v_max, 5)
-f = np.array([])
-p = np.array([])
-v = np.array([])
-X = np.array([])
+p_max = 0.05
+v_max = 0.1
+len_f_ = 4
+len_p_ = 4
+len_v_ = 4
+f_ = np.linspace(1, f_max, len_f_)
+p_ = np.linspace(0.01, p_max, len_p_)
+v_ = np.linspace(0.01, v_max, len_v_)
 
-i = 1
-while i < 5:
-    j = 1
-    while j < 5:
-        k = 1
-        while k < 5:
-            res = inner_function(f_[i], p_[j], v_[k], fb=RM3, wavefreq = 0.3, amplitude = 1)
-            f = np.append(f, f_[i-1])
-            p = np.append(p, p_[j-1])
-            v = np.append(v, v_[k-1])
-            X = np.append(X, res)
-            k += 1
-        j += 1
-    i += 1
+f = [f_[i] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
+p = [p_[j] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
+v = [v_[k] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
+X = [ inner_function(f_[i], p_[j], v_[k], fb=RM3, wavefreq = 0.3, amplitude = 1) for i in range(len_f_) for j in range(len_p_) for k in range(len_v_) ]
+
     
 ax = plt.subplot(projection="3d")
-sc = ax.scatter(f, v, p, c=X, marker='o', s=100, cmap="viridis")
+sc = ax.scatter(f, v, p, c=X, marker='o', s=25, cmap="autumn")
 plt.colorbar(sc)
 ax.set_xlabel("f_max")
 ax.set_ylabel("p_max")
