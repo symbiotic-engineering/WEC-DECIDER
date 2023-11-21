@@ -6,7 +6,7 @@ from modules.dynamics_python.dynamics import *
 
 def simulation(X, p):
     X = np.maximum(X, 1e-3)
-    #print(X)
+
     val = {}
     # Assemble inputs
     in_params = p.copy()
@@ -17,7 +17,7 @@ def simulation(X, p):
     in_params['F_max'] = X[4] * 1e6
     in_params['B_p'] = X[5] * 1e6
     in_params['w_n'] = X[6]
-    #in_params['M'] = X[7]
+    #Change float to Int
     in_params['M'] = int(X[7])
     # Variable ratios defined by design variables
     in_params['D_s'] = D_s_over_D_f * in_params['D_f']
@@ -39,9 +39,9 @@ def simulation(X, p):
 
 
     m_f_tot = max(m_f_tot, 1e-3)
+
     F_heave_max, F_surge_max, F_ptrain_max, P_var, P_elec, P_matrix, h_s_extra, P_unsat= dynamics(
         in_params, m_f_tot, V_d, T)
-    #print("F_heave_max",F_heave_max)
 
 
     FOS1Y, FOS2Y, FOS3Y, FOS_buckling = structures(

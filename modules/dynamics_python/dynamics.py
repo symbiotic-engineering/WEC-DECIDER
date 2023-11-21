@@ -1,12 +1,12 @@
 from modules.dynamics_python.dynamics_simple import  *
 from modules.dynamics_python.get_abc_symbolic import *
 from modules.dynamics_python.pick_which_root import *
-from statsmodels.stats.weightstats import DescrStatsW
+
+
 def dynamics(in_params,m_float,V_d,draft):
     # Use probabilistic sea states for power
     T, Hs = np.meshgrid(in_params['T'], in_params['Hs'])
     P_matrix, h_s_extra, P_unsat,_,_,_ = get_power_force(in_params.copy(), T.copy(), Hs.copy(), m_float.copy(), V_d.copy(), draft.copy())
-    #print("P_matrix", P_matrix)
     # Account for powertrain electrical losses
     P_matrix *= in_params['eff_pto']
 
@@ -38,13 +38,11 @@ def dynamics(in_params,m_float,V_d,draft):
         variance = np.average((values - average) ** 2, weights=weights)
         return (average, np.sqrt(variance))
 
-    #P_var = np.std(P_matrix, ddof=0, weights=in_params['JPD']) / P_elec
     average , P_var = weighted_avg_and_std(P_matrix,in_params['JPD']) / P_elec
 
     P_var *= 100  # Convert to percentage
 
     return F_heave_max, F_surge_max, F_ptrain_max, P_var, P_elec, P_matrix, h_s_extra, P_unsat
-    # F_heave_max, F_surge_max, F_ptrain_max, P_var, P_elec, P_matrix, h_s_extra
 
 def get_power_force(in_params, T, Hs, m_float, V_d, draft):
     # Get unsaturated response
@@ -69,9 +67,7 @@ def get_power_force(in_params, T, Hs, m_float, V_d, draft):
 
     alpha = (2 / np.pi) * (1 / r * np.arcsin(r) + np.sqrt(1 - r ** 2))
     f_sat = alpha * r
-    #mult = get_multiplier(f_sat, m, b, k, w, b / in_params['B_p'], k / K_p)
     #add copy() to each np array as parameters
-
     mult = get_multiplier(np.copy(f_sat), np.copy(m), np.copy(b), np.copy(k), np.copy(w), b / in_params['B_p'], k / K_p)
     b_sat = B_h + mult * in_params['B_p']
     k_sat = K_h + mult * K_p
@@ -97,21 +93,14 @@ def get_power_force(in_params, T, Hs, m_float, V_d, draft):
     assert np.all(F_err_2 < 1e-3)
 
     F_heave_fund = np.sqrt((mult * in_params['B_p'] * w) ** 2 + (mult * K_p - m_float * w ** 2) ** 2) * X_sat
-
     F_heave = np.minimum(F_heave_fund, in_params['F_max'] + m_float * w ** 2 * X_sat)
-    print("mult",mult)
-    #print("in_params['F_max'] + m_float * w ** 2 * X_sat",in_params['F_max'] + m_float * w ** 2 * X_sat )
     F_surge = np.max(Hs) * in_params['rho_w'] * in_params['g'] * V_d * (1 - np.exp(-np.max(k_wvn) * draft))
-    #print("F_surge",F_surge)
     return P_matrix, h_s_extra, P_unsat, F_heave, F_surge, F_ptrain_max
 
 
 def get_response(w, m, b, k, Fd):
     imag_term = b * w
     real_term = k - m * w ** 2
-
-
-
     X_over_F_mag = 1 / np.sqrt(real_term ** 2 + imag_term ** 2)
     X = X_over_F_mag * Fd
     return X
@@ -126,9 +115,6 @@ def get_multiplier(f_sat, m, b, k, w, r_b, r_k):
     f_sat[idx_no_sat] = np.nan
     b[idx_no_sat] = np.nan
     w[idx_no_sat] = np.nan
-
-
-
     r_b[idx_no_sat] = np.nan
     a_quad, b_quad, c_quad = get_abc_symbolic(f_sat, m, b, k, w, r_b, r_k)
     # solve the quadratic formula
@@ -141,17 +127,12 @@ def get_multiplier(f_sat, m, b, k, w, r_b, r_k):
     if c_quad.shape == (1,):
         c_quad = c_quad.reshape((1, 1))
     determinant = np.sqrt(b_quad ** 2 - 4 * a_quad * c_quad)
-    # added for reshaping
-
-    #if determinant.shape == (1,):
-    #    determinant = determinant.reshape((1, 1))
 
     num = -b_quad + determinant
     # creating a second dimension to hold the second root value
     num = np.stack((num, -b_quad - determinant), axis=-1)
     den = 2 * a_quad
 
-    #if has_third_dimension(num):
     den = den[:, :, None]
 
     roots = num / den

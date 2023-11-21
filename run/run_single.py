@@ -1,10 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import time
-from simulation import *
 from is_feasible import *
-from parameters import *
-from var_bounds import *
+from inputs.var_bounds import *
 # Assuming parameters, var_bounds, simulation, is_feasible, plot_power_matrix,
 # and power_PDF are already translated and implemented as Python functions.
 
@@ -12,11 +8,23 @@ def main():
     p = parameters()
     b = var_bounds(p)
 
-    #change from [1] to [0]
-    #X = np.concatenate((b['X_noms'], [1]))
+
+    #matlab inputs
+    """
+    b['X_noms'] = [
+        20.000000000000000,
+        0.300000000000000,
+        0.200000000000000,
+        0.795454545454545,
+        9.130448602231283,
+        0.279711019370833,
+        1.487887634547810
+    ]
+
+    """
+    # change from [1] to [0]
     X = np.concatenate((b['X_noms'], [0]))
-    #print("X",X)
-    #print(X)
+
 
     LCOE, P_var, _, g, _= simulation(X, p)
 

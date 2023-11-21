@@ -1,5 +1,5 @@
 import pandas as pd
-from wave_conditions.trim_jpd import *
+from inputs.wave_conditions.trim_jpd import *
 
 def parameters():
     ksi2pa = 6894757  # 1000 pounds/in2 to Pascal
@@ -7,7 +7,7 @@ def parameters():
     yd2m = 0.9144  # yard to meter
     lb2kg = 1/2.2  # pound to kilogram
 
-    file = 'F:/study/project/WEC-DECIDER/Humboldt_California_Wave Resource _SAM CSV.csv'
+    file = '../inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)
 

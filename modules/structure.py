@@ -19,7 +19,7 @@ def structures(F_heave, F_surge, M, h_s, T_s, rho_w, g, sigma_y, A_c, A_lat_sub,
     K = 2  # fixed-free - top is fixed by float angular stiffness, bottom is free
     L = h_s
 
-    F_buckling = np.pi ** 2 * E[M] * I[2] / (K * L) ** 2
+    F_buckling = np.pi ** 2 * E[M] * I[1] / (K * L) ** 2
 
     # Factor of Safety (FOS) Calculations
     FOS_yield = sigma_y[M] / sigma_vm

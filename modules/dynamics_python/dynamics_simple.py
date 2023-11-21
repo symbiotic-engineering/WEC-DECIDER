@@ -1,4 +1,3 @@
-import numpy as np
 from modules.dynamics_python.get_hydro_coeffs import *
 def dynamics_simple(Hs, T, D_f, T_f, rho_w, g):
     w = 2 * np.pi / T  # angular frequency
