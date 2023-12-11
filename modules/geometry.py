@@ -40,6 +40,7 @@ import numpy as np
 
 def geometry(D_s, D_f, T_f, h_f, h_s, t_ft, t_fr, t_fc, t_fb, t_sr, t_dt,
              D_d, D_dt, theta_dt, T_s, h_d, M, rho_m, rho_w, m_scale):
+    print("D_s", D_s)
     num_gussets = 24
     num_gussets_loaded_lateral = 2
     # convert index variable M to int instead of float

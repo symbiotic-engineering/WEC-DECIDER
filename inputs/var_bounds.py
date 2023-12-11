@@ -24,19 +24,16 @@ def var_bounds(p):
 
     b['F_max_min'] = 0.01
     b['F_max_max'] = 100
-    #b['F_max_nom'] = 9.12
     b['F_max_nom'] = 5
     b['F_max_start'] = 5
 
     b['B_p_min'] = 0.1
     b['B_p_max'] = 50
-    #b['B_p_nom'] = 0.311
     b['B_p_nom'] = 10
     b['B_p_start'] = 0.5
 
     b['w_n_min'] = 0.01  # Commented out MATLAB specific code for now
     b['w_n_max'] = 40  # Commented out MATLAB specific code for now
-    #b['w_n_nom'] = 1.49
     b['w_n_nom'] = 0.8
     b['w_n_start'] = 0.8
 

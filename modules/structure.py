@@ -2,6 +2,7 @@ import numpy as np
 
 def structures(F_heave, F_surge, M, h_s, T_s, rho_w, g, sigma_y, A_c, A_lat_sub, r_over_t, I, E):
     # Stress calculations
+
     depth = np.array([0, T_s, T_s])
     P_hydrostatic = rho_w * g * depth
     sigma_surge = F_surge / A_lat_sub
@@ -29,12 +30,16 @@ def structures(F_heave, F_surge, M, h_s, T_s, rho_w, g, sigma_y, A_c, A_lat_sub,
     FOS2Y = FOS_yield[0][1]
     FOS3Y = FOS_yield[0][2]
     FOS_buckling = F_buckling / F_heave
-
+    #print("output structure")
+    #print(FOS1Y.shape, FOS2Y.shape, FOS3Y.shape, FOS_buckling.shape)
     return FOS1Y, FOS2Y, FOS3Y, FOS_buckling
 
 
 def von_mises(s_11, s_22, s_33, s_12, s_23, s_31):
     principal_term = 0.5 * ((s_11 - s_22) ** 2 + (s_22 - s_33) ** 2 + (s_33 - s_11) ** 2)
     shear_term = 3 * (s_12 ** 2 + s_23 ** 2 + s_31 ** 2)
+
+
     s_vm = np.sqrt(principal_term + shear_term)
+    #print("s_vm",s_vm)
     return s_vm
