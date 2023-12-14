@@ -19,4 +19,6 @@ f = [0; 0; 0];
 
 opts = optimoptions(@quadprog,'Algorithm','active-set');
 x0 = [2 4 1];
-[x, fval, exitflag, output] = quadprog(H,f,A,b,[],[],[],[],x0,opts)
+lb = [0,0,0];
+ub = [Inf,Inf,1];
+[x, fval, exitflag, output] = quadprog(H,f,A,b,[],[],lb,ub,x0,opts)
