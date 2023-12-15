@@ -23,7 +23,6 @@ class structureComponent(om.ExplicitComponent):
         self.add_output('FOS2Y')
         self.add_output('FOS3Y')
         self.add_output('FOS_buckling')
-        self.add_output('test',np.zeros((4,)))
 
     # using wild cards to say that this component provides derivatives of all outputs with respect to all inputs.
     def setup_partials(self):
@@ -95,7 +94,6 @@ class structureComponent(om.ExplicitComponent):
         outputs['FOS2Y'] = FOS2Y = FOS_yield[0][1]
         outputs['FOS3Y'] = FOS3Y = FOS_yield[0][2]
         outputs['FOS_buckling'] = FOS_buckling = F_buckling / F_heave
-        outputs['test'] = [0,0,0,0]
         # print(FOS1Y, FOS2Y, FOS3Y, FOS_buckling)
         #return FOS1Y, FOS2Y, FOS3Y, FOS_buckling
 
