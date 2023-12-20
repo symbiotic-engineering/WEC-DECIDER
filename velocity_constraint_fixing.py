@@ -44,23 +44,22 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
         p = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
         
         
-    nstate_pto = 2 * nfreq # PTO forces
     
     def const_v_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
         v = pto.velocity(wec, x_wec, x_opt, waves, nsubsteps)
-        a = x_opt[:nstate_pto]                 # auxiliary continuous time-varying decision variable, a >= 0
+        a = x_opt[nstate_pto:]                 # auxiliary continuous time-varying decision variable, a >= 0
         return v_max - np.abs(v.flatten()) - a
     
     def const_a(wec, x_wec, x_opt, waves):
-        a = x_opt[:nstate_pto]
+        a = x_opt[nstate_pto:]
         return a
     
     def const_a_(wec, x_wec, x_opt, waves):
-        a = x_opt[:nstate_pto]
+        a = x_opt[nstate_pto:]
         return 1 - a
     
     def const_f_times_a(wec, x_wec, x_opt, waves):
-        a = x_opt[:nstate_pto]
+        a = x_opt[nstate_pto:]
         fp = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
         return -np.abs(a.flatten()) * a
     
@@ -99,7 +98,8 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
         f_add=f_add,
         )
     
-    nstate_a = wec.nt  #
+    nstate_pto = 2 * nfreq # PTO forces
+    nstate_a = wec.nt * nsubsteps  #
     nstate_opt = nstate_pto + nstate_a
     
     
@@ -133,8 +133,6 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
 
 
     obj_fun = pto.mechanical_average_power
-    nstate_opt = 2*nfreq
-
 
     options = {'maxiter': 200}
     scale_x_wec = 1e1
@@ -223,7 +221,7 @@ if __name__ == '__main__':
 
 
 
-inner_function(f_max = 2000.0, x_max =100.0, v_max = 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
+inner_function(f_max = 2000.0, p_max =100.0, v_max = 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
 
 #outer loop
 f_max = 1000.0 
