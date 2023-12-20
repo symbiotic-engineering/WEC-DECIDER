@@ -31,16 +31,15 @@ def inner_function(f_max, x_max, v_max, fb, wavefreq, amplitude):
     pto = wot.pto.PTO(ndof, kinematics, controller, pto_impedance, loss, name)
     
 
-    def f_bumpstop(wec, x_wec, x_max, waves):
+    def f_bumpstop(wec, x_wec, x_opt, waves):
         pos = np.array(wec.vec_to_dofmat(x_wec))
         vel = np.dot(wec.derivative_mat, pos)
         b = 1.0      # b and k are constants for bumpstop
         k = 1.0
-
         
         force = np.zeros(pos.shape)
-        force[pos > x_max] = k * (pos[pos > x_max] - x_max) + b * vel
-        force[pos <-x_max] = k * (pos[pos < -x_max] + x_max) + b * vel
+        force[pos > x_max] = k * (pos[pos > x_max] - x_max) + b * vel[pos > x_max]
+        force[pos <-x_max] = k * (pos[pos < -x_max] + x_max) + b * vel[pos < -x_max]
         
         #force_positive = k * (pos - x_max) + b * vel 
 
@@ -221,7 +220,7 @@ f = [f_[i] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
 p = [p_[j] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
 v = [v_[k] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
 
-X = np.nan(len_f_*len_p_*len_v_)
+X = np.full(len_f_*len_p_*len_v_, np.nan)
 for i in range(len_f_):
     for j in range(len_p_):
         for k in range(len_v_):
