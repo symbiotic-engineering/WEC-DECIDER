@@ -3,15 +3,21 @@ import matplotlib.pyplot as plt
 import xarray as xr
 import wecopttool as wot
 
-def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
-
+def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude):
+    wavefreq = w/(2*np.pi)
     ndof = 1
-    nfreq = 1
+    nfreq = 7
+    w1 = w
+    f1 = w1/(2*np.pi)
+    ws = np.arange(w1,w1*(nfreq+1),w1)
+    F_h = F_h * np.ones_like(ws)
 
-    f1 = w / (2 * np.pi) # Hz
+    freqs = ws / (2 * np.pi) # Hz
     
     # create dimensional coeffs from nondimensional coeffs
+    w_n_us = ws / w_u_star
     w_n_u = w / w_u_star
+    B_hs = 2 * zeta_u * w_n_us * m
     B_h = 2 * zeta_u * w_n_u * m
     K_h = w_n_u**2 * m
     # impedance matching, for w_star = 1 and r_b = 2
@@ -22,7 +28,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
     r_b = 2
     w_n = w / w_star
     zeta = r_b / (r_b - 1) * w_star / w_u_star * zeta_u
-    X_unsat = F_h / (m * w_n**2) / np.sqrt( (1 - w_star^2)**2 + (2*zeta*w_star)**2 )
+    X_unsat = F_h[0] / (m * w_n**2) / np.sqrt( (1 - w_star^2)**2 + (2*zeta*w_star)**2 )
     Fp = np.sqrt( (B_p * w)**2 + K_p**2) * X_unsat
     f_max = f_max_Fp * Fp
 
@@ -36,7 +42,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
     
     f_add = {'PTO': pto.force_on_wec}
     
-    nsubsteps = 4
+    nsubsteps = 16
     
     def const_f_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
         f = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
@@ -48,10 +54,9 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
     constraints = [ineq_cons1]
     
     # define impedance and reshape
-    impedance = m * 1j * w + B_h + K_h/(1j * w)
+    impedance = m * 1j * ws + B_hs + K_h/(1j * ws)
     print('impedance: ',impedance)
     impedance = np.reshape(impedance,(ndof,ndof,nfreq))
-    #F_h = np.reshape(F_h,(ndof,nfreq))
     K_h = np.reshape(K_h,(ndof,ndof))
     
     # make xarrays
@@ -64,7 +69,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
 
     dims_exc = ('omega', 'wave_direction', 'influenced_dof')
     coords_exc = [
-        (dims_exc[0], w, freq_attr),
+        (dims_exc[0], ws, freq_attr),
         (dims_exc[1], directions, dir_attr),
         (dims_exc[2], dof_names, dof_attr),
     ]
@@ -77,13 +82,13 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
     coords_imp = [
         (dims_imp[0], dof_names, dof_attr),
         (dims_imp[1], dof_names, dof_attr),
-        (dims_imp[2], w, freq_attr),
+        (dims_imp[2], ws, freq_attr),
     ]
     attrs_imp = {'units': 'Ns/m', 'long_name': 'Intrinsic Impedance'}
     impedance = xr.DataArray(impedance, dims=dims_imp, coords=coords_imp, attrs=attrs_imp, name='Intrisnic impedance')
 
     wec = wot.WEC.from_impedance(
-        freqs=w,
+        freqs=freqs,
         impedance=impedance,
         exc_coeff=exc_coeff,
         hydrostatic_stiffness=K_h,
@@ -104,13 +109,15 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
     scale_obj = 1
 
     # use the unsaturated solution as a guess
+    # the vectorization on this might be bad (need vectorized B_p, Fp, and X_unsat?)
     dc_pos = np.array([0])
-    real_part_pos = X_unsat
-    Fp_phase = np.arctan(B_p*w / K_p)
+    real_part_pos = np.full_like(ws, X_unsat)
+    imag_part_pos = np.zeros_like(real_part_pos)
+    Fp_phase = np.arctan(B_p*ws / K_p)
     real_part_Fp  = -Fp * np.cos(Fp_phase)
     imag_part_Fp  = -Fp * np.sin(Fp_phase)
 
-    x_wec_0 = np.concatenate([dc_pos, real_part_pos])
+    x_wec_0 = np.concatenate([dc_pos, real_part_pos, imag_part_pos[:-1]])
     x_opt_0 = np.concatenate([real_part_Fp,imag_part_Fp])
     
     results = wec.solve(
@@ -128,19 +135,23 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, wavefreq, amplitude):
     
     x_wec, x_opt = wec.decompose_state(results.x)
     
-    #print(x_wec)
-    #print(len(x_wec))
-    #print(x_opt)
-    #print(len(x_opt))
-    
-    f = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
-    p = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
-    v = pto.velocity(wec, x_wec, x_opt, waves, nsubsteps)
-    #print(f)
-    #print(p)
-    #print(v)
-    print('Power timeseries: ',f * v)
+    r = wec._resid_fun(x_wec, x_opt, waves)
+
+    print('Residual: ',r)
     print('Power: ',results.fun)
+
+    res_wec_fd, res_wec_td = wec.post_process(results,waves,nsubsteps=nsubsteps)
+    res_pto_fd, res_pto_td = pto.post_process(wec,results,waves,nsubsteps=nsubsteps)
+
+    plt.figure()
+    res_wec_td.pos.plot()
+    res_wec_td.vel.plot()
+    res_wec_td.acc.plot()
+    res_pto_td.force.plot()
+    res_pto_td.power.sel(type='elec').plot()
+    plt.legend([res_wec_td.pos.long_name, res_wec_td.vel.long_name, 
+                res_wec_td.acc.long_name, res_pto_td.force.long_name,
+                res_pto_td.power.long_name])
 
     return results.fun
 
@@ -162,16 +173,16 @@ def sweep_nondim_coeffs():
     for i in np.arange(zeta_u_mat.size):
         idx = np.unravel_index(i,X.shape)
         try:
-            X[idx] = inner_function(zeta_u_mat.ravel()[i], w_u_star_mat.ravel()[i], f_max_Fp_mat.ravel()[i], m, w, F_h, wavefreq = w/(2*np.pi), amplitude = 1)
+            X[idx] = inner_function(zeta_u_mat.ravel()[i], w_u_star_mat.ravel()[i], f_max_Fp_mat.ravel()[i], m, w, F_h, amplitude = 1)
         except:
             X[idx] = np.nan
-            print(i,' is nan')
 
     print('X: ', X)
 
     # plot results
+    plt.figure()
     ax = plt.subplot(projection="3d")
-    sc = ax.scatter(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, c=X, marker='o', s=25, cmap="viridis")
+    sc = ax.scatter(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, c=X, marker='o', s=25, cmap="viridis_r", depthshade=False)
     plt.colorbar(sc)
     ax.set_xlabel("zeta_u")
     ax.set_ylabel("w_u_star")
