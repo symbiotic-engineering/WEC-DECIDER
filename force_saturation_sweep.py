@@ -3,10 +3,9 @@ import matplotlib.pyplot as plt
 import xarray as xr
 import wecopttool as wot
 
-def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude):
+def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq):
     wavefreq = w/(2*np.pi)
     ndof = 1
-    nfreq = 7
     w1 = w
     f1 = w1/(2*np.pi)
     ws = np.arange(w1,w1*(nfreq+1),w1)
@@ -173,7 +172,7 @@ def sweep_nondim_coeffs():
     for i in np.arange(zeta_u_mat.size):
         idx = np.unravel_index(i,X.shape)
         try:
-            X[idx] = inner_function(zeta_u_mat.ravel()[i], w_u_star_mat.ravel()[i], f_max_Fp_mat.ravel()[i], m, w, F_h, amplitude = 1)
+            X[idx] = inner_function(zeta_u_mat.ravel()[i], w_u_star_mat.ravel()[i], f_max_Fp_mat.ravel()[i], m, w, F_h, amplitude=1, nfreq=7)
         except:
             X[idx] = np.nan
 
@@ -189,5 +188,32 @@ def sweep_nondim_coeffs():
     ax.set_zlabel("F_max/F_p")
     plt.show()
 
+def try_different_nfreqs():
+    nfreqs = np.arange(1,13,2)
+    X = np.zeros_like(nfreqs,dtype=float)
+
+    # dimensional coeffs
+    m = np.array([1.0])
+    w = np.array([1.0])
+    F_h = np.array([1.0])
+
+    # nondimensional coeffs
+    zeta_u = 0.5
+    w_u_star = 0.5
+    f_max_Fp = 0.5
+
+    for idx in np.arange(nfreqs.size):
+        try:
+            X[idx] = -inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude=1, nfreq=nfreqs[idx])
+        except:
+            X[idx] = np.nan
+    print('power: ',X)
+    plt.figure()
+    plt.plot(nfreqs,X,'*-')
+    plt.xlabel('Number of frequencies')
+    plt.ylabel('Power')
+    plt.show()
+
 if __name__ == '__main__':
-    sweep_nondim_coeffs()
+    #sweep_nondim_coeffs()
+    try_different_nfreqs()
