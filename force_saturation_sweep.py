@@ -3,7 +3,10 @@ import matplotlib.pyplot as plt
 import xarray as xr
 import datetime
 import time
+import sys
 
+# switch to using local WecOptTool instead of conda package
+sys.path.insert(1,'C:/Users/rgm222/Documents/Github/SEA-Lab/WecOptTool')
 import wecopttool as wot
 
 def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot_on=True):
@@ -58,7 +61,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     # define impedance and reshape
     impedance = m * 1j * ws + B_hs + K_h/(1j * ws)
     print('impedance: ',impedance)
-    impedance = np.reshape(impedance,(ndof,ndof,nfreq))
+    impedance = np.reshape(impedance,(nfreq,ndof,ndof))
     K_h = np.reshape(K_h,(ndof,ndof))
     
     # make xarrays
@@ -80,14 +83,15 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     exc_coeff = xr.DataArray(exc_coeff, dims=dims_exc, coords=coords_exc,
                             attrs=attrs_exc, name='excitation coefficient')
 
-    dims_imp = ('radiating_dof', 'influenced_dof', 'omega')
+    dims_imp = ('omega', 'radiating_dof', 'influenced_dof')
     coords_imp = [
-        (dims_imp[0], dof_names, dof_attr),
+        (dims_imp[0], ws, freq_attr), 
         (dims_imp[1], dof_names, dof_attr),
-        (dims_imp[2], ws, freq_attr),
+        (dims_imp[2], dof_names, dof_attr),
     ]
     attrs_imp = {'units': 'Ns/m', 'long_name': 'Intrinsic Impedance'}
-    impedance = xr.DataArray(impedance, dims=dims_imp, coords=coords_imp, attrs=attrs_imp, name='Intrisnic impedance')
+    impedance = xr.DataArray(impedance, dims=dims_imp, coords=coords_imp, 
+                             attrs=attrs_imp, name='Intrisnic impedance')
 
     wec = wot.WEC.from_impedance(
         freqs=freqs,
@@ -136,12 +140,13 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     )
     
     
-    x_wec, x_opt = wec.decompose_state(results.x)
+    x_wec, x_opt = wec.decompose_state(results[0].x)
     
-    r = wec._resid_fun(x_wec, x_opt, waves)
+    wave = waves[:,:,0]
+    r = wec.residual(x_wec, x_opt, wave)
 
     print('Residual: ',r)
-    print('Power: ',results.fun)
+    print('Power: ',results[0].fun)
 
     if plot_on:
         res_wec_fd, res_wec_td = wec.post_process(results,waves,nsubsteps=nsubsteps)
@@ -157,7 +162,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
                     res_wec_td.acc.long_name, res_pto_td.force.long_name,
                     res_pto_td.power.long_name])
 
-    return results.fun
+    return results[0].fun
 
 def sweep_nondim_coeffs():
     # nondimensional coeffs
