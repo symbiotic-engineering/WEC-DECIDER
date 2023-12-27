@@ -1,9 +1,12 @@
 import autograd.numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
+import datetime
+import time
+
 import wecopttool as wot
 
-def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq):
+def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot_on=True):
     wavefreq = w/(2*np.pi)
     ndof = 1
     w1 = w
@@ -128,7 +131,8 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq):
         scale_x_opt=scale_x_opt,
         scale_obj=scale_obj,
         x_wec_0=x_wec_0,
-        x_opt_0=x_opt_0
+        x_opt_0=x_opt_0,
+        use_grad=False
     )
     
     
@@ -139,18 +143,19 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq):
     print('Residual: ',r)
     print('Power: ',results.fun)
 
-    res_wec_fd, res_wec_td = wec.post_process(results,waves,nsubsteps=nsubsteps)
-    res_pto_fd, res_pto_td = pto.post_process(wec,results,waves,nsubsteps=nsubsteps)
+    if plot_on:
+        res_wec_fd, res_wec_td = wec.post_process(results,waves,nsubsteps=nsubsteps)
+        res_pto_fd, res_pto_td = pto.post_process(wec,results,waves,nsubsteps=nsubsteps)
 
-    plt.figure()
-    res_wec_td.pos.plot()
-    res_wec_td.vel.plot()
-    res_wec_td.acc.plot()
-    res_pto_td.force.plot()
-    res_pto_td.power.sel(type='elec').plot()
-    plt.legend([res_wec_td.pos.long_name, res_wec_td.vel.long_name, 
-                res_wec_td.acc.long_name, res_pto_td.force.long_name,
-                res_pto_td.power.long_name])
+        plt.figure()
+        res_wec_td.pos.plot()
+        res_wec_td.vel.plot()
+        res_wec_td.acc.plot()
+        res_pto_td.force.plot()
+        res_pto_td.power.sel(type='elec').plot()
+        plt.legend([res_wec_td.pos.long_name, res_wec_td.vel.long_name, 
+                    res_wec_td.acc.long_name, res_pto_td.force.long_name,
+                    res_pto_td.power.long_name])
 
     return results.fun
 
@@ -167,21 +172,32 @@ def sweep_nondim_coeffs():
     w = np.array([1.0])
     F_h = np.array([1.0])
 
+    nfreq = 5
+
     # run sim
     X = np.zeros_like(zeta_u_mat)
+    t1 = time.time()
     for i in np.arange(zeta_u_mat.size):
         idx = np.unravel_index(i,X.shape)
-        try:
-            X[idx] = inner_function(zeta_u_mat.ravel()[i], w_u_star_mat.ravel()[i], f_max_Fp_mat.ravel()[i], m, w, F_h, amplitude=1, nfreq=7)
-        except:
-            X[idx] = np.nan
+        #try:
+        X[idx] = inner_function(zeta_u_mat.ravel()[i], w_u_star_mat.ravel()[i], f_max_Fp_mat.ravel()[i], 
+                                    m, w, F_h, amplitude=1, nfreq=nfreq, plot_on=False)
+        #except:
+        #    X[idx] = np.nan
+    t2 = time.time()
+    print('Time elapsed for ',zeta_u_mat.size, ' iterations: ',t2-t1,' = ',(t2-t1)/zeta_u_mat.size,' per iteration')
 
     print('X: ', X)
+
+    timestamp = datetime.datetime.now().strftime('%G%m%d'+'_'+'%H%M%S')
+    fname = 'wot_sweep_results_' + timestamp + '_N=' + str(nfreq) + '.csv'
+    #np.savetxt(fname,X,delimiter=',')
 
     # plot results
     plt.figure()
     ax = plt.subplot(projection="3d")
-    sc = ax.scatter(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, c=X, marker='o', s=25, cmap="viridis_r", depthshade=False)
+    sc = ax.scatter(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, c=X, 
+                    marker='o', s=25, cmap="viridis_r", depthshade=False)
     plt.colorbar(sc)
     ax.set_xlabel("zeta_u")
     ax.set_ylabel("w_u_star")
@@ -204,9 +220,10 @@ def try_different_nfreqs():
 
     for idx in np.arange(nfreqs.size):
         try:
-            X[idx] = -inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude=1, nfreq=nfreqs[idx])
+            X[idx] = -inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude=1, nfreq=nfreqs[idx], plot_on=False)
         except:
             X[idx] = np.nan
+    
     print('power: ',X)
     plt.figure()
     plt.plot(nfreqs,X,'*-')
@@ -215,5 +232,5 @@ def try_different_nfreqs():
     plt.show()
 
 if __name__ == '__main__':
-    #sweep_nondim_coeffs()
-    try_different_nfreqs()
+    sweep_nondim_coeffs()
+    #try_different_nfreqs()
