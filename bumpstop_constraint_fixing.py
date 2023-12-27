@@ -34,16 +34,24 @@ def inner_function(f_max, x_max, v_max, fb, wavefreq, amplitude):
     def f_bumpstop(wec, x_wec, x_opt, waves):
         pos = wec.vec_to_dofmat(x_wec)
         vel = np.dot(wec.derivative_mat, pos)
-        b = 3    # b and k are constants for bumpstop
-        k = 2
-
-        for i in pos:
-            if i > x_max: i = k * (i - x_max) + b * vel
-            elif i < -x_max: i = k * (i + x_max) + b * vel
-            else: i = 0.0
-        
         time_matrix = wec.time_mat_nsubsteps(nsubsteps)
-        f_bumpstop = np.dot(time_matrix, pos)
+        b = 14    # 
+        k = 10e6  # N/m
+        
+
+        bumpstop = np.array([])
+        for i in range(len(pos)):
+            if pos[i] > x_max: 
+                bump = k * (pos[i] - x_max) + b * vel[i]
+            elif pos[i] < -x_max: 
+                bump = k * (pos[i] + x_max) + b * vel[i]
+            else: 
+                bump = [0.0]
+            bumpstop = np.concatenate((bumpstop, bump), axis = 0)
+        
+        bumpstop = bumpstop.reshape(-1, 1)
+       
+        f_bumpstop = np.dot(time_matrix, bumpstop)
         return f_bumpstop
     
     f_add = {'PTO': pto.force_on_wec,
