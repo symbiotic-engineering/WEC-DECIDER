@@ -4,6 +4,8 @@ import xarray as xr
 import datetime
 import time
 import sys
+import timeit
+import dask
 
 # switch to using local WecOptTool instead of conda package
 sys.path.insert(1,'C:/Users/rgm222/Documents/Github/SEA-Lab/WecOptTool')
@@ -105,6 +107,14 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     phase = 30
     wavedir = 0
     waves = wot.waves.regular_wave(f1, nfreq, wavefreq, amplitude, phase, wavedir)
+    wave = waves[:,:,0]
+    
+    #twave = timeit.timeit(lambda: dask.base.tokenize(wave), number=500)/500
+    #texc =  timeit.timeit(lambda: dask.base.tokenize(exc_coeff), number=500)/500
+    #print('time wave: ',twave)
+    #print('time exc: ',texc)
+    
+    wot.wave_excitation(exc_coeff, wave)
 
     obj_fun = pto.mechanical_average_power
     nstate_opt = 2*nfreq
@@ -142,7 +152,6 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     
     x_wec, x_opt = wec.decompose_state(results[0].x)
     
-    wave = waves[:,:,0]
     r = wec.residual(x_wec, x_opt, wave)
 
     print('Residual: ',r)
