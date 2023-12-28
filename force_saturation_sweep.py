@@ -149,8 +149,8 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     print('Power: ',results[0].fun)
 
     if plot_on:
-        res_wec_fd, res_wec_td = wec.post_process(results,waves,nsubsteps=nsubsteps)
-        res_pto_fd, res_pto_td = pto.post_process(wec,results,waves,nsubsteps=nsubsteps)
+        res_wec_fd, res_wec_td = wec.post_process(results[0],wave,nsubsteps=nsubsteps)
+        res_pto_fd, res_pto_td = pto.post_process(wec,results[0],wave,nsubsteps=nsubsteps)
 
         plt.figure()
         res_wec_td.pos.plot()
