@@ -157,7 +157,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
         res_wec_td.vel.plot()
         res_wec_td.acc.plot()
         res_pto_td.force.plot()
-        res_pto_td.power.sel(type='elec').plot()
+        res_pto_td.power.sel(type='elec').plot.line('--',x='time')
         plt.legend([res_wec_td.pos.long_name, res_wec_td.vel.long_name, 
                     res_wec_td.acc.long_name, res_pto_td.force.long_name,
                     res_pto_td.power.long_name])
