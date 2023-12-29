@@ -42,7 +42,34 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     # create PTO
     name = ["PTO_Heave",]
     kinematics = np.eye(ndof)
-    controller = None
+    use_PI = False 
+    # toggle to switch between saturated PI and unstructured constrained
+    # True takes longer but gives more power (at least for nfreq=5. The power 
+    # might be comparable for higher nfreq)
+    if use_PI:
+        def controller(p,w,xw,xo,wa,ns):
+                return wot.pto.controller_pid(p,w,xw,xo,wa,ns,derivative=False,saturation=f_max)
+        constraints = None
+        nstate_opt = 2
+        x_opt_0 = np.array([-B_p[0], -K_p[0]])
+    else:
+        controller = None
+        
+        def const_f_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
+            f = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
+            return f_max - np.abs(f.flatten())
+        ineq_cons1 = {'type': 'ineq',
+                      'fun': const_f_pto,
+                      }
+        constraints = [ineq_cons1]
+        
+        nstate_opt = 2*nfreq
+        
+        Fp_phase = np.arctan(B_p*ws / K_p)
+        real_part_Fp  = -Fp * np.cos(Fp_phase)
+        imag_part_Fp  = -Fp * np.sin(Fp_phase)
+        x_opt_0 = np.concatenate([real_part_Fp,imag_part_Fp])
+        
     loss = None
     pto_impedance = None
     pto = wot.pto.PTO(ndof, kinematics, controller, pto_impedance, loss, name)
@@ -50,15 +77,6 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     f_add = {'PTO': pto.force_on_wec}
     
     nsubsteps = 16
-    
-    def const_f_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
-        f = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
-        return f_max - np.abs(f.flatten())
-
-    ineq_cons1 = {'type': 'ineq',
-                 'fun': const_f_pto,
-                 }
-    constraints = [ineq_cons1]
     
     # define impedance and reshape
     impedance = m * 1j * ws + B_hs + K_h/(1j * ws)
@@ -117,8 +135,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     wot.wave_excitation(exc_coeff, wave)
 
     obj_fun = pto.mechanical_average_power
-    nstate_opt = 2*nfreq
-
+    
     options = {'maxiter': 200}
     scale_x_wec = 1
     scale_x_opt = 1
@@ -129,12 +146,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     dc_pos = np.array([0])
     real_part_pos = np.full_like(ws, X_unsat)
     imag_part_pos = np.zeros_like(real_part_pos)
-    Fp_phase = np.arctan(B_p*ws / K_p)
-    real_part_Fp  = -Fp * np.cos(Fp_phase)
-    imag_part_Fp  = -Fp * np.sin(Fp_phase)
-
     x_wec_0 = np.concatenate([dc_pos, real_part_pos, imag_part_pos[:-1]])
-    x_opt_0 = np.concatenate([real_part_Fp,imag_part_Fp])
     
     results = wec.solve(
         waves,
@@ -149,15 +161,13 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
         use_grad=False
     )
     
-    
-    x_wec, x_opt = wec.decompose_state(results[0].x)
-    
-    r = wec.residual(x_wec, x_opt, wave)
-
-    print('Residual: ',r)
     print('Power: ',results[0].fun)
 
     if plot_on:
+        x_wec, x_opt = wec.decompose_state(results[0].x)
+        r = wec.residual(x_wec, x_opt, wave)
+        print('Residual: ',r)
+        
         res_wec_fd, res_wec_td = wec.post_process(results[0],wave,nsubsteps=nsubsteps)
         res_pto_fd, res_pto_td = pto.post_process(wec,results[0],wave,nsubsteps=nsubsteps)
 
