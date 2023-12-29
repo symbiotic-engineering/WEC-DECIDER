@@ -1,5 +1,7 @@
 import autograd.numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from matplotlib.ticker import StrMethodFormatter as strformat
 import xarray as xr
 import datetime
 import time
@@ -11,7 +13,7 @@ import dask
 sys.path.insert(1,'C:/Users/rgm222/Documents/Github/SEA-Lab/WecOptTool')
 import wecopttool as wot
 
-def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot_on=True):
+def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, nsubsteps=16, use_PI=False, plot_on=True):
     wavefreq = w/(2*np.pi)
     ndof = 1
     w1 = w
@@ -42,7 +44,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     # create PTO
     name = ["PTO_Heave",]
     kinematics = np.eye(ndof)
-    use_PI = False 
+
     # toggle to switch between saturated PI and unstructured constrained
     # True takes longer but gives more power (at least for nfreq=5. The power 
     # might be comparable for higher nfreq)
@@ -75,8 +77,6 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, plot
     pto = wot.pto.PTO(ndof, kinematics, controller, pto_impedance, loss, name)
     
     f_add = {'PTO': pto.force_on_wec}
-    
-    nsubsteps = 16
     
     # define impedance and reshape
     impedance = m * 1j * ws + B_hs + K_h/(1j * ws)
@@ -229,8 +229,11 @@ def sweep_nondim_coeffs():
     plt.show()
 
 def try_different_nfreqs():
-    nfreqs = np.arange(1,13,2)
-    X = np.zeros_like(nfreqs,dtype=float)
+    nfreqs = np.arange(2,15,2)
+    nsubsteps = np.arange(1,7,2)
+    use_PI = [True,False]
+    X = np.zeros((nfreqs.size,nsubsteps.size,2))
+    t = np.zeros_like(X)
 
     # dimensional coeffs
     m = np.array([1.0])
@@ -242,19 +245,142 @@ def try_different_nfreqs():
     w_u_star = 0.5
     f_max_Fp = 0.5
 
-    for idx in np.arange(nfreqs.size):
-        try:
-            X[idx] = -inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude=1, nfreq=nfreqs[idx], plot_on=False)
-        except:
-            X[idx] = np.nan
+    for idx_PI in [0,1]:
+        for idx_freq in np.arange(nfreqs.size):
+            for idx_sub in np.arange(nsubsteps.size):
+                try:
+                    t1 = time.time()
+                    X[idx_freq,idx_sub,idx_PI] = -inner_function(zeta_u, w_u_star, f_max_Fp, 
+                                                                 m, w, F_h, amplitude=1, 
+                                                                 nfreq=nfreqs[idx_freq], 
+                                                                 nsubsteps=nsubsteps[idx_sub], 
+                                                                 use_PI=use_PI[idx_PI], plot_on=False)
+                    t2 = time.time()
+                    t[idx_freq,idx_sub,idx_PI] = t2 - t1
+                except:
+                    X[idx_freq,idx_sub,idx_PI] = np.nan
+                    t[idx_freq,idx_sub,idx_PI] = np.nan
     
+        plt.figure()
+        plt.pcolormesh(nsubsteps,nfreqs,X[:,:,idx_PI])
+        plt.xlabel('Number of substeps')
+        plt.ylabel('Number of freqs')
+        plt.title('Power (W) for use_PI='+str(use_PI[idx_PI]))
+        plt.colorbar()
+        
+        plt.figure()
+        plt.pcolormesh(nsubsteps,nfreqs,t[:,:,idx_PI])
+        plt.xlabel('Number of substeps')
+        plt.ylabel('Number of freqs')
+        plt.title('Time (s) for use_PI='+str(use_PI[idx_PI]))
+        plt.colorbar()
     print('power: ',X)
-    plt.figure()
-    plt.plot(nfreqs,X,'*-')
-    plt.xlabel('Number of frequencies')
-    plt.ylabel('Power')
+    print('time: ',t)
+    
+    idx_true = (-1,-1,1) # highest freq, highest substep, PI=false
+    P_true = X[idx_true] 
+    P_error = (X-P_true)/P_true * 100
+    
+    t_true = t[idx_true]
+    t_rel = t / t_true
+
+    blue_white_red_subplots(nsubsteps, nfreqs, P_error, 0, 'Power Error (%)', use_PI, idx_true, "{x:.1f}%")
+    blue_white_red_subplots(nsubsteps, nfreqs, t_rel,   1, 'Relative Time (-)', use_PI, idx_true, "{x:.1f}")
     plt.show()
 
+def blue_white_red_subplots(x, y, Z, center, title, use_PI, idx_true, valfmt):
+    idx_no_nan = ~np.isnan(Z)
+    
+    fig, axs = plt.subplots(nrows=1, ncols=2)
+    
+    # green star where the ground truth value is
+    axs[idx_true[-1]].plot( x[idx_true[0]], y[idx_true[1]], 'g*', markersize=50)
+    
+    zmin = np.nanmin(Z)
+    zmax = np.nanmax(Z)
+    driving = np.max(np.abs(np.array([zmin,zmax])-center)) # whichever of min/max is further from center
+    norm = colors.TwoSlopeNorm(vmin=center-driving, vcenter=center, vmax=center+driving)
+    txt_color_lims = [center-driving/2, center+driving/2]
+    print('text lims: ',txt_color_lims)
+    for idx_PI in [0,1]:
+        h = axs[idx_PI].pcolormesh(x,y,Z[:,:,idx_PI], norm=norm, cmap='bwr')
+        #h = axs[idx_PI].pcolorfast(x,y,Z[:,:,idx_PI], norm=norm, cmap='bwr')
+        
+        # red X where the nan's are
+        X,Y = np.meshgrid(x.astype(float),y.astype(float))
+        X[idx_no_nan[:,:,idx_PI]] = np.nan
+        Y[idx_no_nan[:,:,idx_PI]] = np.nan
+        axs[idx_PI].plot(X,Y,'rx')
+        
+        annotate_heatmap(h, x, y, txt_color_lims, valfmt=valfmt)
+        
+        axs[idx_PI].set_xlabel('Number of substeps')
+        axs[idx_PI].set_ylabel('Number of freqs')
+        axs[idx_PI].set_title('use_PI='+str(use_PI[idx_PI]))
+    fig.colorbar(h, ax=axs.ravel().tolist())
+    fig.suptitle(title)
+    
+
+# modified from https://matplotlib.org/stable/gallery/images_contours_and_fields/image_annotated_heatmap.html
+def annotate_heatmap(im, x, y, txt_color_lims, data=None, valfmt="{x:.2f}",
+                     textcolors=("black", "white"),
+                     **textkw):
+    """
+    A function to annotate a heatmap.
+
+    Parameters
+    ----------
+    im
+        The AxesImage to be labeled.
+    data
+        Data used to annotate.  If None, the image's data is used.  Optional.
+    valfmt
+        The format of the annotations inside the heatmap.  This should either
+        use the string format method, e.g. "$ {x:.2f}", or be a
+        `matplotlib.ticker.Formatter`.  Optional.
+    textcolors
+        A pair of colors.  The first is used for values below a threshold,
+        the second for those above.  Optional.
+    threshold
+        Value in data units according to which the colors from textcolors are
+        applied.  If None (the default) uses the middle of the colormap as
+        separation.  Optional.
+    **kwargs
+        All other arguments are forwarded to each call to `text` used to create
+        the text labels.
+    """
+
+    if not isinstance(data, (list, np.ndarray)):
+        data = im.get_array()
+
+    # Normalize the threshold to the images color range.
+    threshold_lo = im.norm(txt_color_lims[0])
+    threshold_hi = im.norm(txt_color_lims[1])
+
+    # Set default alignment to center, but allow it to be
+    # overwritten by textkw.
+    kw = dict(horizontalalignment="center",
+              verticalalignment="center")
+    kw.update(textkw)
+
+    # Get the formatter in case a string is supplied
+    if isinstance(valfmt, str):
+        valfmt = strformat(valfmt)
+
+    # Loop over the data and create a `Text` for each "pixel".
+    # Change the text's color depending on the data.
+    texts = []
+    for iy,yi in np.ndenumerate(y):
+        for ix,xi in np.ndenumerate(x):
+            norm_data = im.norm(data[iy, ix])
+            if ~np.isnan(norm_data.data):
+                color_idx = int(norm_data > threshold_hi or norm_data < threshold_lo)
+                kw.update(color=textcolors[color_idx])
+                text = im.axes.text(xi, yi, valfmt(float(data[iy, ix][0]), None), **kw)
+                texts.append(text)
+
+    return texts
+
 if __name__ == '__main__':
-    sweep_nondim_coeffs()
-    #try_different_nfreqs()
+    #sweep_nondim_coeffs()
+    try_different_nfreqs()
