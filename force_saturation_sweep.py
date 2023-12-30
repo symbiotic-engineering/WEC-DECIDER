@@ -1,6 +1,7 @@
 import autograd.numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+from scipy.io import savemat
 from matplotlib.ticker import StrMethodFormatter as strformat
 import xarray as xr
 import datetime
@@ -13,7 +14,8 @@ import dask
 sys.path.insert(1,'C:/Users/rgm222/Documents/Github/SEA-Lab/WecOptTool')
 import wecopttool as wot
 
-def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, nsubsteps=16, use_PI=False, plot_on=True):
+def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, 
+                   nsubsteps=16, use_PI=False, plot_on=False, return_extras=False):
     wavefreq = w/(2*np.pi)
     ndof = 1
     w1 = w
@@ -80,38 +82,10 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, nsub
     
     # define impedance and reshape
     impedance = m * 1j * ws + B_hs + K_h/(1j * ws)
-    print('impedance: ',impedance)
     impedance = np.reshape(impedance,(nfreq,ndof,ndof))
     K_h = np.reshape(K_h,(ndof,ndof))
     
-    # make xarrays
-    freq_attr = {'long_name': 'Wave frequency', 'units': 'rad/s'}
-    dir_attr = {'long_name': 'Wave direction', 'units': 'rad'}
-    dof_attr = {'long_name': 'Degree of freedom'}
-    dof_names = ["Pitch",]
-    ndof = len(dof_names)
-    directions = np.atleast_1d(0.0)
-
-    dims_exc = ('omega', 'wave_direction', 'influenced_dof')
-    coords_exc = [
-        (dims_exc[0], ws, freq_attr),
-        (dims_exc[1], directions, dir_attr),
-        (dims_exc[2], dof_names, dof_attr),
-    ]
-    attrs_exc = {'units': 'N/m', 'long_name': 'Excitation Coefficient'}
-    exc_coeff = np.expand_dims(F_h, axis = [1,2])
-    exc_coeff = xr.DataArray(exc_coeff, dims=dims_exc, coords=coords_exc,
-                            attrs=attrs_exc, name='excitation coefficient')
-
-    dims_imp = ('omega', 'radiating_dof', 'influenced_dof')
-    coords_imp = [
-        (dims_imp[0], ws, freq_attr), 
-        (dims_imp[1], dof_names, dof_attr),
-        (dims_imp[2], dof_names, dof_attr),
-    ]
-    attrs_imp = {'units': 'Ns/m', 'long_name': 'Intrinsic Impedance'}
-    impedance = xr.DataArray(impedance, dims=dims_imp, coords=coords_imp, 
-                             attrs=attrs_imp, name='Intrisnic impedance')
+    exc_coeff, impedance, ndof = make_xarrays(ws, F_h, impedance)
 
     wec = wot.WEC.from_impedance(
         freqs=freqs,
@@ -161,16 +135,16 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, nsub
         use_grad=False
     )
     
-    print('Power: ',results[0].fun)
 
-    if plot_on:
+    if plot_on or return_extras:
         x_wec, x_opt = wec.decompose_state(results[0].x)
         r = wec.residual(x_wec, x_opt, wave)
         print('Residual: ',r)
         
         res_wec_fd, res_wec_td = wec.post_process(results[0],wave,nsubsteps=nsubsteps)
         res_pto_fd, res_pto_td = pto.post_process(wec,results[0],wave,nsubsteps=nsubsteps)
-
+    
+    if plot_on:
         plt.figure()
         res_wec_td.pos.plot()
         res_wec_td.vel.plot()
@@ -181,7 +155,55 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, nsub
                     res_wec_td.acc.long_name, res_pto_td.force.long_name,
                     res_pto_td.power.long_name])
 
-    return results[0].fun
+    avg_pwr = -results[0].fun
+    print('Power: ',avg_pwr)
+    
+    if return_extras == False:
+        out = avg_pwr
+    else:
+        max_x    = 1/2 * (np.max(res_wec_td.pos) - np.min(res_wec_td.pos))
+        max_xdot = np.max(np.abs(res_wec_td.vel))
+        
+        # fixme: not implemented yet
+        pwr_ratio = 1
+        x_ratio = 1
+        xdot_ratio = 1
+        
+        out = avg_pwr, max_x, max_xdot, pwr_ratio, x_ratio, xdot_ratio
+
+    return out
+
+def make_xarrays(ws, F_h, impedance):
+    # make xarrays
+    freq_attr = {'long_name': 'Wave frequency', 'units': 'rad/s'}
+    dir_attr = {'long_name': 'Wave direction', 'units': 'rad'}
+    dof_attr = {'long_name': 'Degree of freedom'}
+    dof_names = ["Pitch",]
+    ndof = len(dof_names)
+    directions = np.atleast_1d(0.0)
+
+    dims_exc = ('omega', 'wave_direction', 'influenced_dof')
+    coords_exc = [
+        (dims_exc[0], ws, freq_attr),
+        (dims_exc[1], directions, dir_attr),
+        (dims_exc[2], dof_names, dof_attr),
+    ]
+    attrs_exc = {'units': 'N/m', 'long_name': 'Excitation Coefficient'}
+    exc_coeff = np.expand_dims(F_h, axis = [1,2])
+    exc_coeff = xr.DataArray(exc_coeff, dims=dims_exc, coords=coords_exc,
+                            attrs=attrs_exc, name='excitation coefficient')
+
+    dims_imp = ('omega', 'radiating_dof', 'influenced_dof')
+    coords_imp = [
+        (dims_imp[0], ws, freq_attr), 
+        (dims_imp[1], dof_names, dof_attr),
+        (dims_imp[2], dof_names, dof_attr),
+    ]
+    attrs_imp = {'units': 'Ns/m', 'long_name': 'Intrinsic Impedance'}
+    impedance = xr.DataArray(impedance, dims=dims_imp, coords=coords_imp, 
+                             attrs=attrs_imp, name='Intrisnic impedance')
+    
+    return exc_coeff, impedance, ndof
 
 def sweep_nondim_coeffs():
     # nondimensional coeffs
@@ -196,37 +218,63 @@ def sweep_nondim_coeffs():
     w = np.array([1.0])
     F_h = np.array([1.0])
 
-    nfreq = 5
+    nfreq = 8
 
+    # preallocate output arrays
+    avg_pwr    = np.zeros_like(zeta_u_mat)
+    max_x      = np.zeros_like(zeta_u_mat)
+    max_xdot   = np.zeros_like(zeta_u_mat)
+    pwr_ratio  = np.zeros_like(zeta_u_mat)
+    x_ratio    = np.zeros_like(zeta_u_mat)
+    xdot_ratio = np.zeros_like(zeta_u_mat)
+    
     # run sim
-    X = np.zeros_like(zeta_u_mat)
     t1 = time.time()
     for i in np.arange(zeta_u_mat.size):
-        idx = np.unravel_index(i,X.shape)
+        idx = np.unravel_index(i,zeta_u_mat.shape)
         #try:
-        X[idx] = inner_function(zeta_u_mat.ravel()[i], w_u_star_mat.ravel()[i], f_max_Fp_mat.ravel()[i], 
-                                    m, w, F_h, amplitude=1, nfreq=nfreq, plot_on=False)
+        zeta_u = zeta_u_mat.ravel()[i]
+        w_u_star = w_u_star_mat.ravel()[i]
+        f_max_Fp = f_max_Fp_mat.ravel()[i]
+        
+        tuple_out = inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, 
+                                   amplitude=1, nfreq=nfreq, nsubsteps=1, 
+                                   use_PI=False, plot_on=False, return_extras=True)
+        
+        avg_pwr[idx]    = tuple_out[0]
+        max_x[idx]      = tuple_out[1]
+        max_xdot[idx]   = tuple_out[2]
+        pwr_ratio[idx]  = tuple_out[3]
+        x_ratio[idx]    = tuple_out[4]
+        xdot_ratio[idx] = tuple_out[5]
+        
         #except:
         #    X[idx] = np.nan
     t2 = time.time()
-    print('Time elapsed for ',zeta_u_mat.size, ' iterations: ',t2-t1,' = ',(t2-t1)/zeta_u_mat.size,' per iteration')
-
-    print('X: ', X)
+    print('Time elapsed for ',zeta_u_mat.size, ' iterations: ',t2-t1,' s = ',(t2-t1)/zeta_u_mat.size,' s per iteration')
 
     timestamp = datetime.datetime.now().strftime('%G%m%d'+'_'+'%H%M%S')
     fname = 'wot_sweep_results_' + timestamp + '_N=' + str(nfreq) + '.csv'
-    #np.savetxt(fname,X,delimiter=',')
+    mdict = {"avg_pwr2": avg_pwr, "max_x2": max_x, "max_xdot2": max_xdot, 
+             "pwr_ratio2":pwr_ratio, "x_ratio2":x_ratio, "xdot_ratio2":xdot_ratio}
+    savemat(fname, mdict)
 
     # plot results
+    plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, avg_pwr,'Average Electrical Power (W)')
+    plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, max_x, 'Max Displacement of WEC (m)')
+    plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, max_xdot, 'Max Speed of WEC (m/s)')
+    plt.show()
+
+def plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, Z, z_title):
     plt.figure()
     ax = plt.subplot(projection="3d")
-    sc = ax.scatter(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, c=X, 
-                    marker='o', s=25, cmap="viridis_r", depthshade=False)
+    sc = ax.scatter(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, c=Z, 
+                    marker='o', s=25, cmap="viridis", depthshade=False)
     plt.colorbar(sc)
     ax.set_xlabel("zeta_u")
     ax.set_ylabel("w_u_star")
     ax.set_zlabel("F_max/F_p")
-    plt.show()
+    ax.set_title(z_title)
 
 def try_different_nfreqs():
     nfreqs = np.arange(2,15,2)
@@ -250,7 +298,7 @@ def try_different_nfreqs():
             for idx_sub in np.arange(nsubsteps.size):
                 try:
                     t1 = time.time()
-                    X[idx_freq,idx_sub,idx_PI] = -inner_function(zeta_u, w_u_star, f_max_Fp, 
+                    X[idx_freq,idx_sub,idx_PI] = inner_function(zeta_u, w_u_star, f_max_Fp, 
                                                                  m, w, F_h, amplitude=1, 
                                                                  nfreq=nfreqs[idx_freq], 
                                                                  nsubsteps=nsubsteps[idx_sub], 
@@ -382,5 +430,5 @@ def annotate_heatmap(im, x, y, txt_color_lims, data=None, valfmt="{x:.2f}",
     return texts
 
 if __name__ == '__main__':
-    #sweep_nondim_coeffs()
-    try_different_nfreqs()
+    sweep_nondim_coeffs()
+    #try_different_nfreqs()
