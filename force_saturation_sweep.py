@@ -41,7 +41,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
     zeta = r_b / (r_b - 1) * w_star / w_u_star * zeta_u
     X_unsat = F_h[0] / (m * w_n**2) / np.sqrt( (1 - w_star^2)**2 + (2*zeta*w_star)**2 )
     Fp = np.sqrt( (B_p * w)**2 + K_p**2) * X_unsat
-    f_max = f_max_Fp * Fp
+    f_max = f_max_Fp * Fp if f_max_Fp is not None else None
 
     # create PTO
     name = ["PTO_Heave",]
@@ -65,7 +65,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
         ineq_cons1 = {'type': 'ineq',
                       'fun': const_f_pto,
                       }
-        constraints = [ineq_cons1]
+        constraints = [ineq_cons1] if f_max is not None else None
         
         nstate_opt = 2*nfreq
         
@@ -85,7 +85,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
     impedance = np.reshape(impedance,(nfreq,ndof,ndof))
     K_h = np.reshape(K_h,(ndof,ndof))
     
-    exc_coeff, impedance, ndof = make_xarrays(ws, F_h, impedance)
+    exc_coeff, impedance = make_xarrays(ws, F_h, impedance)
 
     wec = wot.WEC.from_impedance(
         freqs=freqs,
@@ -105,8 +105,6 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
     #texc =  timeit.timeit(lambda: dask.base.tokenize(exc_coeff), number=500)/500
     #print('time wave: ',twave)
     #print('time exc: ',texc)
-    
-    wot.wave_excitation(exc_coeff, wave)
 
     obj_fun = pto.mechanical_average_power
     
@@ -135,7 +133,6 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
         use_grad=False
     )
     
-
     if plot_on or return_extras:
         x_wec, x_opt = wec.decompose_state(results[0].x)
         r = wec.residual(x_wec, x_opt, wave)
@@ -163,15 +160,27 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
     else:
         max_x    = 1/2 * (np.max(res_wec_td.pos) - np.min(res_wec_td.pos))
         max_xdot = np.max(np.abs(res_wec_td.vel))
-        
-        # fixme: not implemented yet
-        pwr_ratio = 1
-        x_ratio = 1
-        xdot_ratio = 1
-        
-        out = avg_pwr, max_x, max_xdot, pwr_ratio, x_ratio, xdot_ratio
-
+        out = avg_pwr, max_x, max_xdot
     return out
+
+def sat_unsat_wrapper(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, 
+                      nsubsteps, use_PI):
+    # saturated run
+    avg_pwr, max_x, max_xdot = inner_function(zeta_u, w_u_star, f_max_Fp, m, w, 
+                                              F_h, amplitude, nfreq, nsubsteps, 
+                                              use_PI, plot_on=False, return_extras=True)
+        
+    # rerun but unsaturated
+    avg_pwr_unsat, max_x_unsat, max_xdot_unsat = inner_function(zeta_u, w_u_star, None, m, w, 
+                                              F_h, amplitude, nfreq, nsubsteps, 
+                                              use_PI, plot_on=False, return_extras=True)
+                                        
+    # ratios
+    pwr_ratio = avg_pwr / avg_pwr_unsat
+    x_ratio = max_x / max_x_unsat
+    xdot_ratio = max_xdot / max_xdot_unsat
+
+    return avg_pwr, max_x, max_xdot, pwr_ratio, x_ratio, xdot_ratio
 
 def make_xarrays(ws, F_h, impedance):
     # make xarrays
@@ -179,7 +188,7 @@ def make_xarrays(ws, F_h, impedance):
     dir_attr = {'long_name': 'Wave direction', 'units': 'rad'}
     dof_attr = {'long_name': 'Degree of freedom'}
     dof_names = ["Pitch",]
-    ndof = len(dof_names)
+
     directions = np.atleast_1d(0.0)
 
     dims_exc = ('omega', 'wave_direction', 'influenced_dof')
@@ -203,7 +212,7 @@ def make_xarrays(ws, F_h, impedance):
     impedance = xr.DataArray(impedance, dims=dims_imp, coords=coords_imp, 
                              attrs=attrs_imp, name='Intrisnic impedance')
     
-    return exc_coeff, impedance, ndof
+    return exc_coeff, impedance
 
 def sweep_nondim_coeffs():
     # nondimensional coeffs
@@ -237,9 +246,9 @@ def sweep_nondim_coeffs():
         w_u_star = w_u_star_mat.ravel()[i]
         f_max_Fp = f_max_Fp_mat.ravel()[i]
         
-        tuple_out = inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, 
+        tuple_out = sat_unsat_wrapper(zeta_u, w_u_star, f_max_Fp, m, w, F_h, 
                                    amplitude=1, nfreq=nfreq, nsubsteps=1, 
-                                   use_PI=False, plot_on=False, return_extras=True)
+                                   use_PI=False)
         
         avg_pwr[idx]    = tuple_out[0]
         max_x[idx]      = tuple_out[1]
@@ -263,6 +272,9 @@ def sweep_nondim_coeffs():
     plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, avg_pwr,'Average Electrical Power (W)')
     plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, max_x, 'Max Displacement of WEC (m)')
     plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, max_xdot, 'Max Speed of WEC (m/s)')
+    plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, pwr_ratio,'Electrical Power Ratio (-)')
+    plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, x_ratio, 'Displacement Ratio (-)')
+    plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, xdot_ratio, 'Speed Ratio(-)')
     plt.show()
 
 def plot_nondim_sweep(zeta_u_mat, w_u_star_mat, f_max_Fp_mat, Z, z_title):
