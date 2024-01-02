@@ -11,7 +11,7 @@ import timeit
 import dask
 
 # switch to using local WecOptTool instead of conda package
-sys.path.insert(1,'C:/Users/rgm222/Documents/Github/SEA-Lab/WecOptTool')
+sys.path.insert(1,'C:\\Users\\rgm222\\Documents\\Github\\SEA-Lab\\WecOptTool')
 import wecopttool as wot
 
 def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq, 
@@ -39,7 +39,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
     r_b = 2
     w_n = w / w_star
     zeta = r_b / (r_b - 1) * w_star / w_u_star * zeta_u
-    X_unsat = F_h[0] / (m * w_n**2) / np.sqrt( (1 - w_star^2)**2 + (2*zeta*w_star)**2 )
+    X_unsat = F_h[0] / (m * w_n**2) / np.sqrt( (1 - w_star**2)**2 + (2*zeta*w_star)**2 )
     Fp = np.sqrt( (B_p * w)**2 + K_p**2) * X_unsat
     f_max = f_max_Fp * Fp if f_max_Fp is not None else None
 
@@ -75,7 +75,8 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
         x_opt_0 = np.concatenate([real_part_Fp,imag_part_Fp])
         
     loss = None
-    pto_impedance = None
+    pto_imp =  np.array([[0,-1],[-1,0.001]])
+    pto_impedance = np.tile(np.expand_dims(pto_imp,2), [1,1,nfreq])
     pto = wot.pto.PTO(ndof, kinematics, controller, pto_impedance, loss, name)
     
     f_add = {'PTO': pto.force_on_wec}
@@ -106,7 +107,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
     #print('time wave: ',twave)
     #print('time exc: ',texc)
 
-    obj_fun = pto.mechanical_average_power
+    obj_fun = pto.average_power
     
     options = {'maxiter': 200}
     scale_x_wec = 1
@@ -130,7 +131,7 @@ def inner_function(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
         scale_obj=scale_obj,
         x_wec_0=x_wec_0,
         x_opt_0=x_opt_0,
-        use_grad=False
+        use_grad=True
     )
     
     if plot_on or return_extras:
@@ -168,12 +169,12 @@ def sat_unsat_wrapper(zeta_u, w_u_star, f_max_Fp, m, w, F_h, amplitude, nfreq,
     # saturated run
     avg_pwr, max_x, max_xdot = inner_function(zeta_u, w_u_star, f_max_Fp, m, w, 
                                               F_h, amplitude, nfreq, nsubsteps, 
-                                              use_PI, plot_on=False, return_extras=True)
+                                              use_PI, plot_on=True, return_extras=True)
         
     # rerun but unsaturated
     avg_pwr_unsat, max_x_unsat, max_xdot_unsat = inner_function(zeta_u, w_u_star, None, m, w, 
                                               F_h, amplitude, nfreq, nsubsteps, 
-                                              use_PI, plot_on=False, return_extras=True)
+                                              use_PI, plot_on=True, return_extras=True)
                                         
     # ratios
     pwr_ratio = avg_pwr / avg_pwr_unsat
@@ -216,9 +217,9 @@ def make_xarrays(ws, F_h, impedance):
 
 def sweep_nondim_coeffs():
     # nondimensional coeffs
-    zeta_u_vec = np.array([0.1,0.3,0.5])
-    w_u_star_vec = np.array([0.5,0.6,0.7])
-    f_max_Fp_vec = np.array([0.8,0.9,1.0])
+    zeta_u_vec = np.array([0.01, 0.04, 0.07, 0.10, 0.13])
+    w_u_star_vec = np.array([0.1, 0.4, 0.7, 1.0, 1.3])
+    f_max_Fp_vec = np.array([0.3, 0.5, 0.7, 0.9, 1.1])
 
     zeta_u_mat, w_u_star_mat, f_max_Fp_mat = np.meshgrid(zeta_u_vec, w_u_star_vec, f_max_Fp_vec)
 
@@ -227,7 +228,7 @@ def sweep_nondim_coeffs():
     w = np.array([1.0])
     F_h = np.array([1.0])
 
-    nfreq = 8
+    nfreq = 11
 
     # preallocate output arrays
     avg_pwr    = np.zeros_like(zeta_u_mat)
@@ -263,9 +264,11 @@ def sweep_nondim_coeffs():
     print('Time elapsed for ',zeta_u_mat.size, ' iterations: ',t2-t1,' s = ',(t2-t1)/zeta_u_mat.size,' s per iteration')
 
     timestamp = datetime.datetime.now().strftime('%G%m%d'+'_'+'%H%M%S')
-    fname = 'wot_sweep_results_' + timestamp + '_N=' + str(nfreq) + '.csv'
-    mdict = {"avg_pwr2": avg_pwr, "max_x2": max_x, "max_xdot2": max_xdot, 
-             "pwr_ratio2":pwr_ratio, "x_ratio2":x_ratio, "xdot_ratio2":xdot_ratio}
+    fname = 'wot_sweep_results_' + timestamp + '_N=' + str(nfreq) + '.mat'
+    mdict = {"avg_pwr": avg_pwr, "max_x": max_x, "max_xdot": max_xdot, 
+             "pwr_ratio":pwr_ratio, "x_ratio":x_ratio, "xdot_ratio":xdot_ratio,
+             "zeta_u":zeta_u_mat, "w_u_star":w_u_star_mat, "f_max_Fp":f_max_Fp_mat,
+             "m":m, "w":w, "F_h":F_h}
     savemat(fname, mdict)
 
     # plot results
