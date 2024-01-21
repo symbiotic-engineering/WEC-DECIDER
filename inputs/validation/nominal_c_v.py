@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 def nominal_c_v():
-    filename = 'F:/study/project/WEC-DECIDER/inputs/validation/RM3-CBS.xlsx'  # Spreadsheet containing RM3 "actual" power data
+    filename = '/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/inputs/validation/RM3-CBS.xlsx'  # Spreadsheet containing RM3 "actual" power data
     sheet = 'Performance & Economics'  # Name of relevant sheet
 
     # Read the power matrix and joint probability distribution (JPD) from the Excel file

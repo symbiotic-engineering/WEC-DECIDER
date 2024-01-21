@@ -7,7 +7,7 @@ def parameters():
     yd2m = 0.9144  # yard to meter
     lb2kg = 1/2.2  # pound to kilogram
 
-    file = '../inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
+    file = '/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)
 

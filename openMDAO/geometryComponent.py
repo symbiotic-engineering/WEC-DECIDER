@@ -231,7 +231,7 @@ prob.set_val('m_scale', 1.25)
 
 print(prob.get_val('test.mass'))
 print(prob.get_val('D_s'))
-prob.run_model();
+prob.run_model()
 prob.model.list_inputs(val=True)
 # output structure
 # 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]

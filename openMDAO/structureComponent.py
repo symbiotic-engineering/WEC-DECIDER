@@ -29,8 +29,6 @@ class structureComponent(om.ExplicitComponent):
         self.declare_partials('*', '*')
 
     def von_mises(self, s_11, s_22, s_33, s_12, s_23, s_31):
-
-
         principal_term = 0.5 * ((s_11 - s_22) ** 2 + (s_22 - s_33) ** 2 + (s_33 - s_11) ** 2)
         shear_term = 3 * (s_12 ** 2 + s_23 ** 2 + s_31 ** 2)
         s_vm = np.sqrt(principal_term + shear_term)
@@ -94,12 +92,11 @@ class structureComponent(om.ExplicitComponent):
         outputs['FOS2Y'] = FOS2Y = FOS_yield[0][1]
         outputs['FOS3Y'] = FOS3Y = FOS_yield[0][2]
         outputs['FOS_buckling'] = FOS_buckling = F_buckling / F_heave
-        # print(FOS1Y, FOS2Y, FOS3Y, FOS_buckling)
-        #return FOS1Y, FOS2Y, FOS3Y, FOS_buckling
 
 
 
-        #outputs['area'] = inputs['length'] * inputs['width']
+
+
 
 prob = om.Problem()
 promotesInputs = ['F_heave', 'F_surge', 'M', 'h_s', 'T_s', 'rho_w', 'g', 'sigma_y' ,'A_c', 'A_lat_sub' ,'r_over_t', 'I', 'E']

@@ -39,7 +39,8 @@ def simulation(X, p):
 
 
     m_f_tot = max(m_f_tot, 1e-3)
-
+    print("input",repr(in_params['E']))
+    exit(1)
     F_heave_max, F_surge_max, F_ptrain_max, P_var, P_elec, P_matrix, h_s_extra, P_unsat= dynamics(
         in_params, m_f_tot, V_d, T)
 
