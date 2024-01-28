@@ -6,18 +6,18 @@ class dynamicsComponent(om.ExplicitComponent):
 
     def setup(self):
         # 43 in_params
-        self.add_input('rho_w', val=0.0, desc="water density (kg/m3)", units='kg/m3')
-        self.add_input('g', val=0.0, desc="acceleration of gravity (m/s2)", units='m/s2')
-        self.add_input('JPD', val=np.zeros((14, 15)), desc="joint probability distribution of wave (%)", units='%')
+        self.add_input('rho_w', val=0.0, desc="water density (kg/m3)", units='kg/m**3')
+        self.add_input('g', val=0.0, desc="acceleration of gravity (m/s2)", units='m/s**2')
+        self.add_input('JPD', val=np.zeros((14, 15)), desc="joint probability distribution of wave (%)")
         self.add_input('Hs', val=np.zeros(14,), desc="wave height (m)", units='m')
         self.add_input('Hs_struct', val=np.zeros(1,), desc="100 year wave height (m)", units='m')
         self.add_input('T', val=np.zeros(15,), desc="wave period (s)", units='s')
         self.add_input('T_struct', val=np.zeros(1,), desc="100 year wave period (s)", units='s')
         self.add_input('sigma_y', val=np.zeros(3,), desc="yield strength (Pa)", units='Pa')
-        self.add_input('rho_m', val=np.zeros(3,), desc="material density (kg/m3)", units='kg/m3')
+        self.add_input('rho_m', val=np.zeros(3,), desc="material density (kg/m3)", units='kg/m ** 3')
         self.add_input('E', val=np.zeros(3,), desc="young's modulus (Pa)", units='Pa')
-        self.add_input('cost_m', val=np.zeros(3,), desc="material cost ($/kg)", units='$/kg')
-        self.add_input('m_scale', val=0, desc="factor to account for mass of neglected stiffeners (-)", units='-')
+        self.add_input('cost_m', val=np.zeros(3,), desc="material cost ($/kg)", units='USD/kg')
+        self.add_input('m_scale', val=0, desc="factor to account for mass of neglected stiffeners (-)")
         self.add_input('t_ft', val=0, desc="float top thickness (m)", units='m')
         self.add_input('t_fr', val=0, desc="float radial wall thickness (m)", units='m')
         self.add_input('t_fc', val=0, desc="float circumferential gusset thickness (m)", units='m')
@@ -26,7 +26,7 @@ class dynamicsComponent(om.ExplicitComponent):
         self.add_input('t_dt', val=0, desc="damping plate support tube radial wall thickness (m)", units='m')
         self.add_input('D_dt', val=0, desc="damping plate support tube diameter (m)", units='m')
         self.add_input('theta_dt', val=0, desc="angle from horizontal of damping plate support tubes (rad)", units='rad')
-        self.add_input('FOS_min', val=0, desc="minimum FOS", units='-')
+        self.add_input('FOS_min', val=0, desc="minimum FOS")
         self.add_input('D_d_min', val=0, desc="minimum damping plate diameter")
         self.add_input('FCR', val=0, desc="fixed charge rate (-)")
         self.add_input('N_WEC', val=0, desc="number of WECs in array (-)")
@@ -34,7 +34,7 @@ class dynamicsComponent(om.ExplicitComponent):
         self.add_input('T_s_over_D_s', val=0, desc="normalized spar draft (-)")
         self.add_input('h_d_over_D_s', val=0, desc="normalized damping plate thickness (-)")
         self.add_input('T_f_over_h_f', val=0, desc="normalized float draft (-)")
-        self.add_input('LCOE_max', val=0, desc="maximum LCOE ($/kWh)", units='$/kWh')
+        self.add_input('LCOE_max', val=0, desc="maximum LCOE ($/kWh)", units='USD/kW * h')
         self.add_input('power_max', val=0, desc="maximum power (W)", units='W')
         self.add_input('eff_pto', val=0, desc="PTO efficiency (-)")
         self.add_input('eff_array', val=0, desc="array availability and transmission efficiency (-)")
@@ -52,19 +52,19 @@ class dynamicsComponent(om.ExplicitComponent):
 
 
         #other input
-        self.add_input("m_float")
-        self.add_input("V_d")
-        self.add_input("draft")
+        self.add_input("m_float", val= 0.0)
+        self.add_input("V_d", shape=(3,))
+        self.add_input("draft", shape=(3,))
 
         #return F_heave_max, F_surge_max, F_ptrain_max, P_var, P_elec, P_matrix, h_s_extra, P_unsat
         self.add_output('F_heave_max')
-        self.add_output('F_surge_max')
+        self.add_output('F_surge_max', shape=(3,))
         self.add_output('F_ptrain_max')
         self.add_output('P_var')
         self.add_output('P_elec')
-        self.add_output('P_matrix')
+        self.add_output('P_matrix', shape=(14,15))
         self.add_output('h_s_extra')
-        self.add_output('P_unsat')
+        self.add_output('P_unsat', shape=(14,15))
 
     def setup_partials(self):
         self.declare_partials('*', '*')
@@ -223,6 +223,106 @@ class dynamicsComponent(om.ExplicitComponent):
 
         return w, A, B, K, Fd, k
 
+
+    def get_response(self, w, m, b, k, Fd):
+        imag_term = b * w
+        real_term = k - m * w ** 2
+        X_over_F_mag = 1 / np.sqrt(real_term ** 2 + imag_term ** 2)
+        X = X_over_F_mag * Fd
+        return X
+
+    def get_multiplier(self, f_sat, m, b, k, w, r_b, r_k):
+        # m, k, and r_k are scalars.
+        # All other inputs are 2D arrays, the dimension of the sea state matrix.
+
+        # speedup: only do math for saturated sea states, since unsat will = 1
+        idx_no_sat = f_sat == 1
+        f_sat[idx_no_sat] = np.nan
+        b[idx_no_sat] = np.nan
+        w[idx_no_sat] = np.nan
+        r_b[idx_no_sat] = np.nan
+        a_quad, b_quad, c_quad = self.get_abc_symbolic(f_sat, m, b, k, w, r_b, r_k)
+        # solve the quadratic formula
+        if idx_no_sat.shape == (1,):
+            idx_no_sat = idx_no_sat.reshape((1, 1))
+        if a_quad.shape == (1,):
+            a_quad = a_quad.reshape((1, 1))
+        if b_quad.shape == (1,):
+            b_quad = b_quad.reshape((1, 1))
+        if c_quad.shape == (1,):
+            c_quad = c_quad.reshape((1, 1))
+        determinant = np.sqrt(b_quad ** 2 - 4 * a_quad * c_quad)
+
+        num = -b_quad + determinant
+        # creating a second dimension to hold the second root value
+        num = np.stack((num, -b_quad - determinant), axis=-1)
+        den = 2 * a_quad
+
+        den = den[:, :, None]
+
+        roots = num / den
+
+        # choose which of the two roots to use
+        mult = self.pick_which_root(roots, idx_no_sat, a_quad, b_quad, c_quad)
+        assert np.all(~np.isnan(mult))
+
+        return mult
+
+    def pick_which_root(self, roots, idx_no_sat, a_quad, b_quad, c_quad):
+        which_soln = (roots == np.real(roots)) & (roots > 0) & (roots <= 1)
+        both_ok = np.sum(which_soln, axis=2) == 2
+        # Check for the third dimension and act accordingly
+
+        # temporarily mark the non - saturated solutions
+        # as having one solution, to ensure the
+        # logic below works correctly
+
+        # Jordan's change
+
+        # which_soln[idx_no_sat] = True
+        which_soln[idx_no_sat, 0] = True
+
+        if np.any(both_ok):  # two solutions
+            mult = self.handle_two_solns(both_ok, which_soln, roots, idx_no_sat, a_quad, b_quad, c_quad)
+        else:
+            num_solns = np.sum(which_soln, axis=-1)
+            if not np.all(num_solns == 1):
+                which_soln[num_solns == 0] = (roots[num_solns == 0] > 0) & (roots[num_solns == 0] <= 1.001)
+                num_solns[num_solns == 0] = np.sum(which_soln[num_solns == 0], axis=2)
+                if not np.all(num_solns == 1):
+                    print('Some sea states have no valid quadratic solution, so their energy is zeroed.')
+            mult = self.get_relevant_soln(which_soln, roots, idx_no_sat)
+
+        return mult
+
+    # pick the specified roots using multidimensional logical indexing
+    def get_relevant_soln(self, which_soln, roots, idx_no_sat):
+        mult = np.zeros(idx_no_sat.shape)
+
+        idx_3d_first_sol = np.copy(which_soln)
+        idx_3d_first_sol[:, :, 1] = False
+        idx_3d_second_sol = np.copy(which_soln)
+        idx_3d_second_sol[:, :, 0] = False
+        idx_2d_first_sol = which_soln[:, :, 0]
+        idx_2d_second_sol = which_soln[:, :, 1]
+
+        mult[idx_2d_first_sol] = roots[idx_3d_first_sol]
+        mult[idx_2d_second_sol] = roots[idx_3d_second_sol]
+        mult[idx_no_sat] = 1
+
+        return mult
+
+    def handle_two_solns(self, both_ok, which_soln, roots, idx_no_sat, a, b, c):
+        row, col = np.where(both_ok)
+        which_soln[row, col, 1] = False
+
+        mult_1 = self.get_relevant_soln(which_soln, roots, idx_no_sat)
+
+        # In the provided MATLAB function, logic to handle the case of two roots has been commented out.
+        # The Python function currently just uses the first solution when two are available.
+        # If you need to include the logic for handling two roots, please provide the full active MATLAB code.
+
+        return mult_1
     # get_hydro_coeffs.py
     def get_hydro_coeffs(self, r, k, draft):
         # add the follow line to convert k as float:
@@ -347,49 +447,50 @@ prob.set_val('T_struct', [17.1])
 prob.set_val('sigma_y', [2.48211252e+08, 3.10264065e+07, 2.06842710e+08])
 prob.set_val('rho_m', [8000, 2400, 8000])
 prob.set_val('E', [2.00000000e+11, 2.78506762e+07, 2.00000000e+11])
-prob.set_val('cost_m', 0.0)
-prob.set_val('m_scale', 0.0)
-prob.set_val('t_ft', 0.0)
-prob.set_val('t_fr', 0.0)
-prob.set_val('t_fc', 0.0)
-prob.set_val('t_fb', 0.0)
-prob.set_val('t_sr', 0.0)
-prob.set_val('t_dt', 0.0)
-prob.set_val('D_dt', 0.0)
-prob.set_val('theta_dt', 0.0)
-prob.set_val('FOS_min', 0.0)
-prob.set_val('D_d_min', 0.0)
-prob.set_val('FCR', 0.0)
-prob.set_val('N_WEC', 0.0)
-prob.set_val('D_d_over_D_s', 0.0)
-prob.set_val('T_s_over_D_s', 0.0)
-prob.set_val('h_d_over_D_s', 0.0)
-prob.set_val('T_f_over_h_f', 0.0)
-prob.set_val('LCOE_max', 0.0)
-prob.set_val('power_max', 0.0)
-prob.set_val('eff_pto', 0.0)
-prob.set_val('eff_array', 0.0)
-prob.set_val('D_f', 0.0)
-prob.set_val('F_max', 0.0)
-prob.set_val('B_p', 0.0)
-prob.set_val('w_n', 0.0)
-prob.set_val('M', 0.0)
-prob.set_val('D_s', 0.0)
-prob.set_val('h_f', 0.0)
-prob.set_val('T_f', 0.0)
-prob.set_val('T_s', 0.0)
-prob.set_val('h_d', 0.0)
-prob.set_val('h_s', 0.0)
-prob.set_val('m_float', 0.0)
-prob.set_val('V_d', 0.0)
-prob.set_val('draft', 0.0)
+prob.set_val('cost_m', [4.28, 0.06812243, 4.048])
+prob.set_val('m_scale', 1.25)
+prob.set_val('t_ft', 0.0127)
+prob.set_val('t_fr', 0.011176)
+prob.set_val('t_fc', 0.011176)
+prob.set_val('t_fb', 0.014224)
+prob.set_val('t_sr', 0.0254)
+prob.set_val('t_dt', 0.0254)
+prob.set_val('D_dt', 1.2191999999999998)
+prob.set_val('theta_dt', 0.8621700546672264)
+prob.set_val('FOS_min', 1.5)
+prob.set_val('D_d_min', 30.0)
+prob.set_val('FCR', 0.113)
+prob.set_val('N_WEC', 1)
+prob.set_val('D_d_over_D_s', 5.0)
+prob.set_val('T_s_over_D_s', 5.833333333333333)
+prob.set_val('h_d_over_D_s', 0.004233333333333333)
+prob.set_val('T_f_over_h_f', 0.5)
+prob.set_val('LCOE_max', 0.5)
+prob.set_val('power_max', 286000.0)
+prob.set_val('eff_pto', 0.8)
+prob.set_val('eff_array', 0.9309999999999999)
+prob.set_val('D_f', 20.0)
+prob.set_val('F_max', 5000000.0)
+prob.set_val('B_p', 10000000.0)
+prob.set_val('w_n', 0.8)
+prob.set_val('M', 0)
+prob.set_val('D_s', 6.0)
+prob.set_val('h_f', 4.0)
+prob.set_val('T_f', 2.0)
+prob.set_val('T_s', 35.0)
+prob.set_val('h_d', 0.0254)
+prob.set_val('h_s', 44.0)
+prob.set_val('m_float', 571769.8629533424)
+prob.set_val('V_d', [571.76986295, 989.60168588,  17.95420202])
+prob.set_val('draft', [2.00e+00, 3.50e+01, 2.54e-02])
 
 
-
-print(prob.get_val('test.mass'))
+print(prob.get_val('test.V_d'))
 print(prob.get_val('D_s'))
 prob.run_model()
 prob.model.list_inputs(val=True)
 # output structure
 # 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
 prob.model.list_outputs(val = True)
+full_matrix = prob['test.P_matrix']
+print(full_matrix)

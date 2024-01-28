@@ -42,7 +42,6 @@ def simulation(X, p):
     F_heave_max, F_surge_max, F_ptrain_max, P_var, P_elec, P_matrix, h_s_extra, P_unsat= dynamics(
         in_params, m_f_tot, V_d, T)
 
-
     FOS1Y, FOS2Y, FOS3Y, FOS_buckling = structures(
         F_heave_max, F_surge_max, in_params['M'], in_params['h_s'], in_params['T_s'],
         in_params['rho_w'], in_params['g'], in_params['sigma_y'], A_c, A_lat_sub, r_over_t, I, in_params['E'])
