@@ -122,6 +122,7 @@ class dynamicsComponent(om.ExplicitComponent):
 
         # Use probabilistic sea states for power
         T, Hs = np.meshgrid(T, Hs)
+
         P_matrix, h_s_extra, P_unsat, _, _, _ = self.get_power_force(D_f, T_f, rho_w, g, B_p, w_n, F_max, h_s, T_s, h_f, T.copy(), Hs.copy(), m_float.copy(), V_d.copy(), draft.copy())
 
         # Account for powertrain electrical losses
@@ -166,7 +167,6 @@ class dynamicsComponent(om.ExplicitComponent):
         k = w_n ** 2 * m
         K_p = k - K_h
         X_unsat = self.get_response(w, m, b, k, Fd)
-
         # Confirm unsaturated response doesn't exceed maximum capture width
         P_unsat = 0.5 * B_p * w ** 2 * X_unsat ** 2
 
@@ -175,10 +175,22 @@ class dynamicsComponent(om.ExplicitComponent):
 
         # Get saturated response
         r = np.minimum(F_max / F_ptrain_unsat, 1)
-
+        #print("F_max", F_max)
+        print("X_unsat", X_unsat)
         alpha = (2 / np.pi) * (1 / r * np.arcsin(r) + np.sqrt(1 - r ** 2))
         f_sat = alpha * r
         # add copy() to each np array as parameters
+        #print("alpha", alpha)
+        print("r", r)
+        """
+        print("f_sat", f_sat)
+        print("m", m)
+        print("b", b)
+        print("k", k)
+        print("w", w)
+        print("B_p", B_p)
+        print("K_p", K_p)
+        """
         mult = self.get_multiplier(np.copy(f_sat), np.copy(m), np.copy(b), np.copy(k), np.copy(w), b / B_p, k / K_p)
         b_sat = B_h + mult * B_p
         k_sat = K_h + mult * K_p
@@ -439,7 +451,7 @@ prob.set_val('JPD', [[0.  , 0.  , 0.  , 0.02, 0.03, 0.  , 0.  , 0.  , 0.  , 0.  
         0.01, 0.  , 0.  , 0.  ],
        [0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.02, 0.02,
         0.  , 0.  , 0.  , 0.  ]])
-prob.set_val('Hs', 44.0)
+prob.set_val('Hs', [0.25, 0.75, 1.25, 1.75, 2.25, 2.75, 3.25, 3.75, 4.25, 4.75, 5.25, 5.75, 6.25, 6.75])
 prob.set_val('Hs_struct', 11.9)
 prob.set_val('T', [ 4.5,  5.5,  6.5,  7.5,  8.5,  9.5, 10.5, 11.5, 12.5, 13.5, 14.5,
        15.5, 16.5, 17.5, 18.5])
@@ -492,5 +504,5 @@ prob.model.list_inputs(val=True)
 # output structure
 # 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
 prob.model.list_outputs(val = True)
-full_matrix = prob['test.P_matrix']
+full_matrix = prob['test.P_var']
 print(full_matrix)
