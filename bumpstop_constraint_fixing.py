@@ -117,12 +117,13 @@ def inner_function(f_max, x_max, v_max, fb, wavefreq, amplitude):
 
 
     obj_fun = pto.mechanical_average_power
-    nstate_opt = 2*nfreq
-
+    nstate_pto = 2*nfreq
+    nstate_a = wec.nt * nsubsteps
+    nstate_opt = nstate_pto + nstate_a
 
     options = {'maxiter': 200}
     scale_x_wec = 1e1
-    scale_x_opt = 1e-3
+    scale_x_opt = 1e-2
     scale_obj = 1e-3
     
     results = wec.solve(
@@ -203,37 +204,69 @@ if __name__ == '__main__':
     #inner_function(f_max = 2000.0, p_max = 100.0, v_max = 10000.0, fb=RM3, wavefreq = 0.3, amplitude = 1)
 
 
-inner_function(f_max = 2000.0, x_max =100.0, v_max = 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
+inner_function(f_max = 1000000.0, x_max =100.0, v_max = 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
 
 
-#outer function
-f_max = 1000.0 
-p_max = 0.025
-v_max = 0.05
-len_f_ = 4
-len_p_ = 4
-len_v_ = 4
-f_ = np.linspace(500, f_max, len_f_)
-p_ = np.linspace(0.01, p_max, len_p_)
-v_ = np.linspace(0.01, v_max, len_v_)
+### outer function_1: f, p and v ###
 
-f = [f_[i] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
-p = [p_[j] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
-v = [v_[k] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
+# f_max = 1000.0 
+# p_max = 0.025
+# v_max = 0.05
+# len_f_ = 4
+# len_p_ = 4
+# len_v_ = 4
+# f_ = np.linspace(500, f_max, len_f_)
+# p_ = np.linspace(0.01, p_max, len_p_)
+# v_ = np.linspace(0.01, v_max, len_v_)
 
-X = np.full(len_f_*len_p_*len_v_, np.nan)
+# f = [f_[i] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
+# p = [p_[j] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
+# v = [v_[k] for i in range(len_f_) for j in range(len_p_) for k in range(len_v_)]
+
+# X = np.full(len_f_*len_p_*len_v_, np.nan)
+# for i in range(len_f_):
+#     for j in range(len_p_):
+#         for k in range(len_v_):
+#             try:
+#                 X[i+j+k] = inner_function(f_[i], p_[j], v_[k], fb=RM3, wavefreq = 0.3, amplitude = 1)
+#             except:
+#                 pass
+
+# ax = plt.subplot(projection="3d")
+# sc = ax.scatter(f, v, p, c=X, marker='o', s=25, cmap="autumn")
+# plt.colorbar(sc)
+# ax.set_xlabel("f_max")
+# ax.set_ylabel("p_max")
+# ax.set_zlabel("v_max")
+# plt.show()
+
+
+### outer function_2: f, and x ###
+
+f_max = 1e5
+x_max = 0.05
+
+len_f_ = 5
+len_x_ = 5
+
+f_ = np.linspace(5e4, f_max, len_f_)
+x_ = np.linspace(0.01, x_max, len_x_)
+
+f = [f_[i] for i in range(len_f_) for j in range(len_x_)]
+x = [x_[j] for i in range(len_f_) for j in range(len_x_)]
+
+
+t = 0
+X = np.full(len_f_*len_x_, np.nan)
 for i in range(len_f_):
-    for j in range(len_p_):
-        for k in range(len_v_):
+    for j in range(len_x_):
             try:
-                X[i+j+k] = inner_function(f_[i], p_[j], v_[k], fb=RM3, wavefreq = 0.3, amplitude = 1)
-            except:
-                pass
+                X[t] = inner_function(f_[i], x_[j], 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
+            except Exception as error:
+                print("An error occurred:", error)
+            t += 1
 
-ax = plt.subplot(projection="3d")
-sc = ax.scatter(f, v, p, c=X, marker='o', s=25, cmap="autumn")
-plt.colorbar(sc)
-ax.set_xlabel("f_max")
-ax.set_ylabel("p_max")
-ax.set_zlabel("v_max")
-plt.show()
+print(X)
+
+fig, ax = plt.subplots()
+ax.pcolormesh(x, f, X)
