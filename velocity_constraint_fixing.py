@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from scipy.optimize import brute
 import wecopttool as wot
 import math
-from capytaine.meshes.quality import (merge_duplicates, heal_normals, remove_unused_vertices,heal_triangles, remove_degenerated_faces)
 
 
 def body_from_profile(x,y,z,nphi):
@@ -12,7 +11,7 @@ def body_from_profile(x,y,z,nphi):
     body = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(xyz, nphi=nphi))
     return body
 
-def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
+def inner_function(f_max, v_max, fb, wavefreq, amplitude):
 
     fb.add_translation_dof(name="Heave")
     ndof = fb.nb_dofs
@@ -20,74 +19,99 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
     stiffness = wot.hydrostatics.stiffness_matrix(fb).values
     mass = 208000
 
-    f1 = 0.05 # Hz
-    nfreq = 20
+    f1 = 0.025 # Hz
+    nfreq = 70
     freq = wot.frequency(f1, nfreq, False) # False -> no zero frequency
     bem_data = wot.run_bem(fb, freq)
-    
-    name = ["PTO_Heave",]
+
+    name = ["PTO_Heave"]
     kinematics = np.eye(ndof)
     controller = None
     loss = None
     pto_impedance = None
     pto = wot.pto.PTO(ndof, kinematics, controller, pto_impedance, loss, name)
+
+    #contraints
+    nsubsteps = 4
+
+    def pto_force_td(wec, x_wec, x_opt, waves, nsubsteps=1):
+        fpto_td = pto.force_on_wec(wec, x_wec, x_opt[:nstate_pto], waves, nsubsteps)
+        return fpto_td
+    def pto_velocity_td(wec, x_wec, x_opt, waves, nsubsteps=1):
+        velpto_td = pto.velocity(wec, x_wec, x_opt[:nstate_pto], waves, nsubsteps)
+        return velpto_td
+
+    f_add = {'PTO': pto_force_td}
+
+    def mechpower_avg(wec, x_wec, x_opt, waves, nsubsteps=1):
+        fpto_td = pto_force_td(wec, x_wec, x_opt, waves, nsubsteps)
+        velpto_td = pto_velocity_td(wec, x_wec, x_opt, waves, nsubsteps)
+        mechpow = fpto_td*velpto_td
+        mech_energy = np.sum(mechpow)
+        return  mech_energy* wec.dt/nsubsteps / wec.tf
+
+    obj_fun = mechpower_avg
+
+
+    #deconstruct optimization vector
     
-    f_add = {'PTO': pto.force_on_wec}
-    
+    def auxiliary_td(wec, x_wec, x_opt, waves):
+        aux_fd = x_opt[nstate_pto:]                 # auxiliary continuous time-varying decision variable, a >= 0
+        time_matrix = wec.time_mat_nsubsteps(nsubsteps)
+        aux_td = np.dot(time_matrix,aux_fd)
+        return aux_td
+
+
     #contraints
     nsubsteps = 4
     
     def const_f_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
-        f = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
-        return f_max - np.abs(f.flatten())
-    def const_p_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
-        p = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
-        
-        
-    
+        fp_td = pto_force_td(wec, x_wec, x_opt, waves, nsubsteps)
+        return f_max - np.abs(fp_td.flatten())
+
     def const_v_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
-        v = pto.velocity(wec, x_wec, x_opt, waves, nsubsteps)
-        a = x_opt[nstate_pto:]                 # auxiliary continuous time-varying decision variable, a >= 0
-        return v_max - np.abs(v.flatten()) - a
-    
+        vel_td = pto_velocity_td(wec, x_wec, x_opt, waves, nsubsteps)
+        aux_td = auxiliary_td(wec, x_wec, x_opt, waves)
+        return v_max - np.abs(vel_td.flatten()) + aux_td
+
     def const_a(wec, x_wec, x_opt, waves):
-        a = x_opt[nstate_pto:]
-        return a
-    
-    def const_a_(wec, x_wec, x_opt, waves):
-        a = x_opt[nstate_pto:]
-        return 1 - a
-    
+        aux_td = auxiliary_td(wec, x_wec, x_opt, waves)
+        return aux_td
+
+    # def const_a_(wec, x_wec, x_opt, waves):
+    #     aux_td = auxiliary_td(wec, x_wec, x_opt, waves)
+    #     return 1 - aux_td
+
     def const_f_times_a(wec, x_wec, x_opt, waves):
-        a = x_opt[nstate_pto:]
-        fp = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps)
-        return -np.abs(a.flatten()) * a
-    
-    def const_p_pto(wec, x_wec, x_opt, waves): # Format for scipy.optimize.minimize
-        p = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
-        return p_max - np.abs(p.flatten())   
-    
-    
+        aux_td = auxiliary_td(wec, x_wec, x_opt, waves)
+        # fp_td = pto_force_nsub_td(wec, x_wec, x_opt, waves, nsubsteps)
+        fp_td = pto_force_td(wec, x_wec, x_opt, waves, nsubsteps)
+        return -np.abs(fp_td.flatten()) * aux_td    #this is time domain quantity times frequency domain....
+
+
     ineq_cons1 = {'type': 'ineq',
-                 'fun': const_f_pto,
-                 }
+                    'fun': const_f_pto,
+                    }
     ineq_cons2 = {'type': 'ineq',
-                 'fun': const_v_pto,
-                 }
+                    'fun': const_v_pto,
+                    }
     ineq_cons3 = {'type': 'ineq',
-                 'fun': const_a,
-                 }
-    ineq_cons4 = {'type': 'ineq',
-                 'fun': const_a_,
-                 }
+                    'fun': const_a,
+                    }
+    # ineq_cons4 = {'type': 'ineq',
+    #                 'fun': const_a_,
+    #                 }
     ineq_cons5 = {'type': 'ineq',
-                 'fun': const_f_times_a,
-                 }
-    ineq_cons6 = {'type': 'ineq',
-                 'fun': const_p_pto,
-                 }
-    constraints = [ineq_cons1, ineq_cons2, ineq_cons3, ineq_cons4, ineq_cons5, ineq_cons6]
-    
+                    'fun': const_f_times_a,
+                    }
+
+    constraints = [ineq_cons1, 
+                   ineq_cons2, 
+                   ineq_cons3, 
+                #    ineq_cons4, 
+                   ineq_cons5]
+
+    # constraints =[]
     
     wec = wot.WEC.from_bem(
         bem_data,
@@ -99,10 +123,9 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
         )
     
     nstate_pto = 2 * nfreq # PTO forces
-    nstate_a = wec.nt * nsubsteps  #
+    nstate_a = 2 * nfreq # wec.nt * nsubsteps  #
     nstate_opt = nstate_pto + nstate_a
-    
-    
+
     #regular waves
     phase = 0
     wavedir = 0
@@ -130,15 +153,11 @@ def inner_function(f_max, p_max, v_max, fb, wavefreq, amplitude):
     for case, data in wave_cases.items():
         waves[case] = irregular_wave(data['Hs'], data['Tp'])
 
+    options = {'maxiter': 1000}
+    scale_x_wec = 10**1
+    scale_x_opt = 10**-4
+    scale_obj = 10**-3
 
-
-    obj_fun = pto.mechanical_average_power
-
-    options = {'maxiter': 200}
-    scale_x_wec = 1e1
-    scale_x_opt = 1e-3
-    scale_obj = 1e-3
-    
     results = wec.solve(
         waves['regular'],
         obj_fun,
@@ -221,7 +240,7 @@ if __name__ == '__main__':
 
 
 
-inner_function(f_max = 2000.0, p_max =100.0, v_max = 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
+inner_function(f_max = 2e7, v_max = 1.5, fb=RM3, wavefreq = 0.3, amplitude = 1)
 
 #outer loop
 f_max = 1000.0 
