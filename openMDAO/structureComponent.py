@@ -97,7 +97,7 @@ class structureComponent(om.ExplicitComponent):
 
 
 
-
+"""
 prob = om.Problem()
 promotesInputs = ['F_heave', 'F_surge', 'M', 'h_s', 'T_s', 'rho_w', 'g', 'sigma_y' ,'A_c', 'A_lat_sub' ,'r_over_t', 'I', 'E']
 prob.model.add_subsystem('test', structureComponent(), promotes_inputs= promotesInputs )
@@ -131,3 +131,4 @@ prob.model.list_inputs(val=True)
 # output structure
 # 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
 prob.model.list_outputs(val = True)
+"""

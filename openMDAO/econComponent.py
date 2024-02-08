@@ -1,6 +1,6 @@
 import openmdao.api as om
 import numpy as np
-
+from omxdsm import write_xdsm
 
 class econComponent(om.ExplicitComponent):
 
@@ -63,7 +63,7 @@ class econComponent(om.ExplicitComponent):
         outputs['LCOE'] = LCOE
         outputs['capex'] = capex
         outputs['opex'] = opex
-
+"""
 prob = om.Problem()
 
 promotesInputs = ["m_m", "M", "cost_m", "N_WEC", "P_elec", "FCR", "efficiency"]
@@ -92,3 +92,7 @@ prob.model.list_inputs(val=True)
 # output structure
 # 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
 prob.model.list_outputs(val = True)
+write_xdsm(prob, filename='sellar_pyxdsm', out_format='html', show_browser=True,
+               quiet=False, output_side='left')
+
+"""

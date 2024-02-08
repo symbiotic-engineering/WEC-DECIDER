@@ -192,7 +192,7 @@ class geometryComponent(om.ExplicitComponent):
         outputs['GM'] = GM
         outputs['mass'] = mass
 
-
+"""
 prob = om.Problem()
 
 promotesInputs = ["D_s", "D_f", "T_f", "h_f", "h_s", "t_ft", "t_fr", "t_fc",
@@ -236,3 +236,4 @@ prob.model.list_inputs(val=True)
 # output structure
 # 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
 prob.model.list_outputs(val = True)
+"""

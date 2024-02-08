@@ -2,6 +2,8 @@ import openmdao.api as om
 import numpy as np
 
 
+from omxdsm import write_xdsm
+
 class dynamicsComponent(om.ExplicitComponent):
 
     def setup(self):
@@ -399,7 +401,7 @@ class dynamicsComponent(om.ExplicitComponent):
         c_q = t10 + t11 - t13 + t14 + t15 + t6 * t11 + t5 * t15 - t4 * t5 * t6 * t8 + k * m * t5 * t6 * t7 * 2.0
 
         return a_q, b_q, c_q
-
+"""
 prob = om.Problem()
 
 promotesInputs = [
@@ -504,5 +506,10 @@ prob.model.list_inputs(val=True)
 # output structure
 # 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
 prob.model.list_outputs(val = True)
-full_matrix = prob['test.P_var']
+full_matrix = prob['test.P_unsat']
 print(full_matrix)
+
+write_xdsm(prob, filename='sellar_pyxdsm', out_format='html', show_browser=True,
+               quiet=False, output_side='left')
+
+"""
