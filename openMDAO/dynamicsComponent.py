@@ -15,41 +15,15 @@ class dynamicsComponent(om.ExplicitComponent):
         self.add_input('Hs_struct', val=np.zeros(1,), desc="100 year wave height (m)", units='m')
         self.add_input('T', val=np.zeros(15,), desc="wave period (s)", units='s')
         self.add_input('T_struct', val=np.zeros(1,), desc="100 year wave period (s)", units='s')
-        self.add_input('sigma_y', val=np.zeros(3,), desc="yield strength (Pa)", units='Pa')
-        self.add_input('rho_m', val=np.zeros(3,), desc="material density (kg/m3)", units='kg/m ** 3')
-        self.add_input('E', val=np.zeros(3,), desc="young's modulus (Pa)", units='Pa')
-        self.add_input('cost_m', val=np.zeros(3,), desc="material cost ($/kg)", units='USD/kg')
-        self.add_input('m_scale', val=0, desc="factor to account for mass of neglected stiffeners (-)")
-        self.add_input('t_ft', val=0, desc="float top thickness (m)", units='m')
-        self.add_input('t_fr', val=0, desc="float radial wall thickness (m)", units='m')
-        self.add_input('t_fc', val=0, desc="float circumferential gusset thickness (m)", units='m')
-        self.add_input('t_fb', val=0, desc="float bottom thickness (m)", units='m')
-        self.add_input('t_sr', val=0, desc="vertical column thickness (m)", units='m')
-        self.add_input('t_dt', val=0, desc="damping plate support tube radial wall thickness (m)", units='m')
-        self.add_input('D_dt', val=0, desc="damping plate support tube diameter (m)", units='m')
-        self.add_input('theta_dt', val=0, desc="angle from horizontal of damping plate support tubes (rad)", units='rad')
-        self.add_input('FOS_min', val=0, desc="minimum FOS")
-        self.add_input('D_d_min', val=0, desc="minimum damping plate diameter")
-        self.add_input('FCR', val=0, desc="fixed charge rate (-)")
-        self.add_input('N_WEC', val=0, desc="number of WECs in array (-)")
-        self.add_input('D_d_over_D_s', val=0, desc="normalized damping plate diameter (-)")
-        self.add_input('T_s_over_D_s', val=0, desc="normalized spar draft (-)")
-        self.add_input('h_d_over_D_s', val=0, desc="normalized damping plate thickness (-)")
-        self.add_input('T_f_over_h_f', val=0, desc="normalized float draft (-)")
-        self.add_input('LCOE_max', val=0, desc="maximum LCOE ($/kWh)", units='USD/kW * h')
         self.add_input('power_max', val=0, desc="maximum power (W)", units='W')
         self.add_input('eff_pto', val=0, desc="PTO efficiency (-)")
-        self.add_input('eff_array', val=0, desc="array availability and transmission efficiency (-)")
         self.add_input('D_f', 0)
         self.add_input('F_max', 0)
         self.add_input('B_p', 0)
         self.add_input('w_n', 0)
-        self.add_input('M', 0)
-        self.add_input('D_s', 0)
         self.add_input('h_f', 0)
         self.add_input('T_f', 0)
         self.add_input('T_s', 0)
-        self.add_input('h_d', 0)
         self.add_input('h_s', 0)
 
 
@@ -80,41 +54,15 @@ class dynamicsComponent(om.ExplicitComponent):
         Hs_struct = inputs['Hs_struct']
         T = inputs['T']
         T_struct = inputs['T_struct']
-        sigma_y = inputs['sigma_y']
-        rho_m = inputs['rho_m']
-        E = inputs['E']
-        cost_m = inputs['cost_m']
-        m_scale = inputs['m_scale']
-        t_ft = inputs['t_ft']
-        t_fr = inputs['t_fr']
-        t_fc = inputs['t_fc']
-        t_fb = inputs['t_fb']
-        t_sr = inputs['t_sr']
-        t_dt = inputs['t_dt']
-        D_dt = inputs['D_dt']
-        theta_dt = inputs['theta_dt']
-        FOS_min = inputs['FOS_min']
-        D_d_min = inputs['D_d_min']
-        FCR = inputs['FCR']
-        N_WEC = inputs['N_WEC']
-        D_d_over_D_s = inputs['D_d_over_D_s']
-        T_s_over_D_s = inputs['T_s_over_D_s']
-        h_d_over_D_s = inputs['h_d_over_D_s']
-        T_f_over_h_f = inputs['T_f_over_h_f']
-        LCOE_max = inputs['LCOE_max']
         power_max = inputs['power_max']
         eff_pto = inputs['eff_pto']
-        eff_array = inputs['eff_array']
         D_f = inputs['D_f']
         F_max = inputs['F_max']
         B_p = inputs['B_p']
         w_n = inputs['w_n']
-        M = inputs['M']
-        D_s = inputs['D_s']
         h_f = inputs['h_f']
         T_f = inputs['T_f']
         T_s = inputs['T_s']
-        h_d = inputs['h_d']
         h_s = inputs['h_s']
 
         #other inputs:
@@ -177,22 +125,9 @@ class dynamicsComponent(om.ExplicitComponent):
 
         # Get saturated response
         r = np.minimum(F_max / F_ptrain_unsat, 1)
-        #print("F_max", F_max)
-        print("X_unsat", X_unsat)
         alpha = (2 / np.pi) * (1 / r * np.arcsin(r) + np.sqrt(1 - r ** 2))
         f_sat = alpha * r
         # add copy() to each np array as parameters
-        #print("alpha", alpha)
-        print("r", r)
-        """
-        print("f_sat", f_sat)
-        print("m", m)
-        print("b", b)
-        print("k", k)
-        print("w", w)
-        print("B_p", B_p)
-        print("K_p", K_p)
-        """
         mult = self.get_multiplier(np.copy(f_sat), np.copy(m), np.copy(b), np.copy(k), np.copy(w), b / B_p, k / K_p)
         b_sat = B_h + mult * B_p
         k_sat = K_h + mult * K_p
@@ -401,20 +336,23 @@ class dynamicsComponent(om.ExplicitComponent):
         c_q = t10 + t11 - t13 + t14 + t15 + t6 * t11 + t5 * t15 - t4 * t5 * t6 * t8 + k * m * t5 * t6 * t7 * 2.0
 
         return a_q, b_q, c_q
-"""
+
 prob = om.Problem()
 
-promotesInputs = [
-    'rho_w', 'g', 'JPD', 'Hs', 'Hs_struct', 'T', 'T_struct', 'sigma_y', 'rho_m', 'E', 'cost_m',
-    'm_scale', 't_ft', 't_fr', 't_fc', 't_fb', 't_sr', 't_dt', 'D_dt', 'theta_dt', 'FOS_min',
-    'D_d_min', 'FCR', 'N_WEC', 'D_d_over_D_s', 'T_s_over_D_s', 'h_d_over_D_s', 'T_f_over_h_f',
-    'LCOE_max', 'power_max', 'eff_pto', 'eff_array', 'D_f', 'F_max', 'B_p', 'w_n', 'M', 'D_s',
-    'h_f', 'T_f', 'T_s', 'h_d', 'h_s', 'm_float', 'V_d', 'draft'
-]
+#promotesInputs = [
+#    'rho_w', 'g', 'JPD', 'Hs', 'Hs_struct', 'T', 'T_struct', 'sigma_y', 'rho_m', 'E', 'cost_m',
+#    'm_scale', 't_ft', 't_fr', 't_fc', 't_fb', 't_sr', 't_dt', 'D_dt', 'theta_dt', 'FOS_min',
+#    'D_d_min', 'FCR', 'N_WEC', 'D_d_over_D_s', 'T_s_over_D_s', 'h_d_over_D_s', 'T_f_over_h_f',
+#    'LCOE_max', 'power_max', 'eff_pto', 'eff_array', 'D_f', 'F_max', 'B_p', 'w_n', 'M', 'D_s',
+#    'h_f', 'T_f', 'T_s', 'h_d', 'h_s', 'm_float', 'V_d', 'draft'
+#]
 
-
-prob.model.add_subsystem('test', dynamicsComponent(), promotes_inputs= promotesInputs )
-
+"""
+prob.model.add_subsystem('test', dynamicsComponent())
+prob.setup()
+print(prob.model.list_inputs())
+"""
+"""
 prob.driver = om.ScipyOptimizeDriver()
 prob.driver.options['optimizer'] = 'SLSQP'
 
@@ -513,3 +451,30 @@ write_xdsm(prob, filename='sellar_pyxdsm', out_format='html', show_browser=True,
                quiet=False, output_side='left')
 
 """
+
+# self.add_input('sigma_y', val=np.zeros(3,), desc="yield strength (Pa)", units='Pa')
+# self.add_input('rho_m', val=np.zeros(3,), desc="material density (kg/m3)", units='kg/m ** 3')
+# self.add_input('E', val=np.zeros(3,), desc="young's modulus (Pa)", units='Pa')
+# self.add_input('cost_m', val=np.zeros(3,), desc="material cost ($/kg)", units='USD/kg')
+##self.add_input('m_scale', val=0, desc="factor to account for mass of neglected stiffeners (-)")
+# self.add_input('t_ft', val=0, desc="float top thickness (m)", units='m')
+# self.add_input('t_fr', val=0, desc="float radial wall thickness (m)", units='m')
+# self.add_input('t_fc', val=0, desc="float circumferential gusset thickness (m)", units='m')
+# self.add_input('t_fb', val=0, desc="float bottom thickness (m)", units='m')
+# self.add_input('t_sr', val=0, desc="vertical column thickness (m)", units='m')
+# self.add_input('t_dt', val=0, desc="damping plate support tube radial wall thickness (m)", units='m')
+# self.add_input('D_dt', val=0, desc="damping plate support tube diameter (m)", units='m')
+# self.add_input('theta_dt', val=0, desc="angle from horizontal of damping plate support tubes (rad)", units='rad')
+# self.add_input('FOS_min', val=0, desc="minimum FOS")
+# self.add_input('D_d_min', val=0, desc="minimum damping plate diameter")
+# self.add_input('FCR', val=0, desc="fixed charge rate (-)")
+# self.add_input('N_WEC', val=0, desc="number of WECs in array (-)")
+# self.add_input('D_d_over_D_s', val=0, desc="normalized damping plate diameter (-)")
+# self.add_input('T_s_over_D_s', val=0, desc="normalized spar draft (-)")
+# self.add_input('h_d_over_D_s', val=0, desc="normalized damping plate thickness (-)")
+# self.add_input('T_f_over_h_f', val=0, desc="normalized float draft (-)")
+# self.add_input('LCOE_max', val=0, desc="maximum LCOE ($/kWh)", units='USD/kW * h')
+#self.add_input('eff_array', val=0, desc="array availability and transmission efficiency (-)")
+# self.add_input('M', 0)
+# self.add_input('D_s', 0)
+# self.add_input('h_d', 0)

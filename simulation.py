@@ -9,8 +9,7 @@ def simulation(X, p):
     val = {}
     # Assemble inputs
     in_params = p.copy()
-    print(repr(X))
-    exit(128)
+
     in_params['D_f'] = X[0]
     D_s_over_D_f = X[1]
     h_f_over_D_f = X[2]

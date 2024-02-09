@@ -181,7 +181,8 @@ class geometryComponent(om.ExplicitComponent):
         #return V_d, m_m, m_f_tot, A_c, A_lat_sub, r_over_t, I, T, V_f_pct, V_s_pct, GM, mass
         outputs['V_d'] = V_d
         outputs['m_m'] = m_m
-        outputs['m_f_tot'] = m_f_tot
+        #outputs['m_f_tot'] = m_f_tot
+        outputs['m_f_tot'] = max(m_f_tot, 1e-3)
         outputs['A_c'] = A_c
         outputs['A_lat_sub'] = A_lat_sub
         outputs['r_over_t'] = r_over_t
