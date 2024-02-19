@@ -130,3 +130,11 @@ dmypy.json
 
 # VSCode
 .vscode/
+
+# Matlab
+*.asv
+*.mat
+
+# Data
+*.csv
+*.png
