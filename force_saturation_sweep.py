@@ -249,7 +249,7 @@ def sweep_nondim_coeffs():
         
         tuple_out = sat_unsat_wrapper(zeta_u, w_u_star, f_max_Fp, m, w, F_h, 
                                    amplitude=1, nfreq=nfreq, nsubsteps=1, 
-                                   use_PI=False)
+                                   use_PI=True)
         
         avg_pwr[idx]    = tuple_out[0]
         max_x[idx]      = tuple_out[1]
