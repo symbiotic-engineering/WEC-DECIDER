@@ -17,6 +17,7 @@ dependencies:
   - openmdao
 #  - mpi4py 
 #  - petsc4py
+  - ipywidgets # for development (Jupyter notebook widgets)
   - pip:
     - mhkit
     - gridstatus
