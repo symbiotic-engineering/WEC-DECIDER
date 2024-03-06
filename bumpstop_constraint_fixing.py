@@ -117,13 +117,14 @@ def inner_function(f_max, x_max, v_max, fb, wavefreq, amplitude):
 
 
     obj_fun = pto.mechanical_average_power
-    nstate_pto = 2*nfreq
-    nstate_a = wec.nt * nsubsteps
+
+    nstate_pto = 2 * nfreq # PTO forces
+    nstate_a = 2*nfreq # wec.nt * nsubsteps  #
     nstate_opt = nstate_pto + nstate_a
 
-    options = {'maxiter': 200}
+    options = {'maxiter': 400}
     scale_x_wec = 1e1
-    scale_x_opt = 1e-2
+    scale_x_opt = 1e-4
     scale_obj = 1e-3
     
     results = wec.solve(
@@ -261,7 +262,7 @@ X = np.full(len_f_*len_x_, np.nan)
 for i in range(len_f_):
     for j in range(len_x_):
             try:
-                X[t] = inner_function(f_[i], x_[j], 0.1, fb=RM3, wavefreq = 0.3, amplitude = 1)
+                X[t] = inner_function(f_[i], x_[j], 1.5, fb=RM3, wavefreq = 0.3, amplitude = 1)
             except Exception as error:
                 print("An error occurred:", error)
             t += 1
