@@ -8,14 +8,14 @@ class dynamicsComponent(om.ExplicitComponent):
 
     def setup(self):
         # 43 in_params
-        self.add_input('rho_w', val=0.0, desc="water density (kg/m3)", units='kg/m**3')
-        self.add_input('g', val=0.0, desc="acceleration of gravity (m/s2)", units='m/s**2')
+        self.add_input('rho_w', val=0.0, desc="water density (kg/m3)")
+        self.add_input('g', val=0.0, desc="acceleration of gravity (m/s2)")
         self.add_input('JPD', val=np.zeros((14, 15)), desc="joint probability distribution of wave (%)")
-        self.add_input('Hs', val=np.zeros(14,), desc="wave height (m)", units='m')
-        self.add_input('Hs_struct', val=np.zeros(1,), desc="100 year wave height (m)", units='m')
-        self.add_input('T', val=np.zeros(15,), desc="wave period (s)", units='s')
-        self.add_input('T_struct', val=np.zeros(1,), desc="100 year wave period (s)", units='s')
-        self.add_input('power_max', val=0, desc="maximum power (W)", units='W')
+        self.add_input('Hs', val=np.zeros(14,), desc="wave height (m)")
+        self.add_input('Hs_struct', val=np.zeros(1,), desc="100 year wave height (m)")
+        self.add_input('T', val=np.zeros(15,), desc="wave period (s)")
+        self.add_input('T_struct', val=np.zeros(1,), desc="100 year wave period (s)")
+        self.add_input('power_max', val=0, desc="maximum power (W)")
         self.add_input('eff_pto', val=0, desc="PTO efficiency (-)")
         self.add_input('D_f', 0)
         self.add_input('F_max', 0)
@@ -41,6 +41,8 @@ class dynamicsComponent(om.ExplicitComponent):
         self.add_output('P_matrix', shape=(14,15))
         self.add_output('h_s_extra')
         self.add_output('P_unsat', shape=(14,15))
+
+        self.declare_partials('*', '*', method='fd')
 
     def setup_partials(self):
         self.declare_partials('*', '*')

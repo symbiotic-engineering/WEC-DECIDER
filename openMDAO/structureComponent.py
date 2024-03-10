@@ -24,6 +24,8 @@ class structureComponent(om.ExplicitComponent):
         self.add_output('FOS3Y')
         self.add_output('FOS_buckling')
 
+        self.declare_partials('*', '*', method='fd')
+
     # using wild cards to say that this component provides derivatives of all outputs with respect to all inputs.
     def setup_partials(self):
         self.declare_partials('*', '*')

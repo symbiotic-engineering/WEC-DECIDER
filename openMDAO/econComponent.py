@@ -19,6 +19,8 @@ class econComponent(om.ExplicitComponent):
         self.add_output('capex', 0)
         self.add_output('opex', 0)
 
+        self.declare_partials('*', '*', method='fd')
+
     def setup_partials(self):
         self.declare_partials('*', '*')
 
@@ -29,7 +31,7 @@ class econComponent(om.ExplicitComponent):
         M = int(inputs['M'][0])
         P_elec = inputs['P_elec'][0]
         efficiency = inputs['efficiency'][0]
-        FCR = inputs['FCR'][0]
+        FCR = inputs['FCR'][0] # fixed charge rate
 
 
         structural_cost = np.multiply(m_m, cost_m)
