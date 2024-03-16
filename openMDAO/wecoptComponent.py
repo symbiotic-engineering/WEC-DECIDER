@@ -3,15 +3,40 @@ import numpy as np
 
 class wecoptComponent(om.ExplicitComponent):
     def setup(self):
+        # 43 in_params
+        self.add_input('rho_w', val=0.0, desc="water density (kg/m3)")
+        self.add_input('g', val=0.0, desc="acceleration of gravity (m/s2)")
+        self.add_input('JPD', val=np.zeros((14, 15)), desc="joint probability distribution of wave (%)")
+        self.add_input('Hs', val=np.zeros(14, ), desc="wave height (m)")
+        self.add_input('Hs_struct', val=np.zeros(1, ), desc="100 year wave height (m)")
+        self.add_input('T', val=np.zeros(15, ), desc="wave period (s)")
+        self.add_input('T_struct', val=np.zeros(1, ), desc="100 year wave period (s)")
+        self.add_input('power_max', val=0, desc="maximum power (W)")
+        self.add_input('eff_pto', val=0, desc="PTO efficiency (-)")
+        self.add_input('D_f', 0)
+        self.add_input('F_max', 0)
+        self.add_input('B_p', 0)
+        self.add_input('w_n', 0)
+        self.add_input('h_f', 0)
+        self.add_input('T_f', 0)
+        self.add_input('T_s', 0)
+        self.add_input('h_s', 0)
 
-        #adding inputs:
-        some_float_value = 0.0
-        self.add_input(name = 'firstFloatInput', val = 0.0, desc="this is my first float variable")
-        self.add_input(name = 'firstFloatMatrixInput', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
+        # other input
+        self.add_input("m_float", val=0.0)
+        self.add_input("V_d", shape=(3,))
+        self.add_input("draft", shape=(3,))
 
-        #adding output:
-        self.add_output(name = 'firstFloatOutput', desc = "this is my first float variable output")
-        self.add_output(name = 'firstFloatMatrixOutput', shape=(4,5), desc = "this is my first float matrix variable output")
+        # return F_heave_max, F_surge_max, F_ptrain_max, P_var, P_elec, P_matrix, h_s_extra, P_unsat
+        self.add_output('F_heave_max')
+        self.add_output('F_surge_max', shape=(3,))
+        self.add_output('F_ptrain_max')
+        self.add_output('P_var')
+        self.add_output('P_elec')
+        self.add_output('P_matrix', shape=(14, 15))
+        self.add_output('h_s_extra')
+        self.add_output('P_unsat', shape=(14, 15))
+
 
         # Partial derivatives required for optimization
         self.declare_partials('*', '*', method='fd')
