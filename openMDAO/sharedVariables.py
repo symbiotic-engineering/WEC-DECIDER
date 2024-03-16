@@ -16,7 +16,7 @@ def openmdao_ivc(X, p):
     ivc.add_output('h_f_over_D_f', 0.1)
     ivc.add_output('T_s_over_h_s', 0.01)
     #ivc.add_output('F_max', X[4] * 1e6)
-    ivc.add_output('F_max', 9.0 * 1e6)
+    ivc.add_output('F_max', 10000)
     ivc.add_output('B_p', 0.1 * 1e6 )
     ivc.add_output('w_n', 40)
     ivc.add_output('M', X[7])

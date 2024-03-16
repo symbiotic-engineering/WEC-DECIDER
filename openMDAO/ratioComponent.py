@@ -18,13 +18,6 @@ class ratioComponent(om.ExplicitComponent):
         self.add_input('T_s_over_D_s')
         self.add_input('h_d_over_D_s')
 
-        #define outputs
-        #self.add_output('D_f')
-        #self.add_output('F_max')
-        #self.add_output('B_p')
-        #self.add_output('w_n')
-        #self.add_output('M')
-
         self.add_output('D_s')
         self.add_output('h_f')
         self.add_output('T_f')
