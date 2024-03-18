@@ -1,10 +1,12 @@
 import openmdao.api as om
 
+from ratioComponent import ratioComponent
 from geometryComponent import geometryComponent
 from dynamicsComponent import dynamicsComponent
 from structureComponent import structureComponent
 from econComponent import econComponent
-from ratioComponent import ratioComponent
+from outcomeComponent import outputComponent
+
 
 from inputs.parameters import parameters
 from inputs.var_bounds import var_bounds
@@ -25,6 +27,7 @@ class waveEngergy(om.Group):
         self.add_subsystem('dynamicsComponent', dynamicsComponent())
         self.add_subsystem('structureComponent', structureComponent())
         self.add_subsystem('econComponent', econComponent())
+        self.add_subsystem('outcomeComponent', outputComponent())
 
 
     def configure(self):
@@ -101,51 +104,66 @@ class waveEngergy(om.Group):
         # dynm to econ
         self.connect('dynamicsComponent.P_elec', 'econComponent.P_elec')
 
-        #self.connect('dynamicsComponent.P_var','outcome.P_var')
-        #self.connect('econComponent.LCOE', 'outcome.LCOE')
+
+        #Connect to outcome component
+        self.connect('econComponent.LCOE', 'outcomeComponent.LCOE')
+        self.connect('dynamicsComponent.P_var','outcomeComponent.P_var')
+        self.connect('geometryComponent.V_f_pct', 'outcomeComponent.V_f_pct')
+        self.connect('geometryComponent.V_s_pct','outcomeComponent.V_s_pct')
+        self.connect('geometryComponent.GM', 'outcomeComponent.GM')
+        self.connect('structureComponent.FOS1Y', 'outcomeComponent.FOS1Y')
+        self.connect('structureComponent.FOS2Y', 'outcomeComponent.FOS2Y')
+        self.connect('structureComponent.FOS3Y', 'outcomeComponent.FOS3Y')
+        self.connect('structureComponent.FOS_buckling', 'outcomeComponent.FOS_buckling')
+        self.connect('ivc.FOS_min', 'outcomeComponent.FOS_min')
+        self.connect('dynamicsComponent.P_elec', 'outcomeComponent.P_elec')
+        self.connect('ratioComponent.D_d','outcomeComponent.D_d')
+        self.connect('ivc.D_d_min','outcomeComponent.D_d_min')
+        self.connect('dynamicsComponent.h_s_extra', 'outcomeComponent.h_s_extra')
+        self.connect('ivc.LCOE_max', 'outcomeComponent.LCOE_max')
+        self.connect('dynamicsComponent.F_ptrain_max', 'outcomeComponent.F_ptrain_max')
+        self.connect('ivc.F_max', 'outcomeComponent.F_max')
         return
 
 top = om.Problem(model=waveEngergy())
 
 top.driver = om.ScipyOptimizeDriver()
 top.driver.options['optimizer'] = 'SLSQP'
-"""
- # Assemble constraints g(x) >= 0
-    g = np.zeros(14)
-    g[0] = V_f_pct  # Prevent float too heavy
-    g[1] = 1 - V_f_pct  # Prevent float too light
-    g[2] = V_s_pct  # Prevent spar too heavy
-    g[3] = 1 - V_s_pct  # Prevent spar too light
-    g[4] = GM  # Stability
-    g[5] = FOS1Y / p['FOS_min'] - 1  # Float survives max force
-    g[6] = FOS2Y / p['FOS_min'] - 1  # Spar survives max force
-    g[7] = FOS3Y / p['FOS_min'] - 1  # Damping plate survives max force
-    g[8] = FOS_buckling / p['FOS_min'] - 1  # Spar survives max force in buckling
-    g[9] = P_elec  # Positive power
-    g[10] = D_d / p['D_d_min'] - 1  # Damping plate diameter
-    g[11] = h_s_extra  # Prevent float rising above top of spar
-    g[12] = p['LCOE_max'] / LCOE - 1  # LCOE threshold
-    g[13] = F_ptrain_max / in_params['F_max'] - 1  # Max force
 
 
-"""
-#add constraints.
-top.model.add_constraint()
+
+
+
 
 top.model.add_design_var('ivc.D_f',  lower = 6, upper = 40)
-top.model.add_design_var('ivc.D_s_over_D_f',lower = 0.01, upper = 0.99,adder= 0.01)
+top.model.add_design_var('ivc.D_s_over_D_f',lower = 0.01, upper = 0.99)
 top.model.add_design_var('ivc.h_f_over_D_f',lower = 0.1, upper = 10)
 top.model.add_design_var('ivc.T_s_over_h_s',lower = 0.01, upper = 0.99)
-top.model.add_design_var('ivc.F_max',lower = 9 * 1e6, upper = 10 * 1e6, adder= 10000, scaler = 1.0) #new Value = (initial + adder ) * scaler
-top.model.add_design_var('ivc.B_p',lower = 0.1 * 1e6, upper = 50 * 1e6, scaler = 1.0 )
+top.model.add_design_var('ivc.F_max',lower = 0.01 * 1e6, upper = 10 * 1e6) #new Value = (initial + adder ) * scaler
+top.model.add_design_var('ivc.B_p',lower = 0.1 * 1e6, upper = 50 * 1e6)
 top.model.add_design_var('ivc.w_n',lower=0.01, upper=40)
 top.model.add_design_var('ivc.M', lower=0, upper=2)
 
 
 
-top.driver.options['maxiter'] = 100  # Increase max iterations
+top.driver.options['maxiter'] = 300  # Increase max iterations
 top.driver.options['tol'] = 1e-6
-top.model.add_objective('econComponent.LCOE',scaler=1)
+top.model.add_objective('outcomeComponent.LCOE',scaler=1)
+#add constraints.
+top.model.add_constraint('outcomeComponent.g_0', lower= 0)
+top.model.add_constraint('outcomeComponent.g_1', lower= 0)
+top.model.add_constraint('outcomeComponent.g_2', lower= 0)
+top.model.add_constraint('outcomeComponent.g_3', lower= 0)
+top.model.add_constraint('outcomeComponent.g_4', lower= 0)
+top.model.add_constraint('outcomeComponent.g_5', lower= 0)
+top.model.add_constraint('outcomeComponent.g_6', lower= 0)
+top.model.add_constraint('outcomeComponent.g_7', lower= 0)
+top.model.add_constraint('outcomeComponent.g_8', lower= 0)
+top.model.add_constraint('outcomeComponent.g_9', lower= 0)
+top.model.add_constraint('outcomeComponent.g_10', lower= 0)
+top.model.add_constraint('outcomeComponent.g_11', lower= 0)
+top.model.add_constraint('outcomeComponent.g_12', lower= 0)
+top.model.add_constraint('outcomeComponent.g_13', lower= 0)
 
 top.setup()
 top.run_driver()
