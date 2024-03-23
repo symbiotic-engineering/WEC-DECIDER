@@ -60,6 +60,7 @@ class dynamicsComponent(om.ExplicitComponent):
         eff_pto = inputs['eff_pto']
         D_f = inputs['D_f']
         F_max = inputs['F_max']
+        #print("F_max", F_max)
         B_p = inputs['B_p']
         w_n = inputs['w_n']
         h_f = inputs['h_f']

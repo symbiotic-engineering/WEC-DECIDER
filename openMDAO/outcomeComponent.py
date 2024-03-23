@@ -81,6 +81,10 @@ class outputComponent(om.ExplicitComponent):
         g[12] = LCOE_max / LCOE - 1  # LCOE threshold
         g[13] = F_ptrain_max / F_max - 1  # Max force
 
+      #  for value in g:
+      #      if value < 0:
+      #          raise om.AnalysisError('cannot be zero')
+
         outputs['g_0'] = g[0]
         outputs['g_1'] = g[1]
         outputs['g_2'] = g[2]

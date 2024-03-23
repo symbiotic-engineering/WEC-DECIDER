@@ -139,17 +139,18 @@ top.model.add_design_var('ivc.D_f',  lower = 6, upper = 40)
 top.model.add_design_var('ivc.D_s_over_D_f',lower = 0.01, upper = 0.99)
 top.model.add_design_var('ivc.h_f_over_D_f',lower = 0.1, upper = 10)
 top.model.add_design_var('ivc.T_s_over_h_s',lower = 0.01, upper = 0.99)
-top.model.add_design_var('ivc.F_max',lower = 0.01 * 1e6, upper = 10 * 1e6) #new Value = (initial + adder ) * scaler
+top.model.add_design_var('ivc.F_max',lower = 0.01 * 1e6, upper = 10 * 1e6,scaler = 1e6) #new Value = (initial + adder ) * scaler
 top.model.add_design_var('ivc.B_p',lower = 0.1 * 1e6, upper = 50 * 1e6)
 top.model.add_design_var('ivc.w_n',lower=0.01, upper=40)
 top.model.add_design_var('ivc.M', lower=0, upper=2)
 
 
 
-top.driver.options['maxiter'] = 300  # Increase max iterations
-top.driver.options['tol'] = 1e-6
+top.driver.options['maxiter'] = 1000  # Increase max iterations
+top.driver.options['tol'] = 1e-8
 top.model.add_objective('outcomeComponent.LCOE',scaler=1)
 #add constraints.
+
 top.model.add_constraint('outcomeComponent.g_0', lower= 0)
 top.model.add_constraint('outcomeComponent.g_1', lower= 0)
 top.model.add_constraint('outcomeComponent.g_2', lower= 0)

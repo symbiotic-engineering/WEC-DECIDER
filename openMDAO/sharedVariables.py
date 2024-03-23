@@ -9,17 +9,17 @@ def openmdao_ivc(X, p):
 
     X = np.maximum(X, 1e-3)
     in_params = p.copy()
-
+    #[20, 0.3, 0.2, 0.7954545454545454, 5, 0.5, 0.8]
     # Design Variables
-    ivc.add_output('D_f', 6)
-    ivc.add_output('D_s_over_D_f', 0.01)
-    ivc.add_output('h_f_over_D_f', 0.1)
-    ivc.add_output('T_s_over_h_s', 0.01)
+    ivc.add_output('D_f', 20)
+    ivc.add_output('D_s_over_D_f', 0.3)
+    ivc.add_output('h_f_over_D_f', 0.2)
+    ivc.add_output('T_s_over_h_s', 0.7954545454545454)
     #ivc.add_output('F_max', X[4] * 1e6)
-    ivc.add_output('F_max', 10000)
-    ivc.add_output('B_p', 0.1 * 1e6 )
-    ivc.add_output('w_n', 40)
-    ivc.add_output('M', X[7])
+    ivc.add_output('F_max', 5 * 1e6)
+    ivc.add_output('B_p', 0.5 * 1e6 )
+    ivc.add_output('w_n', 0.8)
+    ivc.add_output('M', int(X[7]))
 
 
 
