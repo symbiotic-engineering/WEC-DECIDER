@@ -76,7 +76,7 @@ genx_settings_folder: 'genx_settings/'
 reserves_fn: 'reserves.csv'
 
 # Existing generators data years and capacity columns
-data_years: [2020]
+eia_data_years: [2020]
 capacity_col: 'summer_capacity_mw'
 
 # Technology groups and operational settings
@@ -96,3 +96,10 @@ tech_groups:
     - Solar
 regional_no_grouping: 
   - CAISO
+
+PUDL_DB: ../WEC-DECIDER/data/pudl/pudl.sqlite
+PG_DB: ../WEC-DECIDER/data/pg/pg_misc_tables_efs.sqlite
+RESOURCE_GROUP_PROFILES: ../WEC-DECIDER/data/resource_profiles
+EFS_DATA: ../WEC-DECIDER/data/efs
+DISTRIBUTED_GEN_DATA: ../WEC-DECIDER/data/cambium
+# OPTIONAL: RESOURCE_GROUPS = YOUR_PATH_HERE
