@@ -61,9 +61,11 @@ misc_gen_inputs_fn: 'extra_inputs/misc_gen_inputs.csv'
 capacity_limit_spur_fn: 'extra_inputs/capacity_limit_spur.csv'
 
 # Cost and technology mappings
-atb_new_gen: 'atb_new_gen.csv'
-modified_atb_new_gen: 'modified_atb_new_gen.csv'
-additional_technologies: 'additional_technologies.csv'
+atb_new_gen: 
+  - [NaturalGas, CCAvgCF, Moderate, 500]
+  - [NaturalGas, CTAvgCF, Moderate, 100]
+  - [OffShoreWind, Class10, Moderate, 1]
+  - [UtilityPV, Class1, Moderate, 1]
 
 # Emission policies and demand segments
 emission_policies_fn: 'emission_policies.csv'
@@ -78,7 +80,13 @@ data_years: [2020]
 capacity_col: 'summer_capacity_mw'
 
 # Technology groups and operational settings
-num_clusters: 10
+num_clusters:
+  Natural Gas Fired Combined Cycle: 1
+  Natural Gas Fired Combustion Turbine: 1
+  Solar Photovoltaic: 1
+  Offshore Wind Turbine: 1
+
+group_technologies: true
 tech_groups:
   combined_cycle:
     - NGCC
@@ -86,6 +94,5 @@ tech_groups:
   renewable:
     - Wind
     - Solar
-group_technologies: true
 regional_no_grouping: 
   - CAISO
