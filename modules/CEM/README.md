@@ -1,5 +1,4 @@
-# GenX Fork for Wave Energy
-All the files for wave energy are in `Example_Systems/RealSystemExample/ISONE_Singlezone/`.
+# GenX for Wave Energy
 
 0. Clone this repo: `git clone git@github.com:symbiotic-engineering/WEC-DECIDER.git`
 1. Install anaconda, miniconda, or mamba and setup the python environment: `conda env create -f environment.yml`.
@@ -12,17 +11,17 @@ All the files for wave energy are in `Example_Systems/RealSystemExample/ISONE_Si
 ```
 julia # enter julia REPL
 using Pkg # load package manager
-Pkg.activate("GenX") # set active project - you should be in the directory above GenX when executing this command
+Pkg.activate("modules/CEM") # set active project - you should be in the WEC-DECIDER directory when executing this command
 Pkg.instantiate() # first time only. If on windows, see special instructions in GenX readme.
 ] # enter package manager
 st # status - check that packages installed correctly
 backspace or ctrl-C  # exit package manager
 Pkg.build("Gurobi") # may be necessary for first Gurobi use?
-cd("GenX/Example_Systems/RealSystemExample/ISONE_Singlezone")
+cd("modules/CEM")
 include("caserunner.jl")
 ```
 8. Finally run `analyze_results.ipynb` to generate plots.
 
 See the report `report.pdf` for details on the methodology and results.
 
-Author: @rebeccamccabe and @AlannLiu
+Authors: @rebeccamccabe and @AlannLiu
