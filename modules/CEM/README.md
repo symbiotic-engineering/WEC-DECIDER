@@ -1,19 +1,28 @@
 # GenX Fork for Wave Energy
 All the files for wave energy are in `Example_Systems/RealSystemExample/ISONE_Singlezone/`.
 
-0. Clone this repo, setup conda environment with `environment.yml`, install Julia and Gurobi 
-1. Configure `h5pyd` according to the instructions [here](https://mhkit-software.github.io/MHKiT/WPTO_hindcast_example.html)
-1. First run `make_batch_csv.ipynb` which should generate `replacements.csv`
-2. Then run `caserunner.jl` (see the bottom of `make_batch_csv.ipynb` for julia commands) to run the optimization
-import package genX
-Package activate Gen x
-package instantiate
-Package st to check proper packages
-cd to proper directory
-obtain gurobi licence and then pkg.build("Gurobi")
-include caserunner
-3. Finally run `analyze_results.ipynb`
+0. Clone this repo: `git clone git@github.com:symbiotic-engineering/WEC-DECIDER.git`
+1. Install anaconda, miniconda, or mamba and setup the python environment: `conda env create -f environment.yml`.
+2. Install Julia using the instructions [here](https://julialang.org/downloads/). Use julia version 1.8 (recommend setting it as default).
+3. Install Gurobi Optimizer using the "full installation" instructions [here](https://support.gurobi.com/hc/en-us/articles/4534161999889-How-do-I-install-Gurobi-Optimizer).
+4. Obtain a Gurobi license (ie academic single-user) and install it (ie using `grbgetkey`). If the command is not found, use the full filepath, as described [here](https://support.gurobi.com/hc/en-us/articles/360040113232-How-do-I-resolve-the-error-grbgetkey-command-not-found-or-grbgetkey-is-not-recognized).
+5. Configure `h5pyd` according to the instructions [here](https://mhkit-software.github.io/MHKiT/WPTO_hindcast_example.html).
+6. First run `make_batch_csv.ipynb` which should generate `replacements.csv`.
+7. Then run `caserunner.jl` to run the optimization. To do this, use the following julia commands: 
+```
+julia # enter julia REPL
+using Pkg # load package manager
+Pkg.activate("GenX") # set active project - you should be in the directory above GenX when executing this command
+Pkg.instantiate() # first time only. If on windows, see special instructions in GenX readme.
+] # enter package manager
+st # status - check that packages installed correctly
+backspace or ctrl-C  # exit package manager
+Pkg.build("Gurobi") # may be necessary for first Gurobi use?
+cd("GenX/Example_Systems/RealSystemExample/ISONE_Singlezone")
+include("caserunner.jl")
+```
+8. Finally run `analyze_results.ipynb` to generate plots.
 
 See the report `report.pdf` for details on the methodology and results.
 
-Author: @rebeccamccabe
+Author: @rebeccamccabe and @AlannLiu
