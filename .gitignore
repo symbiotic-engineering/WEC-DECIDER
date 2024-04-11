@@ -174,3 +174,6 @@ Highs.log
 **/Results*/
 **/TDR_Results/
 **/Cases/
+
+# DECIDER data
+data/*
