@@ -3,23 +3,41 @@ import numpy as np
 
 # Shared Variables
 
-def openmdao_ivc(X, p):
+def openmdao_ivc(X, p, D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M = None):
     # Initialize IndepVarComp
     ivc = om.IndepVarComp()
 
     X = np.maximum(X, 1e-3)
     in_params = p.copy()
-    #[20, 0.3, 0.2, 0.7954545454545454, 5, 0.5, 0.8]
+
+
+    if not D_f:
+        D_f = X[0]
+    if not D_s_over_D_f:
+        D_s_over_D_f = X[1]
+    if not h_f_over_D_f:
+        h_f_over_D_f = X[2]
+    if not T_s_over_h_s:
+        T_s_over_h_s = X[3]
+    if not F_max:
+        F_max = X[4]
+    if not B_p:
+        B_p = X[5]
+    if not w_n:
+        w_n = X[6]
+    if not M:
+        M = int(X[7])
+
     # Design Variables
-    ivc.add_output('D_f', 20)
-    ivc.add_output('D_s_over_D_f', 0.3)
-    ivc.add_output('h_f_over_D_f', 0.2)
-    ivc.add_output('T_s_over_h_s', 0.7954545454545454)
-    #ivc.add_output('F_max', X[4] * 1e6)
-    ivc.add_output('F_max', 5 * 1e6)
-    ivc.add_output('B_p', 0.5 * 1e6 )
-    ivc.add_output('w_n', 0.8)
-    ivc.add_output('M', int(X[7]))
+
+    ivc.add_output('D_f', D_f)
+    ivc.add_output('D_s_over_D_f', D_s_over_D_f)
+    ivc.add_output('h_f_over_D_f', h_f_over_D_f)
+    ivc.add_output('T_s_over_h_s', T_s_over_h_s)
+    ivc.add_output('F_max', F_max)
+    ivc.add_output('B_p', B_p)
+    ivc.add_output('w_n', w_n)
+    ivc.add_output('M', M)
 
 
 

@@ -98,39 +98,3 @@ class structureComponent(om.ExplicitComponent):
 
 
 
-
-"""
-prob = om.Problem()
-promotesInputs = ['F_heave', 'F_surge', 'M', 'h_s', 'T_s', 'rho_w', 'g', 'sigma_y' ,'A_c', 'A_lat_sub' ,'r_over_t', 'I', 'E']
-prob.model.add_subsystem('test', structureComponent(), promotes_inputs= promotesInputs )
-
-prob.driver = om.ScipyOptimizeDriver()
-prob.driver.options['optimizer'] = 'SLSQP'
-
-prob.model.add_design_var('F_heave', lower=0., upper=1)
-prob.model.add_objective('test.FOS1Y', scaler=1)
-prob.setup()
-
-
-#prob.set_val('F_heave', np.array([[8499999.90183192]]))
-prob.set_val('F_surge', np.array([1.81215933e+06, 4.41507300e+07, 7.32551764e+02]))
-prob.set_val('M', 0)
-prob.set_val('h_s', 44.0)
-prob.set_val('T_s', 35.0)
-prob.set_val('rho_w', 1000.0)
-prob.set_val('g', 9.8)
-prob.set_val('sigma_y', np.array([2.48211252e+08, 3.10264065e+07, 2.06842710e+08]))
-prob.set_val('A_c', np.array([2.79043943e+00, 4.76751890e-01, 6.78584013e+02]))
-prob.set_val('A_lat_sub', np.array([4.47040000e-02, 3.29867229e+02, 1.19694680e+00]))
-prob.set_val('r_over_t', np.array([0. ,118.11023622, 0.]))
-prob.set_val('I', np.array([7.85398163e+03, 2.12729616e+00, 3.97607820e+04]))
-prob.set_val('E', np.array([2.00000000e+11,2.78506762e+07,2.00000000e+11]))
-
-print(prob.get_val('test.FOS_buckling'))
-print(prob.get_val('T_s'))
-prob.run_model();
-prob.model.list_inputs(val=True)
-# output structure
-# 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
-prob.model.list_outputs(val = True)
-"""

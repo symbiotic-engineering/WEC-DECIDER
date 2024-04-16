@@ -62,8 +62,8 @@ class outputComponent(om.ExplicitComponent):
         LCOE_max = inputs['LCOE_max']
         LCOE = inputs['LCOE']
         F_ptrain_max = inputs['F_ptrain_max']
-        F_max = inputs['F_max']
-
+        #F_max = inputs['F_max']
+        F_max = inputs['F_max'] * 1e6
         # copy the original code to here
         g = np.zeros(14)
         g[0] = V_f_pct  # Prevent float too heavy
@@ -81,10 +81,6 @@ class outputComponent(om.ExplicitComponent):
         g[12] = LCOE_max / LCOE - 1  # LCOE threshold
         g[13] = F_ptrain_max / F_max - 1  # Max force
 
-      #  for value in g:
-      #      if value < 0:
-      #          raise om.AnalysisError('cannot be zero')
-
         outputs['g_0'] = g[0]
         outputs['g_1'] = g[1]
         outputs['g_2'] = g[2]
@@ -99,24 +95,5 @@ class outputComponent(om.ExplicitComponent):
         outputs['g_11'] = g[11]
         outputs['g_12'] = g[12]
         outputs['g_13'] = g[13]
-
-        """
-                # Assemble constraints g(x) >= 0
-                g = np.zeros(14)
-                g[0] = V_f_pct  # Prevent float too heavy
-                g[1] = 1 - V_f_pct  # Prevent float too light
-                g[2] = V_s_pct  # Prevent spar too heavy
-                g[3] = 1 - V_s_pct  # Prevent spar too light
-                g[4] = GM  # Stability
-                g[5] = FOS1Y / p['FOS_min'] - 1  # Float survives max force
-                g[6] = FOS2Y / p['FOS_min'] - 1  # Spar survives max force
-                g[7] = FOS3Y / p['FOS_min'] - 1  # Damping plate survives max force
-                g[8] = FOS_buckling / p['FOS_min'] - 1  # Spar survives max force in buckling
-                g[9] = P_elec  # Positive power
-                g[10] = D_d / p['D_d_min'] - 1  # Damping plate diameter
-                g[11] = h_s_extra  # Prevent float rising above top of spar
-                g[12] = p['LCOE_max'] / LCOE - 1  # LCOE threshold
-                g[13] = F_ptrain_max / in_params['F_max'] - 1  # Max force
-        """
 
 

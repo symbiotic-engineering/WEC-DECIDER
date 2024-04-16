@@ -6,21 +6,30 @@ from dynamicsComponent import dynamicsComponent
 from structureComponent import structureComponent
 from econComponent import econComponent
 from outcomeComponent import outputComponent
-
-
 from inputs.parameters import parameters
-from inputs.var_bounds import var_bounds
 from sharedVariables import openmdao_ivc
 import numpy as np
 
 from omxdsm import write_xdsm
-class waveEngergy(om.Group):
-
+class waveEnergy(om.Group):
+    def __init__(self, b, p=None, D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None,M=0):
+        super().__init__()
+        self.p = p
+        self.b = b
+        self.D_f = D_f
+        self.D_s_over_D_f = D_s_over_D_f
+        self.h_f_over_D_f = h_f_over_D_f
+        self.T_s_over_h_s = T_s_over_h_s
+        self.F_max = F_max
+        self.B_p = B_p
+        self.w_n = w_n
+        self.M = M
+        #self.parameter2 = parameter2
     def setup(self):
-        p = parameters()
-        b = var_bounds(p)
-        X = np.concatenate((b['X_noms'], [0]))
-        ivc = openmdao_ivc(X, p)
+        if self.p == None:
+            self.p = parameters()
+        X = np.concatenate((self.b['X_noms'], [0]))
+        ivc = openmdao_ivc(X, self.p, D_f=self.D_f, D_s_over_D_f=self.D_s_over_D_f, h_f_over_D_f=self.h_f_over_D_f, T_s_over_h_s = self.T_s_over_h_s, F_max = self.F_max, B_p = self.B_p, M = self.M)
         self.add_subsystem('ivc', ivc)
         self.add_subsystem('ratioComponent', ratioComponent())
         self.add_subsystem('geometryComponent', geometryComponent())
@@ -125,50 +134,6 @@ class waveEngergy(om.Group):
         self.connect('ivc.F_max', 'outcomeComponent.F_max')
         return
 
-top = om.Problem(model=waveEngergy())
-
-top.driver = om.ScipyOptimizeDriver()
-top.driver.options['optimizer'] = 'SLSQP'
-
-
-
-
-
-
-top.model.add_design_var('ivc.D_f',  lower = 6, upper = 40)
-top.model.add_design_var('ivc.D_s_over_D_f',lower = 0.01, upper = 0.99)
-top.model.add_design_var('ivc.h_f_over_D_f',lower = 0.1, upper = 10)
-top.model.add_design_var('ivc.T_s_over_h_s',lower = 0.01, upper = 0.99)
-top.model.add_design_var('ivc.F_max',lower = 0.01 * 1e6, upper = 10 * 1e6,scaler = 1e6) #new Value = (initial + adder ) * scaler
-top.model.add_design_var('ivc.B_p',lower = 0.1 * 1e6, upper = 50 * 1e6)
-top.model.add_design_var('ivc.w_n',lower=0.01, upper=40)
-top.model.add_design_var('ivc.M', lower=0, upper=2)
-
-
-
-top.driver.options['maxiter'] = 1000  # Increase max iterations
-top.driver.options['tol'] = 1e-8
-top.model.add_objective('outcomeComponent.LCOE',scaler=1)
-#add constraints.
-
-top.model.add_constraint('outcomeComponent.g_0', lower= 0)
-top.model.add_constraint('outcomeComponent.g_1', lower= 0)
-top.model.add_constraint('outcomeComponent.g_2', lower= 0)
-top.model.add_constraint('outcomeComponent.g_3', lower= 0)
-top.model.add_constraint('outcomeComponent.g_4', lower= 0)
-top.model.add_constraint('outcomeComponent.g_5', lower= 0)
-top.model.add_constraint('outcomeComponent.g_6', lower= 0)
-top.model.add_constraint('outcomeComponent.g_7', lower= 0)
-top.model.add_constraint('outcomeComponent.g_8', lower= 0)
-top.model.add_constraint('outcomeComponent.g_9', lower= 0)
-top.model.add_constraint('outcomeComponent.g_10', lower= 0)
-top.model.add_constraint('outcomeComponent.g_11', lower= 0)
-top.model.add_constraint('outcomeComponent.g_12', lower= 0)
-top.model.add_constraint('outcomeComponent.g_13', lower= 0)
-
-top.setup()
-top.run_driver()
-top.model.list_outputs(val=True)
 #om.n2(top)
 
 
