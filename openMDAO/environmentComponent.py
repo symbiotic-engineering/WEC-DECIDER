@@ -14,7 +14,7 @@ class environmentComponent(om.ExplicitComponent):
         self.add_input(name = 'firstFloatMatrixInput', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
 
         #adding output:
-        self.add_output(name = 'eco_value', desc = "total eco value")
+        self.add_output(name = 'eco_value', desc = "total eco value") #test
         self.add_output(name = 'firstFloatMatrixOutput', shape=(4,5), desc = "this is my first float matrix variable output")
 
         # Partial derivatives required for optimization
