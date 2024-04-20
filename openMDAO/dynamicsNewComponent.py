@@ -2,7 +2,6 @@ import openmdao.api as om
 import numpy as np
 import autograd.numpy as np
 import capytaine as cpy
-import matplotlib.pyplot as plt
 from scipy.optimize import brute
 import wecopttool as wot
 import math
@@ -10,21 +9,21 @@ import math
 class DynamicsNewComponent(om.ExplicitComponent):
     def setup(self):
         #11 inputs 
-        self.add_input('f_max', 2e5, desc="maximum force (N)")
+        self.add_input('f_max', 2e6, desc="maximum force (N)")
         self.add_input('x_max', 0.15, desc="maximum position (m)")
-        self.add_input('Vs_max', 4e4, desc="maximum voltage (V)")
+        self.add_input('Vs_max', 4e5, desc="maximum voltage (V)")
         self.add_input('D_f', 20.0, desc="outer diameter of float (m)")
         self.add_input('D_s', 6.0, desc="diameter of spar (inner diameter of float) (m)")
         self.add_input('h_f', 4.0, desc="height of straight section of float, before the frustum (m)")
         self.add_input('h_f_2', 5.2, desc="height of entire float, including the frustum at the bottom (m)")
         self.add_input('mesh_density', 5)
-        self.add_input('mass', 28000.0, desc="mass of RM3 (kg)")
-        self.add_input('wavefreq', 0.3)
-        self.add_input('amplitude', 1)
+        self.add_input('mass', 208000.0, desc="mass of RM3 (kg)")
+        self.add_input('Hs', 3)
+        self.add_input('Tp', 8)
 
         # 2 outputs
         self.add_output('P_elec')
-        self.add_output('F_heave')
+        self.add_output('f_heave')
         
 
     def setup_partials(self):
@@ -42,16 +41,16 @@ class DynamicsNewComponent(om.ExplicitComponent):
         h_f_2 = inputs['h_f_2']
         mesh_density = inputs['mesh_density']
         mass = inputs['mass']
-        wavefreq = inputs['wavefreq']
-        amplitude = inputs['amplitude']
+        Hs = inputs['Hs']
+        Tp = inputs['Tp']
 
         #compute
         RM3 = self.make_RM3(h_f, h_f_2, D_s, D_f, mesh_density)
-        P_elec, F_heave = self.inner_function(mass, f_max, x_max, Vs_max, RM3, wavefreq, amplitude)
+        P_elec, f_heave = self.inner_function(mass, f_max, x_max, Vs_max, RM3, Hs, Tp)
 
         #assign outputs
         outputs['P_elec'] = P_elec
-        outputs['F_heave'] = F_heave
+        outputs['f_heave'] = f_heave
 
     def body_from_profile(self, x, y, z, nphi):
         xyz = np.array([np.array([x/math.sqrt(2),y/math.sqrt(2),z]) for x,y,z in zip(x,y,z)])    # /sqrt(2) to account for the scaling
@@ -84,17 +83,18 @@ class DynamicsNewComponent(om.ExplicitComponent):
         RM3 = bottom_frustum + outer_surface + top_surface + inner_surface
         return RM3
     
-    def inner_function(mass, f_max, x_max, Vs_max, fb, wavefreq, amplitude, Hs = None, Tp = None):
+    def inner_function(self, mass, f_max, x_max, Vs_max, fb, Hs, Tp):
 
+        g = 9.8
+        rho = 1000
         fb.add_translation_dof(name="Heave")
         ndof = fb.nb_dofs
+        fb.mass = np.atleast_2d(mass)
         
-        stiffness = wot.hydrostatics.stiffness_matrix(fb).values
-
         f1 = 0.05# Hz
         nfreq = 20
         freq = wot.frequency(f1, nfreq, False) # False -> no zero frequency
-        bem_data = wot.run_bem(fb, freq)
+        bem_data = wot.run_bem(fb, freq, rho=rho, g=g)
         
         name = ["PTO_Heave",]
         kinematics = np.eye(ndof)
@@ -153,51 +153,48 @@ class DynamicsNewComponent(om.ExplicitComponent):
         
         wec = wot.WEC.from_bem(
             bem_data,
-            inertia_matrix=mass,
-            hydrostatic_stiffness=stiffness,
             constraints=constraints,
-            friction=None,
             f_add=f_add,
             )
 
-        #waves
-        phase = 0
-        wavedir = 0
+        #irregular waves
+        # number of realizations to reach 20 minutes of total simulation time
+        minutes_needed = 20
+        nrealizations = minutes_needed*60*f1
+        print(f'Number of realizations for a 20 minute total simulation time: {nrealizations}')
+        nrealizations = 2 # overwrite nrealizations to reduce run-time
+        fp = 1/Tp
+        spectrum = lambda f: wot.waves.pierson_moskowitz_spectrum(f, fp, Hs)
+        efth = wot.waves.omnidirectional_spectrum(f1, nfreq, spectrum, "Pierson-Moskowitz")
+        waves_irregular = wot.waves.long_crested_wave(efth, nrealizations)
 
-        if Hs == None and Tp == None:
-            #regular wave
-            waves = wot.waves.regular_wave(f1, nfreq, wavefreq, amplitude, phase, wavedir)
-        else:
-            #irregular wave
-            def irregular_wave(Hs, Tp):
-                Fp = 1/Tp
-                spectrum = lambda f: wot.waves.pierson_moskowitz_spectrum(f, Fp, Hs)
-                efth = wot.waves.omnidirectional_spectrum(f1, nfreq, spectrum, "Pierson-Moskowitz")
-                return wot.waves.long_crested_wave(efth)
-
-            waves = irregular_wave(Hs, Tp)
-
+        waves = waves_irregular
         obj_fun = pto.average_power
         nstate_opt = 2*nfreq
 
         options = {'maxiter': 1000}
-        scale_x_wec = 1e1
+        scale_x_wec = 1e3
         scale_x_opt = 1e-4
-        scale_obj = 1e-3
+        scale_obj = 1e-5
 
         results = wec.solve(
             waves,
             obj_fun,
             nstate_opt,
             optim_options=options,
-            x_wec_0=np.ones(nfreq*2) *1e-4,
-            x_opt_0=np.ones(nfreq*2) *1e-4,
+            x_wec_0=np.ones(nfreq*2) *1e-3,
+            x_opt_0=np.ones(nfreq*2) *1e4,
             scale_x_wec=scale_x_wec,
             scale_x_opt=scale_x_opt,
             scale_obj=scale_obj,
             )
         
-        return results.fun, F_heave
+        x_wec, x_opt = wot.decompose_state(results[0].x, ndof=ndof, nfreq=nfreq)
+        inertia = wec.inertia(wec,x_wec, x_opt, waves)
+        ptoPlusBumpstop = force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves)
+        f_heave = np.max(np.abs(np.add(inertia, ptoPlusBumpstop)))
+            
+        return results[0].fun, f_heave
 
 
 #componentTest
