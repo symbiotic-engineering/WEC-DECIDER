@@ -1,14 +1,14 @@
 # Model years and planning parameters
-model_year: [2030, 2040, 2050]
+model_year: [2030, 2040] #deleted 2050 for now; must add later
 model_first_planning_year: 2020
 
 # Geographic model regions
 model_regions:
-  - Northwest
+  # - Northwest 
   - CAISO
   - ISONE_NYISO
-  - PJM
-  - Southeast
+  #- PJM
+  #- Southeast
 
 # Region aggregations for combined areas
 region_aggregations:
@@ -22,29 +22,20 @@ demand_scenarios:
     description: "High economic growth leading to increased energy demand"
     growth_factor: 1.2
     regional_growth_factors:
-      Northwest: 1.3
       CAISO: 1.2
       ISONE_NYISO: 1.1
-      PJM: 1.25
-      Southeast: 1.15
   moderate_demand:
     description: "Moderate economic growth with steady demand increase"
     growth_factor: 1.1
     regional_growth_factors:
-      Northwest: 1.15
       CAISO: 1.1
       ISONE_NYISO: 1.05
-      PJM: 1.1
-      Southeast: 1.08
   low_demand:
     description: "Low economic growth with minimal changes in demand"
     growth_factor: 1.03
     regional_growth_factors:
-      Northwest: 1.04
       CAISO: 1.03
       ISONE_NYISO: 1.02
-      PJM: 1.05
-      Southeast: 1.04
 
 # User supplied time series data paths
 extra_inputs:
@@ -76,7 +67,7 @@ genx_settings_folder: 'genx_settings/'
 reserves_fn: 'reserves.csv'
 
 # Existing generators data years and capacity columns
-eia_data_years: [2020]
+data_years: [2020]
 capacity_col: 'summer_capacity_mw'
 
 # Technology groups and operational settings
@@ -97,9 +88,9 @@ tech_groups:
 regional_no_grouping: 
   - CAISO
 
-PUDL_DB: ../WEC-DECIDER/data/pudl/pudl.sqlite
-PG_DB: ../WEC-DECIDER/data/pg/pg_misc_tables_efs.sqlite
-RESOURCE_GROUP_PROFILES: ../WEC-DECIDER/data/resource_profiles
-EFS_DATA: ../WEC-DECIDER/data/efs
-DISTRIBUTED_GEN_DATA: ../WEC-DECIDER/data/cambium
-# OPTIONAL: RESOURCE_GROUPS = YOUR_PATH_HERE
+PUDL_DB: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\pudl.sqlite
+PG_DB: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\pg_misc_tables_efs.sqlite
+RESOURCE_GROUP_PROFILES: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\generation_profiles
+EFS_DATA: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\efs_files_utc
+DISTRIBUTED_GEN_DATA: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\cambium_dg_data
+RESOURCE_GROUPS: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\resource_groups
