@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[4]:
+
+
+import mhkit
+import gridstatus
+import numpy as np
+import numpy_financial as npf
+import pandas as pd
+import requests
+import io
+import matplotlib.pyplot as plt
+import PySAM.Pvwattsv8 as pv
+import PySAM.Windpower as wd
+
+
+# In[5]:
+
+
+def capital_cost():
+    construction_cost = 0
+    total_cc = construction_cost
+def variable_cost():
+    device_lifetime = 0
+    annual_fuel_expenditure = 0
+    lifetime_fuel_usage = device_lifetime * annual_fuel_expenditure
+    replacement_cost = 0
+rate = 0.08
+N_WEC = 1
+development     = 4553000;
+infrastructure  = 990000;
+mooring         = N_WEC * 525000
+pto             = N_WEC * 623000
+profitmargin    = 356000
+installation    = 5909000
+contingency     = 1590000
+capex = development + infrastructure + mooring + pto + profitmargin + installation + contingency
+print(capex)
+#did not count for device structure
+
+operations = N_WEC * 27000;
+postinstall = 710000;
+shoreoperations = 142000;
+replacement = N_WEC * 54000;
+consumables = N_WEC * 8000;
+insurance = (.8 + .2*N_WEC) * 227000;
+opex = operations + postinstall + shoreoperations + replacement + consumables + insurance
+print(opex)
+
+#dummy numbers I got from Chatgpt
+elec_prod_yr = 800000 #in kwh
+price_elec = 0.2
+elec_revenue_yr = elec_prod_yr * price_elec
+print(elec_revenue_yr)
+
+profit_year = elec_revenue_yr - opex
+print(profit_year)
+
+cashflow = [-14546000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000, 1832000]
+npv_values = np.zeros(len(cashflow))
+for i in range(len(cashflow)):
+     npv_values[i] = npf.npv(rate, cashflow[:i+1])
+print(npv_values)
+
+time = np.arange(len(cashflow))
+plt.plot(time, npv_values, marker = 'o')
+plt.xlabel("Time")
+plt.ylabel("NPV")
+plt.title("NPV Over Time")
+plt.show()
+#how to put capital costs and variable costs into a function that returns NPV
+    # account for inflation, depreciation etc
+    #find a function that does this while accounting for these changes
+
+
+
+
+# In[20]:
+
+
+
+
+
+# In[ ]:
