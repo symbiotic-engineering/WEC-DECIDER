@@ -23,7 +23,6 @@ def find_nominal_inputs(b, display_on):
         X = b["X_noms"].copy()
         X = np.concatenate((X, [0]))
         X[4:7] = x  # Adjust index for Python's 0-based indexing
-        print("hello")
         b_copy = b.copy()
         b_copy["X_noms"] = np.concatenate((X, [0]))
         b_copy["X_noms"][4:7] = x

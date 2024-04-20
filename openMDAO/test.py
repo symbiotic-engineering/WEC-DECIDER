@@ -1,5 +1,13 @@
-from runOpenMdao import waveEnergy_run_model
+from runOpenMdao import waveEnergy_run_model,for_loop_waveEnergy_model
 from inputs.var_bounds import var_bounds
 
 b = var_bounds()
-waveEnergy_run_model(b)
+#print(b['X_noms'])
+
+M_min = 0
+M_max = 2
+
+collection = for_loop_waveEnergy_model(b,M_min=0,M_max=2)
+for temp in collection:
+    temp.run_model()
+    temp.model.list_outputs(val=True)
