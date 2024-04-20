@@ -88,9 +88,9 @@ tech_groups:
 regional_no_grouping: 
   - CAISO
 
-PUDL_DB: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\pudl.sqlite
-PG_DB: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\pg_misc_tables_efs.sqlite
-RESOURCE_GROUP_PROFILES: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\generation_profiles
-EFS_DATA: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\efs_files_utc
-DISTRIBUTED_GEN_DATA: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\cambium_dg_data
-RESOURCE_GROUPS: C:\\Users\\alanl\\OneDrive\\Desktop\\PowerGenome\\resource_groups
+PUDL_DB: ../WEC-DECIDER/data/pudl/pudl.sqlite
+PG_DB: ../WEC-DECIDER/data/pg/pg_misc_tables_efs.sqlite
+RESOURCE_GROUP_PROFILES: ../WEC-DECIDER/data/resource_profiles
+EFS_DATA: ../WEC-DECIDER/data/efs
+DISTRIBUTED_GEN_DATA: ../WEC-DECIDER/data/cambium
+# OPTIONAL: RESOURCE_GROUPS = YOUR_PATH_HERE
