@@ -7,9 +7,8 @@ import wecopttool as wot
 import math
 import pandas as pd
 
-
 # %%
-def body_from_profile(x,y,z,nphi):
+def body_from_profile(x,y,z, nphi):
     xyz = np.array([np.array([x/math.sqrt(2),y/math.sqrt(2),z]) for x,y,z in zip(x,y,z)])    # /sqrt(2) to account for the scaling
     body = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(xyz, nphi=nphi))
     return body
@@ -59,19 +58,19 @@ if __name__ == '__main__':
 
 # %%
 def inner_function(f_max, x_max, Vs_max, fb, wavefreq, amplitude, x_wec_0, x_opt_0):
-
+    
+    g = 9.8
+    rho = 1000
     fb.add_translation_dof(name="Heave")
     ndof = fb.nb_dofs
+    fb.mass = np.atleast_2d(208000)
     
-    stiffness = wot.hydrostatics.stiffness_matrix(fb).values
-    mass = 208000
-
     f1 = 0.05# Hz
     nfreq = 20
     freq = wot.frequency(f1, nfreq, False) # False -> no zero frequency
-    bem_data = wot.run_bem(fb, freq)
+    bem_data = wot.run_bem(fb, freq, rho=rho, g=g)
     
-    name = ["PTO_Heave",]
+    name = ["PTO_Heave"]
     kinematics = np.eye(ndof)
     controller = None
     loss = None
@@ -87,9 +86,40 @@ def inner_function(f_max, x_max, Vs_max, fb, wavefreq, amplitude, x_wec_0, x_opt
         condition = [(pos > x_max) | (pos < -x_max)]
         bumpstop = np.where(condition, bumpstop, 0.0)
         f_tot = pto.force_on_wec(wec, x_wec, x_opt, waves, nsubsteps) + bumpstop
-        return f_tot    
+        return f_tot
 
-    f_add = {'PTO+bumpstop' : force_on_wec_with_bumpstop}
+    # def f_bumpstop(wec, x_wec, x_opt, waves, nsubsteps=1):
+    #     pos = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
+    #     vel = pto.velocity(wec, x_wec, x_opt, waves, nsubsteps)
+    #     b = 14    # 
+    #     k = 10e6  # N/m        
+
+    #     # bumpstop = np.array([])
+    #     # for i in range(len(pos)):
+    #     #     if pos[i] > x_max: 
+    #     #         bump = k * (pos[i] - x_max) + b * vel[i]
+    #     #     elif pos[i] < -x_max: 
+    #     #         bump = k * (pos[i] + x_max) + b * vel[i]
+    #     #     else: 
+    #     #         bump = [0.0]
+    #     #     bumpstop = np.concatenate((bumpstop, bump), axis = 0)
+        
+    #     # bumpstop = bumpstop.reshape(-1, 1)
+       
+    #     # f_bumpstop = np.dot(time_matrix, bumpstop)
+
+    #     bumpstop = -k * (np.abs(pos) + x_max) * np.sign(pos) - b * vel
+    #     condition = [(pos > x_max) | (pos < -x_max)]
+    #     bumpstop = np.where(condition, bumpstop, 0.0)
+
+        return bumpstop
+    
+
+    f_add = {
+            'PTO+bumpstop' : force_on_wec_with_bumpstop
+            # 'PTO': pto.force_on_wec,
+            # 'bumpstop': f_bumpstop,
+            }
     
     #contraints
     nsubsteps = 4
@@ -125,47 +155,36 @@ def inner_function(f_max, x_max, Vs_max, fb, wavefreq, amplitude, x_wec_0, x_opt
     
     wec = wot.WEC.from_bem(
         bem_data,
-        inertia_matrix=mass,
-        hydrostatic_stiffness=stiffness,
         constraints=constraints,
-        friction=None,
-        f_add=f_add,
+        f_add=f_add
         )
-
+    
     #regular waves
     phase = 0
     wavedir = 0
-    waves = {}
-    waves['regular'] = wot.waves.regular_wave(f1, nfreq, wavefreq, amplitude, phase, wavedir)
+    waves_regular = wot.waves.regular_wave(f1, nfreq, wavefreq, amplitude, phase, wavedir)
     
     #irregular waves
-    wave_cases = {
-        'south_max_90': {'Hs': 0.21, 'Tp': 3.09},
-        'south_max_annual': {'Hs': 0.13, 'Tp': 2.35},
-        'south_max_occurrence': {'Hs': 0.07, 'Tp': 1.90},
-        'south_min_10': {'Hs': 0.04, 'Tp': 1.48},
-        'north_max_90': {'Hs': 0.25, 'Tp': 3.46},
-        'north_max_annual': {'Hs': 0.16, 'Tp': 2.63},
-        'north_max_occurrence': {'Hs': 0.09, 'Tp': 2.13},
-        'north_min_10': {'Hs': 0.05, 'Tp': 1.68},
-        'testing' : {'Hs': 0.2, 'Tp': 5}
-        }
-    def irregular_wave(hs, tp):
-        fp = 1/tp
-        spectrum = lambda f: wot.waves.pierson_moskowitz_spectrum(f, fp, hs)
-        efth = wot.waves.omnidirectional_spectrum(f1, nfreq, spectrum, "Pierson-Moskowitz")
-        return wot.waves.long_crested_wave(efth)
+    Hs = 3
+    Tp = 8
+    # number of realizations to reach 20 minutes of total simulation time
+    minutes_needed = 20
+    nrealizations = minutes_needed*60*f1
+    print(f'Number of realizations for a 20 minute total simulation time: {nrealizations}')
+    nrealizations = 2 # overwrite nrealizations to reduce run-time
 
-    for case, data in wave_cases.items():
-        waves[case] = irregular_wave(data['Hs'], data['Tp'])
+    fp = 1/Tp
+    spectrum = lambda f: wot.waves.pierson_moskowitz_spectrum(f, fp, Hs)
+    efth = wot.waves.omnidirectional_spectrum(f1, nfreq, spectrum, "Pierson-Moskowitz")
+    waves_irregular = wot.waves.long_crested_wave(efth, nrealizations)
 
     obj_fun = pto.average_power
     nstate_opt = 2*nfreq
 
     options = {'maxiter': 1000}
-    scale_x_wec = 1e1
+    scale_x_wec = 1e3
     scale_x_opt = 1e-4
-    scale_obj = 1e-3
+    scale_obj = 1e-5
 
     
     
@@ -174,9 +193,10 @@ def inner_function(f_max, x_max, Vs_max, fb, wavefreq, amplitude, x_wec_0, x_opt
         print ('{0:4d}   {1: 3.6f}'.format(Nfeval, obj_fun(wec, x_wec, x_opt, waves)))
         Nfeval += 1
 
-
+    waves = waves_irregular
+    
     results = wec.solve(
-        waves['regular'],
+        waves,
         obj_fun,
         nstate_opt,
         optim_options=options,
@@ -187,44 +207,104 @@ def inner_function(f_max, x_max, Vs_max, fb, wavefreq, amplitude, x_wec_0, x_opt
         scale_x_opt=scale_x_opt,
         scale_obj=scale_obj,
         )
+    # bem_data.added_mass.plot()
+    # bem_data.radiation_damping.plot()
+    # graph for hyrdodynamics coefficients
+    #rho=1030
+    #Added_mass_norm = bem_data['added_mass']/rho
+    #radiation_dampin_normg = bem_data['radiation_damping']/(rho*f1*2*math.pi)
     
-    return [results.fun,results.x]
+    #fig, axes = plt.subplots(3,1)
+    #Added_mass_norm.plot(ax = axes[0])
+    #radiation_dampin_normg.plot(ax = axes[1])
+    #axes[2].plot(bem_data['omega'],np.abs(np.squeeze(bem_data['diffraction_force'].values)), color = 'orange')
+    #axes[2].set_ylabel('abs(diffraction_force)', color = 'orange')
+    #axes[2].tick_params(axis ='y', labelcolor = 'orange')
+    #ax2r = axes[2].twinx()
+    #ax2r.plot(bem_data['omega'], np.abs(np.squeeze(bem_data['Froude_Krylov_force'].values)), color = 'blue')
+    #ax2r.set_ylabel('abs(FK_force)', color = 'blue')
+    #ax2r.tick_params(axis ='y', labelcolor = 'blue')
+
+    #for axi in axes:
+        #axi.set_title('')
+        #axi.label_outer()
+        #axi.grid()
+
+    #axes[-1].set_xlabel('Frequency [rad/s]')
+
+    # nsubstep_postprocess = 4
+    # wec_fdom, wec_tdom = wec.post_process(results, waves['regular'], nsubstep_postprocess)
+    # pto_fdom, pto_tdom = pto.post_process(wec, results, waves['regular'], nsubstep_postprocess)
+    # fig, ax = plt.subplots(3,1)
+
+    # #Pos, Vel, Wave Elevation
+    # (wec_tdom["pos"]).plot(ax=ax[0], label = 'Pos')
+    # (wec_tdom["vel"]).plot(ax=ax[0], label = 'Vel')
+    # (wec_tdom["wave_elev"]).plot(ax=ax[0], label = 'Wave')
+    # ax[0].legend()
+    # ax[0].set_ylabel("Position [m] / Vel [m/s]"); ax[0].set_title("")
+
+    # # Force
+    # (pto_tdom["force"]).plot(ax=ax[1], label = 'PTO fore')
+    # ax[1].legend()
+    # ax[1].set_title("")
+
+    # # Power
+    # (pto_tdom['power'].loc['mech',:,:]/1e3).plot(ax=ax[2], label='Mech. power')
+    # (pto_tdom['power'].loc['elec',:,:]/1e3).plot(ax=ax[2], linestyle='dashed',
+    #                             label="Elec. power")
+    # # ax[3].axhline(-1*power_max/1e3, linestyle='dotted', color='black',
+    #     # label=f'Max mech. power ($\pm${power_max/1e3:.0f}kW)')
+    # # ax[3].axhline(1*power_max/1e3, linestyle='dotted', color='black')
+    # ax[2].grid(color='0.75', linestyle='-', linewidth=0.5, axis='x')
+    # ax[2].legend(loc='upper right')
+    # ax[2].set_title('')
+    # ax[2].set_ylabel('Power [kW]')
+    x_wec, x_opt = wot.decompose_state(results[0].x, ndof=ndof, nfreq=nfreq)
+    
+    inertia = wec.inertia(wec,x_wec, x_opt, waves)
+    ptoPlusBumpstop = force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves)
+    f_heave = np.max(np.abs(np.add(inertia, ptoPlusBumpstop)))
+    
+    print('f_heave',np.add(inertia, ptoPlusBumpstop), f_heave)
+    
+    # print('INERTIA!', wec.inertia(wec,x_wec, x_opt, waves['regular']))
+    # print('f_add', force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves['regular'], nsubsteps=1))
+    # print('sum', np.add(wec.inertia(wec,x_wec, x_opt, waves['regular']), force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves['regular'], nsubsteps=1)))
+    return [results[0].fun,results[0], f_heave, x_wec, x_opt]
 
 # %%
-############# SWEEPING #############
-
 ## 1D ##
 
 Nfeval = 1
-tt2 = inner_function(f_max = 1e5, x_max = 0.1,  Vs_max = 3e4, fb=RM3, wavefreq = 0.3, amplitude = 1, x_wec_0=np.ones(40)*1e-7, x_opt_0=np.ones(40)*1e0)
+tt2 = inner_function(f_max = 5e6, x_max = 1000,  Vs_max = 3e10, fb=RM3, wavefreq = 0.3, amplitude = 1, x_wec_0=np.ones(40)*1e-3, x_opt_0=np.ones(40)*1e4)
 print(tt2[0])
 
-number = 5
-xrange = np.linspace(0.05, 0.1, number)
-frange = np.linspace(1e5, 1e6, number)
-temp_result = np.array([])
-X1 = np.full(number, 0.0)
-for i in range(number):
-    Nfeval = 1
-    try:
-        if i == 0:
-            temp_result = inner_function(f_max = 1e5, x_max = xrange[i], Vs_max = 1e5, fb=RM3, wavefreq = 0.3, amplitude = 1, x_wec_0=np.ones(40) *1e-7, x_opt_0=np.ones(40) *1e0)
-            X1[i] = temp_result[0]
-        else:
-            temp_result = inner_function(f_max = 1e5, x_max = xrange[i], Vs_max = 1e5, fb=RM3, wavefreq = 0.3, amplitude = 1, x_wec_0= temp_result[1][0:len(temp_result[1])//2], x_opt_0=temp_result[1][len(temp_result[1])//2:])
-            X1[i] = temp_result[0]
-        # X1[i] = inner_function(f_max = frange[i], x_max = 0.05, Vs_max = 1e5, fb=RM3, wavefreq = 0.3, amplitude = 1)
-    except:
-            pass
-    print(X1)
+# number = 5
+# xrange = np.linspace(0.05, 0.1, number)
+# frange = np.linspace(1e5, 1e6, number)
+# temp_result = np.array([])
+# X1 = np.full(number, 0.0)
+# for i in range(number):
+#     Nfeval = 1
+#     try:
+#         if i == 0:
+#             temp_result = inner_function(f_max = 1e5, x_max = xrange[i], Vs_max = 1e5, fb=RM3, wavefreq = 0.3, amplitude = 1, x_wec_0=np.ones(40) *1e-7, x_opt_0=np.ones(40) *1e0)
+#             X1[i] = temp_result[0]
+#         else:
+#             temp_result = inner_function(f_max = 1e5, x_max = xrange[i], Vs_max = 1e5, fb=RM3, wavefreq = 0.3, amplitude = 1, x_wec_0= temp_result[1][0:len(temp_result[1])//2], x_opt_0=temp_result[1][len(temp_result[1])//2:])
+#             X1[i] = temp_result[0]
+#         # X1[i] = inner_function(f_max = frange[i], x_max = 0.05, Vs_max = 1e5, fb=RM3, wavefreq = 0.3, amplitude = 1)
+#     except:
+#             pass
+#     print(X1)
 
-fig, ax = plt.subplots()
-ax.plot(xrange, np.abs(X1))
+# fig, ax = plt.subplots()
+# ax.plot(xrange, np.abs(X1))
     
 
 # %%
-fig, ax = plt.subplots()
-ax.plot(xrange, np.abs(X1))
+print(tt2[4])
 
 # %%
 ## 2D ##
@@ -269,6 +349,21 @@ im = ax.pcolormesh(x_, f_, X2, shading='nearest')
 fig.colorbar(im, ax=ax, label="Ave Elec Power")
 ax.set_xlabel('x_max')
 ax.set_ylabel('F_max')
+
+# %%
+print('x_', x_)
+print('f_', f_)
+print('Y', X2)
+
+fig, ax = plt.subplots()
+
+im = ax.pcolormesh(x_, f_, X2, shading='nearest')
+fig.colorbar(im, ax=ax, label="Ave Elec Power")
+ax.set_xlabel('x_max')
+ax.set_ylabel('F_max')
+
+# %%
+print(np.linspace(3e4, 3e5, 5))
 
 # %%
 ## 3D ##
@@ -401,6 +496,3 @@ print(np.linspace(0.1, 5, 20))
 
 
 # %%
-
-
-
