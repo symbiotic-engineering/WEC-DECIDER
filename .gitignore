@@ -175,5 +175,8 @@ Highs.log
 **/TDR_Results/
 **/Cases/
 
+# Power genome logs
+log.txt
+
 # DECIDER data
 data/*
