@@ -1,3 +1,5 @@
+# this script must be run with working directory set to WEC-DECIDER/ folder
+
 # download zip files and unzip them
 # once powergenome data sources are hosted on zenodo instead of drive, use pooch for this instead of gdown
 if ! [ -d ./data/cambium ]; then
