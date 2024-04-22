@@ -2,28 +2,34 @@ using CSV
 using DataFrames
 using YAML
 
-# Definitions of CaseRunner-specific strings
-caserunner_specialstring() = "SPECIAL"
-caserunner_templatefolder() = "template"
-caserunner_jobscript() = "jobscript.sh"
-caserunner_replacementscsv() = "replacements.csv"
-main_case_folder() = "Cases"
-settingsfolder() = "Settings"
+function run_caserunner(pg_id, location)
+    # Definitions of CaseRunner-specific strings
+    caserunner_specialstring() = "SPECIAL"
+    caserunner_templatefolder() = "inputs"
+    caserunner_jobscript() = "jobscript.sh"
+    caserunner_replacementscsv() = "replacements_" * location * ".csv"
+    main_case_folder() = "Cases"
+    settingsfolder() = "Settings"
 
-results_name() = "Results"
-case_folder_name(i::Integer) = "case_" * string(i)
-case_folder_path(i::Integer) = joinpath(main_case_folder(), case_folder_name(i))
+    results_name() = "Results"
+    case_folder_name(i::Integer) = "case_" * string(i) * "_" * pg_id
+    case_folder_path(i::Integer) = joinpath(main_case_folder(), case_folder_name(i))
 
-replacements_df() = csv2dataframe(caserunner_replacementscsv())
+    replacements_df() = csv2dataframe(caserunner_replacementscsv())
 
-csv2dataframe(path::AbstractString) = CSV.read(path, header=1, DataFrame)
-dataframe2csv(df::DataFrame, path::AbstractString) = CSV.write(path, df)
+    csv2dataframe(path::AbstractString) = CSV.read(path, header=1, DataFrame)
+    dataframe2csv(df::DataFrame, path::AbstractString) = CSV.write(path, df)
 
-yml2dict(path::AbstractString) = YAML.load_file(path)
-dict2yml(d::Dict, path::AbstractString) = YAML.write_file(path, d)
+    yml2dict(path::AbstractString) = YAML.load_file(path)
+    dict2yml(d::Dict, path::AbstractString) = YAML.write_file(path, d)
 
-# Change this variable. Valid entries are "BATCH" and "SEQUENTIAL"
-joblocation = "SEQUENTIAL"
+    # Change this variable. Valid entries are "BATCH" and "SEQUENTIAL"
+    joblocation = "SEQUENTIAL"
+
+    string_to_specialkey(s::AbstractString) = "__" * caserunner_specialstring() * "_" * s * "__"
+
+    launch_new_cases()
+end
 
 function run_job(i)
     if joblocation == "BATCH"
@@ -90,7 +96,6 @@ end
 
 #---------------------------------------
 # Functions to handle the 'special keys'
-string_to_specialkey(s::AbstractString) = "__" * caserunner_specialstring() * "_" * s * "__"
 
 function isspecialkey(s::AbstractString)
     if length(s) < 13
@@ -397,4 +402,4 @@ function launch_new_cases()
     end
 end
 
-launch_new_cases()
+
