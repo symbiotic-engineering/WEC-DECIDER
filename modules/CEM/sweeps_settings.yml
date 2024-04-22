@@ -39,17 +39,17 @@ demand_scenarios:
 
 # User supplied time series data paths
 extra_inputs:
-  distributed_gen_profiles_fn: 'extra_inputs/distributed_gen_profiles.csv'
-  demand_response_fn: 'extra_inputs/demand_response.csv'
-  regional_load_fn: 'extra_inputs/regional_load.csv'
+  distributed_gen_profiles_fn: './modules/CEM/extra_inputs/distributed_gen_profiles.csv'
+  demand_response_fn: './modules/CEM/extra_inputs/demand_response.csv'
+  regional_load_fn: './modules/CEM/extra_inputs/regional_load.csv'
 
 # Case definitions and scenario descriptions
-case_id_description_fn: 'case_id_descriptions.csv'
-scenario_descriptions_fn: 'scenario_descriptions.csv'
+case_id_description_fn: './modules/CEM/extra_inputs/case_id_descriptions.csv'
+scenario_descriptions_fn: './modules/CEM/scenario_descriptions.csv'
 
 # Generator configurations
-misc_gen_inputs_fn: 'extra_inputs/misc_gen_inputs.csv'
-capacity_limit_spur_fn: 'extra_inputs/capacity_limit_spur.csv'
+misc_gen_inputs_fn: './modules/CEM/extra_inputs/misc_gen_inputs.csv'
+capacity_limit_spur_fn: './modules/CEM/extra_inputs/capacity_limit_spur.csv'
 
 # Cost and technology mappings
 atb_new_gen: 
@@ -59,15 +59,15 @@ atb_new_gen:
   - [UtilityPV, Class1, Moderate, 1]
 
 # Emission policies and demand segments
-emission_policies_fn: 'emission_policies.csv'
-demand_segments_fn: 'demand_segments.csv'
+emission_policies_fn: './modules/CEM/extra_inputs/emission_policies.csv'
+demand_segments_fn: './modules/CEM/extra_inputs/demand_segments.csv'
 
 # GenX settings and reserves
-genx_settings_folder: 'genx_settings/'
-reserves_fn: 'reserves.csv'
+genx_settings_folder: './modules/CEM/template/Settings/genx_settings/'
+reserves_fn: './modules/CEM/extra_inputs/reserves.csv'
 
 # Existing generators data years and capacity columns
-data_years: [2020]
+eia_data_years: [2020]
 capacity_col: 'summer_capacity_mw'
 
 # Technology groups and operational settings
