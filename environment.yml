@@ -6,17 +6,19 @@ dependencies:
   - python
   - pandas
   - numpy 
-  - numpy-financial
+  - numpy-financial # econ module
   - scipy 
   - matplotlib 
   - h5pyd
   - requests
-  - wecopttool
-  - nrel-pysam
-  - pyxdsm
+  - wecopttool  # dynamics module
+  - nrel-pysam  # econ module
+  - pyxdsm      # diagram generation
   - openmdao
-  - powergenome
-  - gdown
+  - powergenome # CEM module
+  - gdown       # data for CEM module
+  - ipykernel   # jupyter
+  - pyjuliacall # julia for CEM module
 #  - mpi4py 
 #  - petsc4py
   - pip:
