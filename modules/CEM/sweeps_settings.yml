@@ -290,6 +290,7 @@ generator_columns: [
             "cap_recovery_years",
         ]
 
+
 model_tag_values:
   THERM:
     Biomass: 1
@@ -299,25 +300,25 @@ model_tag_values:
     CSP: 1
     Geothermal: 1
     Landfill Gas: 1
-    Municipal Solid Waste: 1
-    Natural Gas: 1
-    Natural Gas Fired Combined Cycle: 1
-    Natural Gas Fired Combustion Turbine: 1
-    Natural Gas Internal Combustion Engine: 1
-    Natural Gas Steam Turbine: 1
+    Municipal Solid Waste: 1 
+    NaturalGas: 1
+    NaturalGas Fired Combined Cycle: 1
+    NaturalGas Fired Combustion Turbine: 1
+    NaturalGas Internal Combustion Engine: 1
+    NaturalGas Steam Turbine: 1
     NGCCS100: 1
     Nuclear: 1
     Other Gases: 1
     Other Natural Gas: 1
     Other Waste Biomass: 1
-    Other Peaker: 1 # Is there any way to do this based on the underlying categories?
+    Other Peaker: 1 
     Petroleum Coke: 1
     Petroleum Liquids: 1
     Wood/Wood Waste Biomass: 1
   DISP:
     CSP: 1
     Landbased Wind: 1
-    Offshore Wind: 1
+    OffshoreWind: 1
     Onshore Wind: 1
     Solar Photovoltaic: 1
     Solar Thermal without Energy Storage: 1
@@ -339,7 +340,7 @@ model_tag_values:
     Biopower: 1
     Coal Integrated Gasification Combined Cycle: 1
     Conventional Steam Coal: 1
-    Natural Gas: 1
+    NaturalGas: 1
     Natural Gas Fired Combined Cycle: 1
     Natural Gas Fired Combustion Turbine: 1
     Natural Gas Internal Combustion Engine: 1
@@ -356,11 +357,11 @@ model_tag_values:
     CSP: 1
     Geothermal: 1
     Landbased Wind: 1
-    Offshore Wind: 1
+    OffshoreWind: 1
     Onshore Wind: 1
     Small Hydroelectric: 1
     Solar Photovoltaic: 1
-    Utility PV: 1
+    UtilityPV: 1
   CES:
     Biomass: 1
     Biopower: 1
@@ -371,7 +372,7 @@ model_tag_values:
     Natural Gas CCS100: 1
     NGCCS100: 1
     Nuclear: 1
-    Offshore Wind: 1
+    OffshoreWind: 1
     Onshore Wind: 1
     Small Hydroelectric: 1
     Solar Photovoltaic: 1
@@ -383,7 +384,7 @@ model_tag_values:
     Conventional Hydroelectric: -1
     Geothermal: -1
     Landbased Wind: 1
-    Natural Gas: 1
+    NaturalGas: 1
     NGCCS100: 1
     Offshore Wind: 1
     Small Hydroelectric: -1
