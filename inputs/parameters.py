@@ -6,6 +6,24 @@ def parameters():
     in2m = 0.0254  # inch to meter
     yd2m = 0.9144  # yard to meter
     lb2kg = 1/2.2  # pound to kilogram
+    MJ2kg = 0.5588 # Megajoule heating to kilogram steel
+    kg2msq = 0.285095 # kilogram to meter squared fiberglass
+    kg2mi = 61.66 # kilogram diesel to miles traveled
+
+    s_1_kg = 0.018301799 # drilling steel eco cost (euro/kg)
+    s_2_kg = 0.018301799 # milling steel eco cost (euro/kg)
+    s_3_kg = 0.1639439696582 # rolling steel eco cost (euro/kg)
+    s_4_kg = 0.026435889 # sorting steel eco cost (euro/kg)
+    s_5_kg = -0.060109785 # recyling steel eco cost (euro/kg)
+    s_6_MJ = 0.017077496 # melting steel eco cost (euro/MJ)
+    s_6_kg = 0.017077496 * MJ2kg # melting steel eco cost (euro/kg)
+
+    f_1_kg = 0.280160595 # processing glass fiber eco cost (euro/kg)
+    f_2_kg = 0.091234532 # incineration fiberglass eco cost (euro/kg)
+    f_3_kg = 1.044916856 # processing epoxy resin eco cost (euro/kg)
+    fglayers = 15.79 # scaling to 3mm fiberglass
+
+    d_1_kg = 0.980234899 # diesel eco cost (euro/kg)
 
     file = '/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
     jpd = pd.read_csv(file, skiprows=2, header=None).values
@@ -44,7 +62,11 @@ def parameters():
         'LCOE_max': 1,
         'power_max': float('inf'),  # maximum power (W)
         'eff_pto': 0.80,  # PTO efficiency (-)
-        'eff_array': 0.95 * 0.98  # array availability and transmission efficiency (-)
+        'eff_array': 0.95 * 0.98,  # array availability and transmission efficiency (-)
+        's_points': s_1_kg + s_2_kg + s_3_kg + s_4_kg + s_5_kg + s_6_kg, # steel eco cost (euros/kg)
+        'f_points': (f_1_kg + f_2_kg + f_3_kg) * kg2msq * fglayers, # fiberglass eco cost (euro/m^2)
+        'd_points': d_1_kg * kg2mi, # travel eco cost (euro/mi)
+        'SCC': 0.133, # social cost of carbon (euros/kg CO2)
     }
 
     return p
