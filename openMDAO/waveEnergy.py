@@ -61,8 +61,7 @@ class waveEnergy(om.Group):
 
         # Dynamics
         #ivc to dynamics
-        ivc_to_dynam = ['rho_w', 'g', 'JPD', 'Hs', 'Hs_struct', 'T', 'T_struct', 'power_max', 'eff_pto', 'D_f', 'F_max', 'B_p',
-                        'w_n']
+        ivc_to_dynam = ['rho_w', 'g', 'JPD', 'Hs', 'Hs_struct', 'T', 'T_struct', 'power_max', 'eff_pto', 'D_f', 'F_max', 'B_p', 'w_n']
 
         for var_name in ivc_to_dynam:
             self.connect(f"ivc.{var_name}", f"dynamicsComponent.{var_name}")
