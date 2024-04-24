@@ -1,8 +1,10 @@
+import openmdao.api as om
+import numpy as np
 class environmentComponent(om.ExplicitComponent):
     def setup(self):
 
         #adding inputs:
-        some_float_value = 0.0
+        #some_float_value = 0.0
         self.add_input(name = 'steel', val = 0.0, desc="amoutn of steel (kg)")
         self.add_input(name = 'distance', val = 0.0, desc="distance from shore (miles)")
         self.add_input(name = 'fiberglass', val = 0.0, desc="amount of fiberglass (m^2)")
@@ -11,11 +13,11 @@ class environmentComponent(om.ExplicitComponent):
         self.add_input(name = 'd_points', val = 60.44128387234, desc="travel eco cost (euro/mi)")
         self.add_input(name = 'CEM_output', val = 0.0, desc="avoided carbon (Mtons CO2)")
         self.add_input(name = 'SCC', val = 0.133, desc="social cost of carbon (euros/kg CO2)")
-        self.add_input(name = 'firstFloatMatrixInput', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
+        #self.add_input(name = 'firstFloatMatrixInput', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
 
         #adding output:
         self.add_output(name = 'eco_value', desc = "total eco value") #test
-        self.add_output(name = 'firstFloatMatrixOutput', shape=(4,5), desc = "this is my first float matrix variable output")
+        #self.add_output(name = 'firstFloatMatrixOutput', shape=(4,5), desc = "this is my first float matrix variable output")
 
         # Partial derivatives required for optimization
         self.declare_partials('*', '*', method='fd')
@@ -30,18 +32,18 @@ class environmentComponent(om.ExplicitComponent):
         fiberglass = inputs['fiberglass'][0]
         d_points = inputs['d_points'][0]
         distance = inputs['distance'][0]
-        firstFloatMatrixInput = inputs['firstFloatMatrixInput']
+        #firstFloatMatrixInput = inputs['firstFloatMatrixInput']
 
         CEM_points = CEM_output * SCC
 
         eco_value =  -(s_points * steel + f_points * fiberglass + d_points * distance) + CEM_points
-        firstFloatMatrixOutput = firstFloatOutput * firstFloatMatrixInput
+        #firstFloatMatrixOutput = firstFloatOutput * firstFloatMatrixInput
 
         #assign outputs
         outputs['eco_value'] = eco_value
-        outputs['firstFloatMatrixOutput'] = firstFloatMatrixOutput
+        #outputs['firstFloatMatrixOutput'] = firstFloatMatrixOutput
 
-
+"""
 #componentTest
 prob = om.Problem()
 #subsystem name as test
@@ -59,11 +61,12 @@ prob.set_val('test.d_points', firstFloatInput)
 prob.set_val('test.CEM_output', firstFloatInput)
 prob.set_val('test.SCC', firstFloatInput)
 
-prob.set_val('test.firstFloatMatrixInput', firstFloatMatrixInput)
+#prob.set_val('test.firstFloatMatrixInput', firstFloatMatrixInput)
 
 prob.run_model()
 
 prob.model.list_inputs()
+"""
 """
 varname                  val                 prom_name                 
 -----------------------  ------------------  --------------------------
@@ -72,7 +75,7 @@ test
   firstFloatMatrixInput  |4.47213595|        test.firstFloatMatrixInput
 """
 
-prob.model.list_outputs()
+#prob.model.list_outputs()
 """
 varname                   val                   prom_name                  
 ------------------------  --------------------  ---------------------------
@@ -81,7 +84,7 @@ test
   firstFloatMatrixOutput  |1.78885438|          test.firstFloatMatrixOutput
 """
 
-print(prob.get_val('test.firstFloatMatrixOutput')) # to get matrix output
+#print(prob.get_val('test.firstFloatMatrixOutput')) # to get matrix output
 
 """
 [[0.4 0.4 0.4 0.4 0.4]

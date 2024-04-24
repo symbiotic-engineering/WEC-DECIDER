@@ -67,6 +67,7 @@ def parameters():
         'f_points': (f_1_kg + f_2_kg + f_3_kg) * kg2msq * fglayers, # fiberglass eco cost (euro/m^2)
         'd_points': d_1_kg * kg2mi, # travel eco cost (euro/mi)
         'SCC': 0.133, # social cost of carbon (euros/kg CO2)
+        'distance': 100 # 100 miles distance from shore
     }
 
     return p

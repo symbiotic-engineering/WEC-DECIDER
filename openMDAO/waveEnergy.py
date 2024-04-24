@@ -4,6 +4,7 @@ from ratioComponent import ratioComponent
 from geometryComponent import geometryComponent
 from dynamicsComponent import dynamicsComponent
 from structureComponent import structureComponent
+from environmentComponent import environmentComponent
 from econComponent import econComponent
 from outcomeComponent import outputComponent
 from inputs.parameters import parameters
@@ -35,6 +36,7 @@ class waveEnergy(om.Group):
         self.add_subsystem('geometryComponent', geometryComponent())
         self.add_subsystem('dynamicsComponent', dynamicsComponent())
         self.add_subsystem('structureComponent', structureComponent())
+        self.add_subsystem('environmentComponent', environmentComponent())
         self.add_subsystem('econComponent', econComponent())
         self.add_subsystem('outcomeComponent', outputComponent())
 
@@ -99,6 +101,14 @@ class waveEnergy(om.Group):
         self.connect('dynamicsComponent.F_heave_max', 'structureComponent.F_heave')
         self.connect('dynamicsComponent.F_surge_max','structureComponent.F_surge')
 
+        #ivc to environment
+        ivc_to_env = ['distance', 's_points','f_points', 'd_points', 'SCC']
+        for var_name in ivc_to_env:
+            self.connect(f"ivc.{var_name}", f"environmentComponent.{var_name}")
+
+        #geo to environment
+        self.connect('geometryComponent.m_m', 'environmentComponent.steel')
+        self.connect('geometryComponent.A_fiberglass','environmentComponent.fiberglass')
 
         #ivc to econ
         ivc_to_eco = ['M', 'cost_m', 'N_WEC', 'FCR']
@@ -114,6 +124,7 @@ class waveEnergy(om.Group):
 
 
         #Connect to outcome component
+        self.connect('environmentComponent.eco_value','outcomeComponent.eco_value')
         self.connect('econComponent.LCOE', 'outcomeComponent.LCOE')
         self.connect('dynamicsComponent.P_var','outcomeComponent.P_var')
         self.connect('geometryComponent.V_f_pct', 'outcomeComponent.V_f_pct')

@@ -28,6 +28,7 @@ def find_nominal_inputs(b, display_on):
         b_copy["X_noms"][4:7] = x
         #_, _, _, g, val = simulation(X, p) #run_model
         result = waveEnergy_run_model(b_copy,p)
+        result.run_model()
         g, val = retrieve_g_val_from_openMdao(result)
 
         y = np.array([val["power_avg"], val["force_heave"][0][0], g[13] + 1])  # Adjust index for Python's 0-based indexing

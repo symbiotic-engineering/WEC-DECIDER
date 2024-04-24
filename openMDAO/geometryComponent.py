@@ -47,6 +47,7 @@ class geometryComponent(om.ExplicitComponent):
         self.add_output('V_s_pct', 0)
         self.add_output('GM', 0)
         self.add_output('mass', np.zeros((3,)))
+        self.add_output('A_fiberglass', 0)
 
         #self.declare_partials('*', '*', method='fd')
 
@@ -181,6 +182,7 @@ class geometryComponent(om.ExplicitComponent):
         GM = KB + BM - KG
 
         #return V_d, m_m, m_f_tot, A_c, A_lat_sub, r_over_t, I, T, V_f_pct, V_s_pct, GM, mass
+        A_fiberglass = 2 * A_f + np.pi * D_f * h_f
         outputs['V_d'] = V_d
         outputs['m_m'] = m_m
         #outputs['m_f_tot'] = m_f_tot
@@ -194,4 +196,5 @@ class geometryComponent(om.ExplicitComponent):
         outputs['V_s_pct'] = V_s_pct
         outputs['GM'] = GM
         outputs['mass'] = mass
+        outputs['A_fiberglass'] = A_fiberglass
 

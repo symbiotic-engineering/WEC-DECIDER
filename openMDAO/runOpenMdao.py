@@ -2,9 +2,9 @@ import openmdao.api as om
 from waveEnergy import waveEnergy
 #from inputs.var_bounds import var_bounds
 
-def waveEnergy_run_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None,w_n=None, M=0, max_iter = 1000, tol = 1e8):
+def waveEnergy_run_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None,w_n=None, M=0, max_iter = 1000, tol = 1e-8):
     #for M in range(M_min,M_max): April 13th another function
-    model = waveEnergy(D_f = D_f, D_s_over_D_f=D_s_over_D_f, h_f_over_D_f=h_f_over_D_f, T_s_over_h_s=T_s_over_h_s, F_max=F_max, B_p=B_p, w_n=w_n, M=M)
+    model = waveEnergy(b = b, p = p,D_f = D_f, D_s_over_D_f=D_s_over_D_f, h_f_over_D_f=h_f_over_D_f, T_s_over_h_s=T_s_over_h_s, F_max=F_max, B_p=B_p, w_n=w_n, M=M)
     top = om.Problem(model=model)
     top.driver = om.ScipyOptimizeDriver()
     top.driver.options['optimizer'] = 'SLSQP'

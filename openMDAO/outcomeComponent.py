@@ -7,6 +7,7 @@ class outputComponent(om.ExplicitComponent):
         #output variables
         self.add_input('LCOE', val = 0.0,  desc = 'Levelized cost of energy')
         self.add_input('P_var', val = 0.0, desc = 'Variance of Error')
+        self.add_input('eco_value', val=0.0)
 
 
         # constraints
