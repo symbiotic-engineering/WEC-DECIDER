@@ -6,12 +6,12 @@ class cemComponent(om.ExplicitComponent):
 
         #adding inputs:
         some_float_value = 0.0
-        self.add_input(name = 'firstFloatInput', val = 0.0, desc="this is my first float variable")
-        self.add_input(name = 'firstFloatMatrixInput', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
+        self.add_input(name = 'wec_cost', val = 0.0, desc="this is my first float variable")
+        self.add_input(name = 'wec_power_hourly', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
 
         #adding output:
-        self.add_output(name = 'firstFloatOutput', desc = "this is my first float variable output")
-        self.add_output(name = 'firstFloatMatrixOutput', shape=(4,5), desc = "this is my first float matrix variable output")
+        self.add_output(name = 'system_cost_avoided', desc = "this is my first float variable output")
+        self.add_output(name = 'carbon_emissions_avoided', shape=(4,5), desc = "this is my first float matrix variable output")
 
         # Partial derivatives required for optimization
         self.declare_partials('*', '*', method='fd')
@@ -19,15 +19,15 @@ class cemComponent(om.ExplicitComponent):
 
     def compute(self, inputs, outputs):
         #retrieve inputs
-        firstFloatInput = inputs['firstFloatInput'][0] #[0] index, retrieve float number, otherwise it is an array
-        firstFloatMatrixInput = inputs['firstFloatMatrixInput']
+        firstFloatInput = inputs['wec_cost'][0] #[0] index, retrieve float number, otherwise it is an array
+        firstFloatMatrixInput = inputs['wec_power_hourly']
 
         firstFloatOutput = 2 * firstFloatInput
         firstFloatMatrixOutput = firstFloatOutput * firstFloatMatrixInput
 
         #assign outputs
-        outputs['firstFloatOutput'] = firstFloatOutput
-        outputs['firstFloatMatrixOutput'] = firstFloatMatrixOutput
+        outputs['system_cost_avoided'] = firstFloatOutput
+        outputs['carbon_emissions_avoided'] = firstFloatMatrixOutput
 
 
 #componentTest
