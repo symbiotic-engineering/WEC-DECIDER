@@ -81,7 +81,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         ndof = fb.nb_dofs
         fb.mass = np.atleast_2d(mass)
         f1 = 0.05# Hz
-        nfreq = 8
+        nfreq = 10
         freq = wot.frequency(f1, nfreq, False) # False -> no zero frequency
         bem_data = wot.run_bem(fb, freq, rho=rho, g=g)
         name = ["PTO_Heave",]
@@ -157,8 +157,8 @@ class DynamicsNewComponent(om.ExplicitComponent):
         nstate_opt = 2*nfreq
 
         options = {'maxiter': 1000}
-        scale_x_wec = 1e1
-        scale_x_opt = 1e-4
+        scale_x_wec = 1e4
+        scale_x_opt = 1e-2
         scale_obj = 1e-3
 
         def callbackF(wec, x_wec, x_opt, waves):
@@ -199,7 +199,7 @@ print(prob.model.list_inputs())
 # prob.model.add_design_var('f_max')
 # prob.model.add_objective('f_heave')
 prob.set_val('test.f_max', 1e6)
-prob.set_val('test.x_max',  1)
+prob.set_val('test.x_max',  0.04)
 prob.set_val('test.Vs_max', 1.5e5)
 prob.set_val('test.D_f', 20.0)
 prob.set_val('test.D_s', 6.0)
