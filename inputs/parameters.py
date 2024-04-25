@@ -69,4 +69,10 @@ def parameters():
     }
 
     return p
+    
+    Year = [2030, 2040]
+    Location = [NE, CA]
+    Demand_Scenario = [1,2,3] #1 is low, 2 is moderate, 3 is high
+    Carbon_Constraint = [0,1] #0 is off, 1 is on
+    
 
