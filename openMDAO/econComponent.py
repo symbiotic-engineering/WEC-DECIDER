@@ -1,6 +1,16 @@
 import openmdao.api as om
 import numpy as np
 from omxdsm import write_xdsm
+import mhkit
+import matplotlib.pyplot as plt
+import gridstatus
+import numpy as np
+import numpy_financial as npf
+import pandas as pd
+import requests
+import io
+import PySAM.Pvwattsv8 as pv
+import PySAM.Windpower as wd
 
 class econComponent(om.ExplicitComponent):
 
@@ -11,13 +21,14 @@ class econComponent(om.ExplicitComponent):
         self.add_input('cost_m', np.zeros((3,)))
         self.add_input('N_WEC', 0)
         self.add_input('P_elec', 0)
-        self.add_input('FCR', 0)
+        self.add_input('FCR', 0) 
         self.add_input('efficiency', 0)
 
         # define outputs
         self.add_output('LCOE', 0)
         self.add_output('capex', 0)
         self.add_output('opex', 0)
+        self.add_output('NPV_at_Lifetime', 0)
 
         self.declare_partials('*', '*', method='fd')
 
@@ -56,15 +67,69 @@ class econComponent(om.ExplicitComponent):
         insurance = (.8 + .2 * N_WEC) * 227000
         opex = operations + postinstall + shoreoperations + replacement \
                + consumables + insurance
+        
+        rate = 0.08
+        
+        url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/wave_resource_ts/lat40.84_lon-124.25__2010.csv'
+        download = requests.get(url).content
+        file = io.StringIO(download.decode('utf-8'))
+        parser = lambda y,m,d,H,M: pd.datetime.strptime(f"{y}.{m}.{d}.{H}.{M}", "%Y.%m.%d.%H.%M")
 
+        wave_data_2 = pd.read_csv(file, skiprows = 2, parse_dates={"Time":[0,1,2,3,4]}, date_parser=parser)
+        wave_data_2 = wave_data_2[['Time','Significant Wave Height','Energy Period']].set_index("Time")
+        wave_data_2.index = wave_data_2.index.tz_localize('US/Pacific') + pd.offsets.DateOffset(years=11) # fake it starting in 2021
+         wave_data_2.head()
+        
+        caiso = gridstatus.CAISO()
+        start = pd.Timestamp("Jan 1, 2021").normalize()
+        end = pd.Timestamp("Dec 31, 2021").normalize()
+        lmp = pd.read_csv('lmp-eureka-2021.csv',index_col=1)
+        lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
+        
+        rho = 1025
+        g = 9.8
+        coeff = rho*(g**2)/(64*np.pi)
+        wave_data_2["J"] = coeff*wave_data_2["Significant Wave Height"]**2*wave_data_2["Energy Period"]
+        CW = 10*N_WEC # total capture width of WEC, m (assuming array of 50, with 10m each)
+        wave_data_2["P"] = efficiency*(wave_data_2["J"] * CW) # power of WEC, W
+      
+        dfs = [lmp, wave_data_2["P"]]
+        end_date = pd.Timestamp("Dec 31, 2021").normalize()
+        dfs_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs]
+        resampled_lmp = dfs_resampled[0]["LMP"]  # Access the resampled 'lmp' DataFrame
+        resampled_wave_power = dfs_resampled[1]
+        resampled_wave_power = resampled_wave_power.iloc[:-1]
+        
+        W_to_MWh = 15/60 * 10**-6 # for 15min timestep
+        revenue = W_to_MWh * np.dot(resampled_wave_power, resampled_lmp)
+        
+        profit_year = revenue - opex
+
+        lifetime = 20 #years
+        cashflow_total = profit_year * lifetime
+        initial_capex = -1*capex
+
+        cashflow = np.full( (lifetime,), profit_year)
+        #transform into python list to insert the initial capex value
+        cashflow_list=cashflow.tolist()
+        cashflow_list.insert(0,initial_capex)
+        cashflow=np.array(cashflow_list)
+        npv_values = np.zeros(len(cashflow))
+        time = np.arange(len(cashflow))
+        for t in (time):
+             npv_values[t] = npf.npv(rate, cashflow[:t+1])       
+        
+        NPV_at_Lifetime = NPV_at_Lifetime = npv_values[-1]
+        
         hr_per_yr = 8766
         P_avg = N_WEC * P_elec * efficiency
         aep = P_avg * hr_per_yr / 1000
         LCOE = (FCR * capex + opex) / aep
-
+        
         outputs['LCOE'] = LCOE
         outputs['capex'] = capex
         outputs['opex'] = opex
+        outputs['NPV_at_Lifetime'] = NPV_at_Lifetime
 """
 prob = om.Problem()
 
