@@ -74,7 +74,7 @@ class econComponent(om.ExplicitComponent):
         CW = 10*N_WEC # total capture width of WEC, m (assuming array of 50, with 10m each)
         wave_data["P"] = efficiency*(wave_data["J"] * CW) # power of WEC, W
       
-        dfs = [lmp, wave_data["P"]]
+        dfs = [LMP, wave_data["P"]]
         end_date = pd.Timestamp("Dec 31, 2021").normalize()
         dfs_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs] #resolves different array lengths
         resampled_lmp = dfs_resampled[0]["LMP"]  # Access the resampled 'lmp' DataFrame
