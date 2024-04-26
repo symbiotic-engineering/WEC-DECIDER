@@ -35,7 +35,7 @@ class waveEnergy(om.Group):
         self.add_subsystem('ivc', ivc)
         self.add_subsystem('ratioComponent', ratioComponent())
         self.add_subsystem('geometryComponent', geometryComponent())
-        self.add_subsystem('dynamicsComponent', dynamicsComponent())
+        self.add_subsystem('dynamicsComponent', DynamicsNewComponent())
         self.add_subsystem('structureComponent', structureComponent())
         self.add_subsystem('environmentComponent', environmentComponent())
         self.add_subsystem('econComponent', econComponent())
