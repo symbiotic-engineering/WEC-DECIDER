@@ -32,6 +32,7 @@ def parameters():
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)   
     
+    # get locational marginal price (LMP) data
     caiso = gridstatus.CAISO()
     start = pd.Timestamp("Jan 1, 2021").normalize()
     end = pd.Timestamp("Dec 31, 2021").normalize()
