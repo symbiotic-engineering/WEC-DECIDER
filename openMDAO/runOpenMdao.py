@@ -1,4 +1,5 @@
 import openmdao.api as om
+import openmdao.visualization.opt_report.opt_report as omviz
 from waveEnergy import waveEnergy
 #from inputs.var_bounds import var_bounds
 
@@ -18,8 +19,8 @@ def waveEnergy_run_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=N
     top.model.add_design_var('ivc.w_n', lower=b['w_n_min'], upper=b['w_n_max'])
     # top.model.add_design_var('ivc.M', lower=0, upper=2)
 
-    top.driver.options['maxiter'] = max_iter  # Increase max iterations
-    top.driver.options['tol'] = tol
+    top.driver.options['maxiter'] = 3 #max_iter  # Increase max iterations
+    top.driver.options['tol'] = 1 #tol
     #outcome
     top.model.add_objective('outcomeComponent.LCOE', scaler=1)
     # add constraints.
@@ -39,8 +40,11 @@ def waveEnergy_run_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=N
     top.model.add_constraint('outcomeComponent.g_13', lower=0)
 
     top.setup()
-    #top.run_driver()
-    #top.model.list_outputs(val=True)
+    print('----------------------------SETUP DONE, STARTING OPTIMIZATION---------------------------')
+    top.run_driver()
+    top.model.list_outputs(val=True)
+    omviz.opt_report(top)
+
     return top
 
 def waveEnergy_run_model(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M=0):

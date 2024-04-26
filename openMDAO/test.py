@@ -11,7 +11,7 @@ p = parameters()
 #top = waveEnergy_run_driver(b,p,D_f=30,D_s_over_D_f=0.252,T_s_over_h_s=0.41,F_max=100,w_n=10)
 top = waveEnergy_run_driver(b,p)
 write_xdsm(top, filename='waveEnergy', out_format='pdf', show_browser=True, equations=True, include_solver=True,
-           quiet=False, output_side='left', include_indepvarcomps=True, class_names=False)
+           quiet=True, output_side='left', include_indepvarcomps=True, class_names=False)
 #top.run_driver()
 #top.model.list_outputs()
 """
