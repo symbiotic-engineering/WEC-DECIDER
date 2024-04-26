@@ -66,13 +66,14 @@ def parameters():
         'f_points': (f_1_kg + f_2_kg + f_3_kg) * kg2msq * fglayers, # fiberglass eco cost (euro/m^2)
         'd_points': d_1_kg * kg2mi, # travel eco cost (euro/mi)
         'SCC': 0.133, # social cost of carbon (euros/kg CO2)
+        'Year' = 2030
+        'Location' = float('NE')
+        'Demand_Scenario' = 2 #1 is low, 2 is moderate, 3 is high
+        'Carbon_Constraint' = 1 # 1 is on
     }
 
     return p
     
-    Year = [2030, 2040]
-    Location = [NE, CA]
-    Demand_Scenario = [1,2,3] #1 is low, 2 is moderate, 3 is high
-    Carbon_Constraint = [0,1] #0 is off, 1 is on
+
     
 
