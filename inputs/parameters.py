@@ -1,5 +1,7 @@
 import pandas as pd
-import gridstatus
+import gridstatusio
+import requests
+import io
 from inputs.wave_conditions.trim_jpd import *
 
 def parameters():
@@ -29,6 +31,7 @@ def parameters():
     file = '/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)   
+    
     caiso = gridstatusio.CAISO()
     start = pd.Timestamp("Jan 1, 2021").normalize()
     end = pd.Timestamp("Dec 31, 2021").normalize()
@@ -86,7 +89,8 @@ def parameters():
         'Location' : float('NE'),
         'Demand_Scenario' : 2, #1 is low, 2 is moderate, 3 is high
         'Carbon_Constraint' : 1, # 1 is on
-        'LMP': lmp
+        'LMP': lmp,
+        'wave_data' : wave_data      
     }
 
     return p
