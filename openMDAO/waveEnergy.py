@@ -10,6 +10,7 @@ from outcomeComponent import outputComponent
 from inputs.parameters import parameters
 from sharedVariables import openmdao_ivc
 import numpy as np
+from dynamicsNewComponent import DynamicsNewComponent
 
 from omxdsm import write_xdsm
 class waveEnergy(om.Group):
@@ -69,7 +70,7 @@ class waveEnergy(om.Group):
             self.connect(f"ivc.{var_name}", f"dynamicsComponent.{var_name}")
 
         #ratio to dynam
-        ratio_to_dymn = ['h_f', 'T_f','T_s', 'h_s']
+        ratio_to_dymn = ['h_f', 'T_f','T_s', 'h_s', 'D_s']
         for var_name in ratio_to_dymn:
             self.connect(f"ratioComponent.{var_name}", f"dynamicsComponent.{var_name}")
 

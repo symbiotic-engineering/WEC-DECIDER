@@ -25,7 +25,12 @@ class dynamicsComponent(om.ExplicitComponent):
         self.add_input('T_f', 0)
         self.add_input('T_s', 0)
         self.add_input('h_s', 0)
+        self.add_input('D_s', 0, desc="diameter of spar (inner diameter of float) (m)")
 
+        #En
+        self.add_input('x_max', 0,desc = "maximum position (m)")
+        self.add_input('Vs_max', 0, desc="maximum voltage (V)")
+        self.add_input('h_f_2', 0, desc="height of entire float, including the frustum at the bottom (m)")
 
         #other input
         self.add_input("m_float", val= 0.0)
