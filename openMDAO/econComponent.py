@@ -3,7 +3,6 @@ import numpy as np
 from omxdsm import write_xdsm
 import mhkit
 import matplotlib.pyplot as plt
-import gridstatus
 import numpy as np
 import numpy_financial as npf
 import pandas as pd
