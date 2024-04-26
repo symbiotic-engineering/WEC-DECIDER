@@ -39,6 +39,7 @@ def parameters():
         locations=["EUREKAA_6_N001"])
     lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
     
+    # get wave power data - to be replaced with mhkit in the future
     url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/wave_resource_ts/lat40.84_lon-124.25__2010.csv'
     download = requests.get(url).content
     file = io.StringIO(download.decode('utf-8'))
@@ -46,7 +47,6 @@ def parameters():
     wave_data = pd.read_csv(file, skiprows = 2, parse_dates={"Time":[0,1,2,3,4]}, date_parser=parser)
     wave_data = wave_data[['Time','Significant Wave Height','Energy Period']].set_index("Time")
     wave_data.index = wave_data.index.tz_localize('US/Pacific') + pd.offsets.DateOffset(years=11) # fake it starting in 2021
-    wave_data.head()
     
     p = {
         'rho_w': 1000.0,  # water density (kg/m3)

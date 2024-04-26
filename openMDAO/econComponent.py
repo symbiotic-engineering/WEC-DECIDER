@@ -1,13 +1,10 @@
 import openmdao.api as om
 import numpy as np
 from omxdsm import write_xdsm
-import mhkit
 import matplotlib.pyplot as plt
-import gridstatus
 import numpy as np
 import numpy_financial as npf
 import pandas as pd
-import requests
 
 class econComponent(om.ExplicitComponent):
 
@@ -44,8 +41,7 @@ class econComponent(om.ExplicitComponent):
         FCR = inputs['FCR'][0] # fixed charge rate
         LMP = inputs['LMP']
         wave_data = inputs['wave_data']
-#add lmp and wave
-
+        
         structural_cost = np.multiply(m_m, cost_m)
 
         devicestructure = N_WEC * structural_cost[M]
