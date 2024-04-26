@@ -304,7 +304,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         inertia = wec.inertia(wec,x_wec, x_opt, waves)
         ptoPlusBumpstop = force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves)
         f_heave = np.max(np.abs(np.add(inertia, ptoPlusBumpstop)))
-        return results[0].fun, f_heave
+        return -results[0].fun, f_heave
 
     def get_power_force(self, D_f, T_f, rho_w, g, B_p, w_n, F_max, h_s, T_s, h_f, T, Hs, m_float, V_d, draft):
         # Get unsaturated response
@@ -333,7 +333,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         X_sat = self.get_response(w, m, b_sat, k_sat, Fd)
 
         # Calculate power
-        P_matrix = 0.5 * (mult * B_p) * w ** 2 * X_sat ** 2
+        P_matrix = .5 * (mult * B_p) * w ** 2 * X_sat ** 2
 
         X_max = np.max(X_sat)
         h_s_extra = (h_s - T_s - (h_f - T_f) - X_max) / h_s
