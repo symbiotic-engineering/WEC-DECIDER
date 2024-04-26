@@ -25,7 +25,7 @@ def parameters():
 
     d_1_kg = 0.980234899 # diesel eco cost (euro/kg)
 
-    file = '/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
+    file = './inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)
 

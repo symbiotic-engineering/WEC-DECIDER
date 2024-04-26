@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from runOpenMdao import  *
 from inputs.var_bounds import var_bounds,parameters
 from omxdsm import write_xdsm
