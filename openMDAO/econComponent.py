@@ -23,8 +23,8 @@ class econComponent(om.ExplicitComponent):
         self.add_input('P_elec', 0)
         self.add_input('FCR', 0) 
         self.add_input('efficiency', 0)
-        self.add_input('LMP',np.zeros((#original length of lmp data)
-        self.add_input('wave_data',np.zeros((#original length of lmp data)
+        self.add_input('LMP', np.zeros((34832,)))
+        self.add_input('wave_data',np.zeros((2920,)))
 
         # define outputs
         self.add_output('LCOE', 0)
@@ -73,8 +73,7 @@ class econComponent(om.ExplicitComponent):
                + consumables + insurance
         
         rate = 0.08
-        
-                   
+                    
         rho = 1025
         g = 9.8
         coeff = rho*(g**2)/(64*np.pi)
@@ -84,7 +83,7 @@ class econComponent(om.ExplicitComponent):
       
         dfs = [lmp, wave_data["P"]]
         end_date = pd.Timestamp("Dec 31, 2021").normalize()
-        dfs_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs]
+        dfs_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs] #resolves different array lengths
         resampled_lmp = dfs_resampled[0]["LMP"]  # Access the resampled 'lmp' DataFrame
         resampled_wave_power = dfs_resampled[1]
         resampled_wave_power = resampled_wave_power.iloc[:-1]
