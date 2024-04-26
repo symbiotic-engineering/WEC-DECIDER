@@ -1,4 +1,9 @@
-from runOpenMdao import waveEnergy_run_model,for_loop_waveEnergy_model
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from runOpenMdao import for_loop_waveEnergy_model
 from inputs.var_bounds import var_bounds
 
 b = var_bounds()
