@@ -189,7 +189,9 @@ class DynamicsNewComponent(om.ExplicitComponent):
         x4 = np.linspace(D_f/2, D_s/2, mesh_density)
         y4 = np.linspace(D_f/2, D_s/2, mesh_density)
         top_surface = self.body_from_profile(x4,y4,z4, mesh_density**2)
-        RM3 = bottom_frustum + outer_surface + top_surface + inner_surface
+        RM3 = bottom_frustum.join_bodies(outer_surface, top_surface, inner_surface)
+        RM3.center_of_mass=[0,0, -3.2]
+        RM3.rotation_center = RM3.center_of_mass
         return RM3
     
     def inner_function(self, g,rho,mass, f_max, x_max, Vs_max, fb, Hs, Tp, waves_are_irreg=False):
@@ -548,13 +550,13 @@ print(prob.model.list_inputs())
 # prob.model.add_design_var('f_max')
 # prob.model.add_objective('f_heave')
 prob.set_val('test.f_max', 1e6)
-prob.set_val('test.x_max',  0.04)
+prob.set_val('test.x_max',  0.1)
 prob.set_val('test.Vs_max', 1.5e5)
 prob.set_val('test.D_f', 20.0)
 prob.set_val('test.D_s', 6.0)
 prob.set_val('test.h_f', 4.0)
 prob.set_val('test.h_f_2', 5.2)
-prob.set_val('test.mesh_density', 5)
+prob.set_val('test.mesh_density', 8)
 prob.set_val('test.mass', 208000)
 prob.set_val('test.Hs', 3.0)
 prob.set_val('test.Tp', 8.0)
