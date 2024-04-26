@@ -1,5 +1,5 @@
 import pandas as pd
-import gridstatusio
+import gridstatus
 import requests
 import io
 from inputs.wave_conditions.trim_jpd import *
@@ -32,7 +32,7 @@ def parameters():
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)   
     
-    caiso = gridstatusio.CAISO()
+    caiso = gridstatus.CAISO()
     start = pd.Timestamp("Jan 1, 2021").normalize()
     end = pd.Timestamp("Dec 31, 2021").normalize()
     lmp = caiso.get_lmp(start=start, end=end, market='REAL_TIME_HOURLY', 
