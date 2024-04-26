@@ -1,4 +1,5 @@
 import pandas as pd
+import gridstatus
 from inputs.wave_conditions.trim_jpd import *
 
 def parameters():
@@ -27,8 +28,23 @@ def parameters():
 
     file = '/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
     jpd = pd.read_csv(file, skiprows=2, header=None).values
-    trimmed_jpd = trim_jpd(jpd)
-
+    trimmed_jpd = trim_jpd(jpd)   
+    caiso = gridstatusio.CAISO()
+    start = pd.Timestamp("Jan 1, 2021").normalize()
+    end = pd.Timestamp("Dec 31, 2021").normalize()
+    lmp = caiso.get_lmp(start=start, end=end, market='REAL_TIME_HOURLY', 
+        locations=["EUREKAA_6_N001"])
+    lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
+    
+    url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/wave_resource_ts/lat40.84_lon-124.25__2010.csv'
+    download = requests.get(url).content
+    file = io.StringIO(download.decode('utf-8'))
+    parser = lambda y,m,d,H,M: pd.datetime.strptime(f"{y}.{m}.{d}.{H}.{M}", "%Y.%m.%d.%H.%M")
+    wave_data = pd.read_csv(file, skiprows = 2, parse_dates={"Time":[0,1,2,3,4]}, date_parser=parser)
+    wave_data = wave_data[['Time','Significant Wave Height','Energy Period']].set_index("Time")
+    wave_data.index = wave_data.index.tz_localize('US/Pacific') + pd.offsets.DateOffset(years=11) # fake it starting in 2021
+    wave_data.head()
+    
     p = {
         'rho_w': 1000.0,  # water density (kg/m3)
         'g': 9.8,  # acceleration of gravity (m/s2)
@@ -66,10 +82,11 @@ def parameters():
         'f_points': (f_1_kg + f_2_kg + f_3_kg) * kg2msq * fglayers, # fiberglass eco cost (euro/m^2)
         'd_points': d_1_kg * kg2mi, # travel eco cost (euro/mi)
         'SCC': 0.133, # social cost of carbon (euros/kg CO2)
-        'Year' = 2030
-        'Location' = float('NE')
-        'Demand_Scenario' = 2 #1 is low, 2 is moderate, 3 is high
-        'Carbon_Constraint' = 1 # 1 is on
+        'Year' : 2030,
+        'Location' : float('NE'),
+        'Demand_Scenario' : 2, #1 is low, 2 is moderate, 3 is high
+        'Carbon_Constraint' : 1, # 1 is on
+        'LMP': lmp
     }
 
     return p
