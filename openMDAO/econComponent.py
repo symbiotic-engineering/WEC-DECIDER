@@ -23,6 +23,8 @@ class econComponent(om.ExplicitComponent):
         self.add_input('P_elec', 0)
         self.add_input('FCR', 0) 
         self.add_input('efficiency', 0)
+        self.add_input('LMP',np.zeros((#original length of lmp data)
+        self.add_input('wave_data',np.zeros((#original length of lmp data)
 
         # define outputs
         self.add_output('LCOE', 0)
@@ -43,7 +45,9 @@ class econComponent(om.ExplicitComponent):
         P_elec = inputs['P_elec'][0]
         efficiency = inputs['efficiency'][0]
         FCR = inputs['FCR'][0] # fixed charge rate
-
+        LMP = inputs['LMP']
+        wave_data = inputs['wave_data']
+#add lmp and wave
 
         structural_cost = np.multiply(m_m, cost_m)
 
@@ -70,30 +74,15 @@ class econComponent(om.ExplicitComponent):
         
         rate = 0.08
         
-        url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/wave_resource_ts/lat40.84_lon-124.25__2010.csv'
-        download = requests.get(url).content
-        file = io.StringIO(download.decode('utf-8'))
-        parser = lambda y,m,d,H,M: pd.datetime.strptime(f"{y}.{m}.{d}.{H}.{M}", "%Y.%m.%d.%H.%M")
-
-        wave_data_2 = pd.read_csv(file, skiprows = 2, parse_dates={"Time":[0,1,2,3,4]}, date_parser=parser)
-        wave_data_2 = wave_data_2[['Time','Significant Wave Height','Energy Period']].set_index("Time")
-        wave_data_2.index = wave_data_2.index.tz_localize('US/Pacific') + pd.offsets.DateOffset(years=11) # fake it starting in 2021
-         wave_data_2.head()
-        
-        caiso = gridstatus.CAISO()
-        start = pd.Timestamp("Jan 1, 2021").normalize()
-        end = pd.Timestamp("Dec 31, 2021").normalize()
-        lmp = pd.read_csv('lmp-eureka-2021.csv',index_col=1)
-        lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
-        
+                   
         rho = 1025
         g = 9.8
         coeff = rho*(g**2)/(64*np.pi)
-        wave_data_2["J"] = coeff*wave_data_2["Significant Wave Height"]**2*wave_data_2["Energy Period"]
+        wave_data["J"] = coeff*wave_data["Significant Wave Height"]**2*wave_data["Energy Period"]
         CW = 10*N_WEC # total capture width of WEC, m (assuming array of 50, with 10m each)
-        wave_data_2["P"] = efficiency*(wave_data_2["J"] * CW) # power of WEC, W
+        wave_data["P"] = efficiency*(wave_data["J"] * CW) # power of WEC, W
       
-        dfs = [lmp, wave_data_2["P"]]
+        dfs = [lmp, wave_data["P"]]
         end_date = pd.Timestamp("Dec 31, 2021").normalize()
         dfs_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs]
         resampled_lmp = dfs_resampled[0]["LMP"]  # Access the resampled 'lmp' DataFrame
