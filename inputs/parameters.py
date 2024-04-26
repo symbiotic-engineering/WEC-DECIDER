@@ -36,9 +36,9 @@ def parameters():
     caiso = gridstatus.CAISO()
     start = pd.Timestamp("Jan 1, 2021").normalize()
     end = pd.Timestamp("Dec 31, 2021").normalize()
-    lmp = caiso.get_lmp(start=start, end=end, market='REAL_TIME_HOURLY', 
-        locations=["EUREKAA_6_N001"])
-    lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
+    #lmp = caiso.get_lmp(start=start, end=end, market='REAL_TIME_HOURLY', 
+    #    locations=["EUREKAA_6_N001"])
+    #lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
     
     # get wave power data - to be replaced with mhkit in the future
     url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/wave_resource_ts/lat40.84_lon-124.25__2010.csv'
@@ -88,10 +88,10 @@ def parameters():
         'd_points': d_1_kg * kg2mi, # travel eco cost (euro/mi)
         'SCC': 0.133, # social cost of carbon (euros/kg CO2)
         'Year' : 2030,
-        'Location' : float('NE'),
+        'Location' : 1, # 1 is NE, ... [fill in rest here]
         'Demand_Scenario' : 2, #1 is low, 2 is moderate, 3 is high
         'Carbon_Constraint' : 1, # 1 is on
-        'LMP': lmp,
+        #'LMP': lmp,
         'wave_data' : wave_data,      
         'distance': 100 # 100 miles distance from shore
     }
