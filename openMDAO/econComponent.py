@@ -70,9 +70,9 @@ class econComponent(om.ExplicitComponent):
         rho = 1025
         g = 9.8
         coeff = rho*(g**2)/(64*np.pi)
-        wave_data["J"] = coeff*wave_data["Significant Wave Height"]**2*wave_data["Energy Period"]
-        CW = 10*N_WEC # total capture width of WEC, m (assuming array of 50, with 10m each)
-        wave_data["P"] = efficiency*(wave_data["J"] * CW) # power of WEC, W
+        wave_data["J"] = coeff * wave_data["Significant Wave Height"]**2 * wave_data["Energy Period"]
+        CW = 10 * N_WEC # total capture width of WEC, m (assuming array of 50, with 10m each)
+        wave_data["P"] = efficiency * (wave_data["J"] * CW) # power of WEC, W
       
         dfs = [LMP, wave_data["P"]]
         end_date = pd.Timestamp("Dec 31, 2021").normalize()
