@@ -8,9 +8,6 @@ import numpy as np
 import numpy_financial as npf
 import pandas as pd
 import requests
-import io
-import PySAM.Pvwattsv8 as pv
-import PySAM.Windpower as wd
 
 class econComponent(om.ExplicitComponent):
 
