@@ -19,7 +19,7 @@ dependencies:
 #  - petsc4py
   - pip:
     - mhkit
-    - gridstatus
+    - gridstatusio
     - wecopttool[geometry]
     - omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master
 #    - GenX
