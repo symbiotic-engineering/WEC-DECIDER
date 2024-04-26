@@ -278,7 +278,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
 
         options = {'maxiter': 1000}
         scale_x_wec = 1e4
-        scale_x_opt = 1e-2
+        scale_x_opt = 1e-3
         scale_obj = 1e-3
 
         def callbackF(wec, x_wec, x_opt, waves):
@@ -296,7 +296,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
             obj_fun,
             nstate_opt,
             optim_options=options,
-            x_wec_0=np.ones(nfreq*2) *1e-7,
+            x_wec_0=np.ones(nfreq*2) *1e-4,
             x_opt_0=np.ones(nfreq*2) *1e0,
             scale_x_wec=scale_x_wec,
             scale_x_opt=scale_x_opt,
