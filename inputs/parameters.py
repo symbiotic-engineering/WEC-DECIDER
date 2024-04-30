@@ -12,6 +12,7 @@ def parameters():
     MJ2kg = 0.5588 # Megajoule heating to kilogram steel
     kg2msq = 0.285095 # kilogram to meter squared fiberglass
     kg2mi = 61.66 # kilogram diesel to miles traveled
+    euro2USD = 0.9236 #euros to US dollars
 
     s_1_kg = 0.018301799 # drilling steel eco cost (euro/kg)
     s_2_kg = 0.018301799 # milling steel eco cost (euro/kg)
