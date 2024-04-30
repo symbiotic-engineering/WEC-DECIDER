@@ -13,7 +13,7 @@ class environmentComponent(om.ExplicitComponent):
         self.add_input(name = 'SCC', val = 0.133, desc="social cost of carbon (euros/kg CO2)")
 
         #adding output:
-        self.add_output(name = 'net_eco_value', desc = "total eco value") #test
+        self.add_output(name = 'net_eco_value', desc = "total eco value") #USD
 
         # Partial derivatives required for optimization
         self.declare_partials('*', '*', method='fd')
@@ -31,12 +31,12 @@ class environmentComponent(om.ExplicitComponent):
 
         CEM_points = CEM_output * SCC
 
-        eco_cost = s_points * steel + f_points * fiberglass + d_points * distance 
-        eco_value = CEM_points
-        net_eco_value = (eco_value - eco_cost) * euro2USD
+        eco_cost = s_points * steel + f_points * fiberglass + d_points * distance #euros
+        eco_value = CEM_points #euros
+        net_eco_value = (eco_value - eco_cost) * euro2USD #USD
 
         #assign outputs
-        outputs['net_eco_value'] = eco_value
+        outputs['net_eco_value'] = net_eco_value
 
 
 #componentTest
