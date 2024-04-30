@@ -11,11 +11,9 @@ class environmentComponent(om.ExplicitComponent):
         self.add_input(name = 'd_points', val = 60.44128387234, desc="travel eco cost (euro/mi)")
         self.add_input(name = 'CEM_output', val = 0.0, desc="avoided carbon (Mtons CO2)")
         self.add_input(name = 'SCC', val = 0.133, desc="social cost of carbon (euros/kg CO2)")
-        self.add_input(name = 'firstFloatMatrixInput', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
 
         #adding output:
-        self.add_output(name = 'eco_value', desc = "total eco value") #test
-        self.add_output(name = 'firstFloatMatrixOutput', shape=(4,5), desc = "this is my first float matrix variable output")
+        self.add_output(name = 'net_eco_value', desc = "total eco value") #test
 
         # Partial derivatives required for optimization
         self.declare_partials('*', '*', method='fd')
@@ -35,7 +33,7 @@ class environmentComponent(om.ExplicitComponent):
 
         eco_cost = s_points * steel + f_points * fiberglass + d_points * distance 
         eco_value = CEM_points
-        net_eco_value = eco_value - eco_cost
+        net_eco_value = (eco_value - eco_cost) * euro2USD
 
         #assign outputs
         outputs['net_eco_value'] = eco_value
