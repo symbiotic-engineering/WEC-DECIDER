@@ -30,16 +30,15 @@ class environmentComponent(om.ExplicitComponent):
         fiberglass = inputs['fiberglass'][0]
         d_points = inputs['d_points'][0]
         distance = inputs['distance'][0]
-        firstFloatMatrixInput = inputs['firstFloatMatrixInput']
 
         CEM_points = CEM_output * SCC
 
-        eco_value =  -(s_points * steel + f_points * fiberglass + d_points * distance) + CEM_points
-        firstFloatMatrixOutput = firstFloatOutput * firstFloatMatrixInput
+        eco_cost = s_points * steel + f_points * fiberglass + d_points * distance 
+        eco_value = CEM_points
+        net_eco_value = eco_value - eco_cost
 
         #assign outputs
-        outputs['eco_value'] = eco_value
-        outputs['firstFloatMatrixOutput'] = firstFloatMatrixOutput
+        outputs['net_eco_value'] = eco_value
 
 
 #componentTest
@@ -48,7 +47,6 @@ prob = om.Problem()
 prob.model.add_subsystem('test', environmentComponent())
 prob.setup()
 firstFloatInput = 0.2
-firstFloatMatrixInput = np.ones((4,5))
 
 prob.set_val('test.steel', firstFloatInput)
 prob.set_val('test.distance', firstFloatInput)
@@ -58,8 +56,6 @@ prob.set_val('test.f_points', firstFloatInput)
 prob.set_val('test.d_points', firstFloatInput)
 prob.set_val('test.CEM_output', firstFloatInput)
 prob.set_val('test.SCC', firstFloatInput)
-
-prob.set_val('test.firstFloatMatrixInput', firstFloatMatrixInput)
 
 prob.run_model()
 
