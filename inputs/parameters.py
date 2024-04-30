@@ -18,8 +18,7 @@ def parameters():
     s_3_kg = 0.1639439696582 # rolling steel eco cost (euro/kg)
     s_4_kg = 0.026435889 # sorting steel eco cost (euro/kg)
     s_5_kg = -0.060109785 # recyling steel eco cost (euro/kg)
-    s_6_MJ = 0.017077496 # melting steel eco cost (euro/MJ)
-    s_6_kg = 0.017077496 * MJ2kg # melting steel eco cost (euro/kg)
+    s_6_kg = 0.017077496 * MJ2kg # melting steel eco cost (euro/kg), number is (euro/MJ)
 
     f_1_kg = 0.280160595 # processing glass fiber eco cost (euro/kg)
     f_2_kg = 0.091234532 # incineration fiberglass eco cost (euro/kg)
