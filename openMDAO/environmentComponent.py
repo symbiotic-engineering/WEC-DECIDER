@@ -11,11 +11,9 @@ class environmentComponent(om.ExplicitComponent):
         self.add_input(name = 'd_points', val = 60.44128387234, desc="travel eco cost (euro/mi)")
         self.add_input(name = 'CEM_output', val = 0.0, desc="avoided carbon (Mtons CO2)")
         self.add_input(name = 'SCC', val = 0.133, desc="social cost of carbon (euros/kg CO2)")
-        self.add_input(name = 'firstFloatMatrixInput', val = np.zeros((4,5)), shape = (4,5), desc="this is my first float matrix variable" )
 
         #adding output:
-        self.add_output(name = 'eco_value', desc = "total eco value") #test
-        self.add_output(name = 'firstFloatMatrixOutput', shape=(4,5), desc = "this is my first float matrix variable output")
+        self.add_output(name = 'net_eco_value', desc = "total eco value") #USD
 
         # Partial derivatives required for optimization
         self.declare_partials('*', '*', method='fd')
@@ -30,16 +28,15 @@ class environmentComponent(om.ExplicitComponent):
         fiberglass = inputs['fiberglass'][0]
         d_points = inputs['d_points'][0]
         distance = inputs['distance'][0]
-        firstFloatMatrixInput = inputs['firstFloatMatrixInput']
 
         CEM_points = CEM_output * SCC
 
-        eco_value =  -(s_points * steel + f_points * fiberglass + d_points * distance) + CEM_points
-        firstFloatMatrixOutput = firstFloatOutput * firstFloatMatrixInput
+        eco_cost = s_points * steel + f_points * fiberglass + d_points * distance #euros
+        eco_value = CEM_points #euros
+        net_eco_value = (eco_value - eco_cost) * euro2USD #USD
 
         #assign outputs
-        outputs['eco_value'] = eco_value
-        outputs['firstFloatMatrixOutput'] = firstFloatMatrixOutput
+        outputs['net_eco_value'] = net_eco_value
 
 
 #componentTest
@@ -48,7 +45,6 @@ prob = om.Problem()
 prob.model.add_subsystem('test', environmentComponent())
 prob.setup()
 firstFloatInput = 0.2
-firstFloatMatrixInput = np.ones((4,5))
 
 prob.set_val('test.steel', firstFloatInput)
 prob.set_val('test.distance', firstFloatInput)
@@ -58,8 +54,6 @@ prob.set_val('test.f_points', firstFloatInput)
 prob.set_val('test.d_points', firstFloatInput)
 prob.set_val('test.CEM_output', firstFloatInput)
 prob.set_val('test.SCC', firstFloatInput)
-
-prob.set_val('test.firstFloatMatrixInput', firstFloatMatrixInput)
 
 prob.run_model()
 

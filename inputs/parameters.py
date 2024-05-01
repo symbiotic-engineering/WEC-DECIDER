@@ -12,14 +12,14 @@ def parameters():
     MJ2kg = 0.5588 # Megajoule heating to kilogram steel
     kg2msq = 0.285095 # kilogram to meter squared fiberglass
     kg2mi = 61.66 # kilogram diesel to miles traveled
+    euro2USD = 0.9236 #euros to US dollars
 
     s_1_kg = 0.018301799 # drilling steel eco cost (euro/kg)
     s_2_kg = 0.018301799 # milling steel eco cost (euro/kg)
     s_3_kg = 0.1639439696582 # rolling steel eco cost (euro/kg)
     s_4_kg = 0.026435889 # sorting steel eco cost (euro/kg)
     s_5_kg = -0.060109785 # recyling steel eco cost (euro/kg)
-    s_6_MJ = 0.017077496 # melting steel eco cost (euro/MJ)
-    s_6_kg = 0.017077496 * MJ2kg # melting steel eco cost (euro/kg)
+    s_6_kg = 0.017077496 * MJ2kg # melting steel eco cost (euro/kg), number is (euro/MJ)
 
     f_1_kg = 0.280160595 # processing glass fiber eco cost (euro/kg)
     f_2_kg = 0.091234532 # incineration fiberglass eco cost (euro/kg)
@@ -32,6 +32,7 @@ def parameters():
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)   
     
+    # get locational marginal price (LMP) data
     caiso = gridstatus.CAISO()
     start = pd.Timestamp("Jan 1, 2021").normalize()
     end = pd.Timestamp("Dec 31, 2021").normalize()
@@ -39,6 +40,7 @@ def parameters():
         locations=["EUREKAA_6_N001"])
     lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
     
+    # get wave power data - to be replaced with mhkit in the future
     url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/wave_resource_ts/lat40.84_lon-124.25__2010.csv'
     download = requests.get(url).content
     file = io.StringIO(download.decode('utf-8'))
@@ -46,7 +48,6 @@ def parameters():
     wave_data = pd.read_csv(file, skiprows = 2, parse_dates={"Time":[0,1,2,3,4]}, date_parser=parser)
     wave_data = wave_data[['Time','Significant Wave Height','Energy Period']].set_index("Time")
     wave_data.index = wave_data.index.tz_localize('US/Pacific') + pd.offsets.DateOffset(years=11) # fake it starting in 2021
-    wave_data.head()
     
     p = {
         'rho_w': 1000.0,  # water density (kg/m3)

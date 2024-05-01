@@ -1,12 +1,10 @@
 import openmdao.api as om
 import numpy as np
 from omxdsm import write_xdsm
-import mhkit
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy_financial as npf
 import pandas as pd
-import requests
 
 class econComponent(om.ExplicitComponent):
 
@@ -43,8 +41,7 @@ class econComponent(om.ExplicitComponent):
         FCR = inputs['FCR'][0] # fixed charge rate
         LMP = inputs['LMP']
         wave_data = inputs['wave_data']
-#add lmp and wave
-
+        
         structural_cost = np.multiply(m_m, cost_m)
 
         devicestructure = N_WEC * structural_cost[M]
@@ -77,7 +74,7 @@ class econComponent(om.ExplicitComponent):
         CW = 10*N_WEC # total capture width of WEC, m (assuming array of 50, with 10m each)
         wave_data["P"] = efficiency*(wave_data["J"] * CW) # power of WEC, W
       
-        dfs = [lmp, wave_data["P"]]
+        dfs = [LMP, wave_data["P"]]
         end_date = pd.Timestamp("Dec 31, 2021").normalize()
         dfs_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs] #resolves different array lengths
         resampled_lmp = dfs_resampled[0]["LMP"]  # Access the resampled 'lmp' DataFrame
