@@ -290,6 +290,13 @@ generator_columns: [
             "cap_recovery_years",
         ]
 
+model_tag_names:
+  - THERM
+  - VRE
+  - MUST_RUN
+  - STOR
+  - FLEX
+  - HYDRO
 
 model_tag_values:
   THERM:
