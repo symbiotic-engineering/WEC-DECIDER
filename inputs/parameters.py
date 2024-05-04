@@ -1,6 +1,8 @@
 import pandas as pd
 import gridstatus
 import requests
+import mhkit
+import numpy as np
 import io
 from inputs.wave_conditions.trim_jpd import *
 
@@ -36,18 +38,39 @@ def parameters():
     caiso = gridstatus.CAISO()
     start = pd.Timestamp("Jan 1, 2021").normalize()
     end = pd.Timestamp("Dec 31, 2021").normalize()
-    #lmp = caiso.get_lmp(start=start, end=end, market='REAL_TIME_HOURLY', 
-    #    locations=["EUREKAA_6_N001"])
-    #lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific') 
+    lmp = caiso.get_lmp(start=start, end=end, market='REAL_TIME_HOURLY', 
+                    locations=["EUREKAA_6_N001"])
+    lmp = pd.read_csv('lmp-eureka-2021.csv',index_col=1)
+    lmp.index = pd.to_datetime(lmp.index,utc=True).tz_convert('US/Pacific')
+    dfs = [lmp]
+    end_date = pd.Timestamp("Dec 31, 2021").normalize()
+    df_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs]
     
-    # get wave power data - to be replaced with mhkit in the future
-    url = 'https://raw.githubusercontent.com/NREL/SAM/develop/deploy/wave_resource_ts/lat40.84_lon-124.25__2010.csv'
-    download = requests.get(url).content
-    file = io.StringIO(download.decode('utf-8'))
-    parser = lambda y,m,d,H,M: pd.datetime.strptime(f"{y}.{m}.{d}.{H}.{M}", "%Y.%m.%d.%H.%M")
-    wave_data = pd.read_csv(file, skiprows = 2, parse_dates={"Time":[0,1,2,3,4]}, date_parser=parser)
-    wave_data = wave_data[['Time','Significant Wave Height','Energy Period']].set_index("Time")
-    wave_data.index = wave_data.index.tz_localize('US/Pacific') + pd.offsets.DateOffset(years=11) # fake it starting in 2021
+    # get wave power data using mhkit
+    from mhkit import wave 
+    data_type = '1-hour'
+    years = [2010]
+    lat_lon = (32.7764,-79.7593)
+    parameters = ['mean_wave_direction', 'significant_wave_height', 'energy_period']
+    Hs, metadata= wave.io.hindcast.hindcast.request_wpto_point_data(data_type,parameters,lat_lon,years)
+    E_wave_column_name = 'mean_wave_direction_84'
+    Hs_column_name = 'significant_wave_height_84' 
+    T_e_column_name = 'energy_period_84'  
+    Hs_data = Hs[Hs_column_name]  
+    T_e_data = Hs[T_e_column_name]  
+    Dir_wave = Hs[E_wave_column_name]   
+
+    rho = 1025  # Density of seawater, in kg/m^3
+    g = 9.81    # Acceleration due to gravity, in m/s^2
+    P = (1/16) * rho * g * Hs_data**2 * T_e_data  
+
+    Hs['wave_power'] = P  
+    Wave_power_df = Hs['wave_power']  # only access 'wave_power' 
+    end_date = pd.Timestamp("Dec 31, 2021").normalize()
+    df_resampled = df.loc[:end_date].resample('60min').mean().interpolate()
+    wave_power = df_resampled.iloc[:8736]
+    wave_power_array = wave_power.to_numpy()
+
     
     p = {
         'rho_w': 1000.0,  # water density (kg/m3)
@@ -91,8 +114,8 @@ def parameters():
         'Location' : 1, # 1 is NE, ... [fill in rest here]
         'Demand_Scenario' : 2, #1 is low, 2 is moderate, 3 is high
         'Carbon_Constraint' : 1, # 1 is on
-        #'LMP': lmp,
-        'wave_data' : wave_data,      
+        'LMP': lmp,
+        'wave_power' : wave_power_array,      
         'distance': 100 # 100 miles distance from shore
     }
 
