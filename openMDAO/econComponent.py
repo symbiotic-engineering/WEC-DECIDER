@@ -17,8 +17,8 @@ class econComponent(om.ExplicitComponent):
         self.add_input('P_elec', 0)
         self.add_input('FCR', 0) 
         self.add_input('efficiency', 0)
-        self.add_input('LMP', np.zeros((34832,)))
-        self.add_input('wave_data',np.zeros((2920,)))
+        self.add_input('LMP', np.zeros((8736,)))
+        self.add_input('wave_power',np.zeros((8736,)))
 
         # define outputs
         self.add_output('LCOE', 0)
@@ -40,7 +40,7 @@ class econComponent(om.ExplicitComponent):
         efficiency = inputs['efficiency'][0]
         FCR = inputs['FCR'][0] # fixed charge rate
         LMP = inputs['LMP']
-        wave_data = inputs['wave_data']
+        wave_power = inputs['wave_power']
         
         structural_cost = np.multiply(m_m, cost_m)
 
@@ -66,23 +66,9 @@ class econComponent(om.ExplicitComponent):
                + consumables + insurance
         
         rate = 0.08
-                    
-        rho = 1025
-        g = 9.8
-        coeff = rho*(g**2)/(64*np.pi)
-        wave_data["J"] = coeff * wave_data["Significant Wave Height"]**2 * wave_data["Energy Period"]
-        CW = 10 * N_WEC # total capture width of WEC, m (assuming array of 50, with 10m each)
-        wave_data["P"] = efficiency * (wave_data["J"] * CW) # power of WEC, W
-      
-        dfs = [LMP, wave_data["P"]]
-        end_date = pd.Timestamp("Dec 31, 2021").normalize()
-        dfs_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs] #resolves different array lengths
-        resampled_lmp = dfs_resampled[0]["LMP"]  # Access the resampled 'lmp' DataFrame
-        resampled_wave_power = dfs_resampled[1]
-        resampled_wave_power = resampled_wave_power.iloc[:-1]
-        
+                           
         W_to_MWh = 15/60 * 10**-6 # for 15min timestep
-        revenue = W_to_MWh * np.dot(resampled_wave_power, resampled_lmp)
+        revenue = W_to_MWh * np.dot(wave_power, LMP)
         
         profit_year = revenue - opex
 
