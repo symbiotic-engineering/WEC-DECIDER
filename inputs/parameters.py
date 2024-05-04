@@ -45,6 +45,7 @@ def parameters():
     dfs = [lmp]
     end_date = pd.Timestamp("Dec 31, 2021").normalize()
     df_resampled = [df.loc[:end_date].resample('60min').mean().interpolate() for df in dfs]
+    LMP_array = resampled_lmp.to_numpy()
     
     # get wave power data using mhkit
     from mhkit import wave 
@@ -114,7 +115,7 @@ def parameters():
         'Location' : 1, # 1 is NE, ... [fill in rest here]
         'Demand_Scenario' : 2, #1 is low, 2 is moderate, 3 is high
         'Carbon_Constraint' : 1, # 1 is on
-        'LMP': lmp,
+        'LMP': LMP_array,
         'wave_power' : wave_power_array,      
         'distance': 100 # 100 miles distance from shore
     }
