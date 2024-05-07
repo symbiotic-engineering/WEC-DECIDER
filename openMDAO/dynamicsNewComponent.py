@@ -95,6 +95,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         D_s = inputs['D_s']
         h_f = inputs['h_f']
         h_f_2 = inputs['h_f_2']
+        T_f = inputs['T_f']
         mesh_density = int(inputs['mesh_density'][0])
         mass = inputs['mass']
         Hs_struct = inputs['Hs_struct']
@@ -150,7 +151,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         print("check")
 
 
-        RM3 = self.make_RM3(h_f[0], h_f_2[0], D_s[0], D_f[0], int(mesh_density))
+        RM3 = self.make_RM3(h_f[0], h_f_2[0], D_s[0], D_f[0], T_f[0], int(mesh_density))
         #print(RM3)
         #exit(255)
         #print(g[0],rho_w[0],mass[0], f_max[0], x_max[0], Vs_max[0], RM3, Hs_struct[0], T_struct[0])
@@ -171,26 +172,27 @@ class DynamicsNewComponent(om.ExplicitComponent):
         body = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(xyz, nphi=nphi))
         return body
     
-    def make_RM3(self, h_f, h_f_2, D_s, D_f, mesh_density):
+    def make_RM3(self, h_f, h_f_2, D_s, D_f, T_f, mesh_density):
+        freeboard = h_f_2-T_f
         #normal vectors have to be facing outwards
-        z1 = np.linspace(-h_f_2,-h_f,mesh_density)
-        x1 = np.linspace(D_s/2, D_f/2, mesh_density)
+        z1 = np.linspace(-h_f_2+freeboard,-h_f+freeboard,mesh_density)
+        x1 = np.linspace(D_s/2, D_f/2, mesh_density) 
         y1 = np.linspace(D_s/2, D_f/2,mesh_density)
-        bottom_frustum = self.body_from_profile(x1,y1,z1,mesh_density**2)
-        z2 = np.linspace(0, -h_f_2, mesh_density)
-        x2 = np.full_like(z2, D_s/2)
-        y2 = np.full_like(z2, D_s/2)
-        inner_surface = self.body_from_profile(x2,y2,z2,mesh_density**2)
-        z3 = np.linspace(-h_f, 0, 1+int(mesh_density/2))
+        bottom_frustum = body_from_profile(x1,y1,z1,mesh_density**2)
+        z3 = np.linspace(-h_f+freeboard, freeboard, mesh_density)
         x3 = np.full_like(z3, D_f/2)
         y3 = np.full_like(z3, D_f/2)
-        outer_surface = self.body_from_profile(x3,y3,z3,mesh_density**2)
-        z4 = np.linspace(0,0,mesh_density)
+        outer_surface = body_from_profile(x3,y3,z3,mesh_density**2)
+        z4 = np.linspace(freeboard,+freeboard,mesh_density)
         x4 = np.linspace(D_f/2, D_s/2, mesh_density)
         y4 = np.linspace(D_f/2, D_s/2, mesh_density)
-        top_surface = self.body_from_profile(x4,y4,z4, mesh_density**2)
-        RM3 = bottom_frustum.join_bodies(outer_surface, top_surface, inner_surface)
-        RM3.center_of_mass=[0,0, -3.2]
+        top_surface = body_from_profile(x4,y4,z4, mesh_density**2)
+        z2 = np.linspace(freeboard, -h_f_2+freeboard, mesh_density)
+        x2 = np.full_like(z2, D_s/2)
+        y2 = np.full_like(z2, D_s/2)
+        inner_surface = body_from_profile(x2,y2,z2,mesh_density**2)
+        RM3 = bottom_frustum.join_bodies(outer_surface, top_surface, inner_surface).keep_immersed_part()
+        RM3.center_of_mass=[0,0, -(0.5*h_f*h_f+(h_f+(h_f_2-h_f)/3)*(h_f_2-h_f)*0.5)/(h_f+(h_f_2-h_f)*0.5)-T_f]
         RM3.rotation_center = RM3.center_of_mass
         return RM3
     
@@ -280,11 +282,6 @@ class DynamicsNewComponent(om.ExplicitComponent):
         scale_x_wec = 1e4
         scale_x_opt = 1e-3
         scale_obj = 1e-3
-
-        def callbackF(wec, x_wec, x_opt, waves):
-            global Nfeval
-            print ('{0:4d}   {1: 3.6f}'.format(Nfeval, obj_fun(wec, x_wec, x_opt, waves)))
-            Nfeval += 1
 
         if waves_are_irreg:
             waves = waves_irregular
@@ -549,13 +546,14 @@ print(prob.model.list_inputs())
 # prob.driver.options['optimizer'] = 'SLSQP'
 # prob.model.add_design_var('f_max')
 # prob.model.add_objective('f_heave')
-prob.set_val('test.f_max', 1e6)
-prob.set_val('test.x_max',  0.1)
-prob.set_val('test.Vs_max', 1.5e5)
+prob.set_val('test.f_max', 1.0)
+prob.set_val('test.x_max',  0.6)
+prob.set_val('test.Vs_max', 7e5)
 prob.set_val('test.D_f', 20.0)
 prob.set_val('test.D_s', 6.0)
 prob.set_val('test.h_f', 4.0)
 prob.set_val('test.h_f_2', 5.2)
+prob.set_val('test.T_f', 2.0)
 prob.set_val('test.mesh_density', 8)
 prob.set_val('test.mass', 208000)
 prob.set_val('test.Hs', 3.0)
