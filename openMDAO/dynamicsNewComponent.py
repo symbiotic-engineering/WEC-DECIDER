@@ -33,7 +33,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         self.add_input('D_s', 0, desc="diameter of spar (inner diameter of float) (m)") #mssing in the old dynamic
         self.add_input('h_f', 0, desc="height of straight section of float, before the frustum (m)")
         self.add_input('h_f_2', 20, desc="height of entire float, including the frustum at the bottom (m)") # missing
-        self.add_input('mesh_density', 5) #missing
+        self.add_input('mesh_density', 8) #missing
         self.add_input('mass', 208000, desc="mass of RM3 (kg)") #missing
         self.add_input('Hs', val=np.zeros(14, ), desc="wave height (m)")
         self.add_input('Hs_struct', val=np.zeros(1, ), desc="100 year wave height (m)")
@@ -173,6 +173,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         return body
     
     def make_RM3(self, h_f, h_f_2, D_s, D_f, T_f, mesh_density):
+        cpy.set_logging('ERROR') #to get rid off the warnings
         freeboard = h_f_2-T_f
         #normal vectors have to be facing outwards
         z1 = np.linspace(-h_f_2+freeboard,-h_f+freeboard,mesh_density)
