@@ -14,7 +14,7 @@ from dynamicsNewComponent import DynamicsNewComponent
 
 from omxdsm import write_xdsm
 class waveEnergy(om.Group):
-    def __init__(self, b, p=None, D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None,M=0):
+    def __init__(self, b, p=None, D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None,M=0, dynamic_version='old'):
         super().__init__()
         self.p = p
         self.b = b
@@ -26,6 +26,7 @@ class waveEnergy(om.Group):
         self.B_p = B_p
         self.w_n = w_n
         self.M = M
+        self.dynamic_version = dynamic_version
         #self.parameter2 = parameter2
     def setup(self):
         if self.p == None:
@@ -35,7 +36,10 @@ class waveEnergy(om.Group):
         self.add_subsystem('ivc', ivc)
         self.add_subsystem('ratioComponent', ratioComponent())
         self.add_subsystem('geometryComponent', geometryComponent())
-        self.add_subsystem('dynamicsComponent', DynamicsNewComponent())
+        if self.dynamic_version == 'old':
+            self.add_subsystem('dynamicsComponent', dynamicsComponent())
+        else:
+            self.add_subsystem('dynamicsComponent', DynamicsNewComponent())
         self.add_subsystem('structureComponent', structureComponent())
         self.add_subsystem('environmentComponent', environmentComponent())
         self.add_subsystem('econComponent', econComponent())

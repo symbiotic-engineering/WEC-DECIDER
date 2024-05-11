@@ -2,9 +2,9 @@ import openmdao.api as om
 import openmdao.visualization.opt_report.opt_report as omviz
 from waveEnergy import waveEnergy
 
-def waveEnergy_run_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None,w_n=None, M=0, max_iter = 1000, tol = 1e-8):
+def waveEnergy_run_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None,w_n=None, M=0,dynamic_version = 'old',max_iter = 1000, tol = 1e-8):
     #for M in range(M_min,M_max): April 13th another function
-    model = waveEnergy(b = b, p = p,D_f = D_f, D_s_over_D_f=D_s_over_D_f, h_f_over_D_f=h_f_over_D_f, T_s_over_h_s=T_s_over_h_s, F_max=F_max, B_p=B_p, w_n=w_n, M=M)
+    model = waveEnergy(b = b, p = p,D_f = D_f, D_s_over_D_f=D_s_over_D_f, h_f_over_D_f=h_f_over_D_f, T_s_over_h_s=T_s_over_h_s, F_max=F_max, B_p=B_p, w_n=w_n, M=M, dynamic_version= dynamic_version)
     top = om.Problem(model=model)
     top.driver = om.ScipyOptimizeDriver()
     top.driver.options['optimizer'] = 'SLSQP'
@@ -46,9 +46,9 @@ def waveEnergy_run_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=N
 
     return top
 
-def waveEnergy_run_model(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M=0):
+def waveEnergy_run_model(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M=0,dynamic_version = 'old'):
     model = waveEnergy(b = b, p = p,D_f=D_f, D_s_over_D_f=D_s_over_D_f, h_f_over_D_f=h_f_over_D_f, T_s_over_h_s=T_s_over_h_s,
-                           F_max=F_max, B_p=B_p, w_n=w_n, M=M)
+                           F_max=F_max, B_p=B_p, w_n=w_n, M=M,dynamic_version = dynamic_version)
     top = om.Problem(model=model)
     
     """
@@ -89,16 +89,16 @@ def waveEnergy_run_model(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=No
 
     return top
 
-def for_loop_waveEnergy_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M_min = 0, M_max = 1, max_iter = 1000, tol = 1e8):
+def for_loop_waveEnergy_driver(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M_min = 0, M_max = 1,dynamic_version = 'old', max_iter = 1000, tol = 1e8):
     waveEnergy_driver_collections = []
     for M_value in range(M_min,M_max):
-        problem = waveEnergy_run_driver(b,p,D_f,D_s_over_D_f,h_f_over_D_f,T_s_over_h_s,F_max,B_p,w_n,M=M_value, max_iter=max_iter, tol=tol)
+        problem = waveEnergy_run_driver(b,p,D_f,D_s_over_D_f,h_f_over_D_f,T_s_over_h_s,F_max,B_p,w_n,M=M_value,dynamic_version = dynamic_version, max_iter=max_iter, tol=tol)
         waveEnergy_driver_collections.append(problem)
     return waveEnergy_driver_collections
 
-def for_loop_waveEnergy_model(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M_min = 0, M_max = 1):
+def for_loop_waveEnergy_model(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M_min = 0, M_max = 1, dynamic_version = 'old' ):
     waveEnergy_model_collections = []
     for M_value in range(M_min, M_max):
-        problem = waveEnergy_run_model(b,p = None,D_f=None, D_s_over_D_f=None, h_f_over_D_f=None, T_s_over_h_s=None, F_max=None, B_p=None, w_n=None, M=M_value)
+        problem = waveEnergy_run_model(b,p,D_f,D_s_over_D_f,h_f_over_D_f,T_s_over_h_s,F_max,B_p,w_n,M=M_value,dynamic_version=dynamic_version)
         waveEnergy_model_collections.append(problem)
     return waveEnergy_model_collections
