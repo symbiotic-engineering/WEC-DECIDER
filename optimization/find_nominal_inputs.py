@@ -20,6 +20,7 @@ def find_nominal_inputs(b, display_on):
 
 
     def errFunc(x):
+        print("hi from err_func")
         X = b["X_noms"].copy()
         X = np.concatenate((X, [0]))
         X[4:7] = x  # Adjust index for Python's 0-based indexing
@@ -39,7 +40,7 @@ def find_nominal_inputs(b, display_on):
     # Optimization
     bounds = list(zip(x_min, x_max))
 
-    res = minimize(errFunc, x0, bounds=bounds) # starting print # don't need to replace it
+    res = minimize(errFunc, x0, bounds=bounds,options={'maxiter':1})# starting print # don't need to replace it
 
     F_max_nom, B_p_nom, w_n_nom = res.x
 
