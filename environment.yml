@@ -15,14 +15,19 @@ dependencies:
   - nrel-pysam  # econ module
   - pyxdsm      # diagram generation
   - openmdao
-  - powergenome # CEM module
+  #- powergenome # CEM module
   - gdown       # data for CEM module
   - ipykernel   # jupyter
   - pyjuliacall # julia for CEM module
+  - pip
+  - catalystcoop.pudl <= 2022.11.30, >= 0.6.0 # for powergenome (otherwise too new python version [3.11] is installed)
+  - pyarrow = 7
+  - pyogrio
 #  - mpi4py 
 #  - petsc4py
   - pip:
     - mhkit
+    - powergenome==0.6.2
     - gridstatus
     - wecopttool[geometry]
     - omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master
