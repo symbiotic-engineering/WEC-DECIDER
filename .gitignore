@@ -128,5 +128,17 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# VSCode
+.vscode/
+
+# Matlab
+*.asv
+*.mat
+
+# Data
+*.csv
+*.png
 *.html
+
 openMDAO/.DS_Store

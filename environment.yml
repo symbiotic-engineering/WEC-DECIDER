@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - nrel
 dependencies: 
-  - python=3.9
+  - python
   - pandas=1.5.2
   - numpy 
   - numpy-financial
@@ -17,6 +17,7 @@ dependencies:
   - openmdao
 #  - mpi4py 
 #  - petsc4py
+  - ipywidgets # for development (Jupyter notebook widgets)
   - pip:
     - mhkit
     - gridstatus
