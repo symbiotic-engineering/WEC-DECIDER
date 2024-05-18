@@ -95,7 +95,6 @@ class DynamicsNewComponent(om.ExplicitComponent):
         D_s = inputs['D_s']
         h_f = inputs['h_f']
         h_f_2 = inputs['h_f_2']
-        T_f = inputs['T_f']
         mesh_density = int(inputs['mesh_density'][0])
         mass = inputs['mass']
         Hs_struct = inputs['Hs_struct']
