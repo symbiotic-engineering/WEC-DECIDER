@@ -1,5 +1,5 @@
 import openmdao.api as om
-import numpy as np
+import autograd.numpy as np
 import wecopttool as wot
 import capytaine as cpy
 import math
@@ -20,6 +20,9 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         self.add_input('Vs_max', 1.5e5, desc="maximum voltage (V)")  # missing
         self.add_input('Hs_struct', val=np.zeros(1, ), desc="100 year wave height (m)")
         self.add_input('T_struct', val=np.zeros(1, ), desc="100 year wave period (s)")
+
+        self.add_output("P_elec")
+        self.add_output("F_heave_max")
     def setup_partials(self):
         self.declare_partials('*', '*', method='fd')
 
@@ -43,7 +46,7 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         RM3 = self.make_RM3(h_f[0], h_f_2[0], D_s[0], D_f[0], T_f[0], int(mesh_density))
         P_elec, f_heave = self.inner_function(g[0], rho_w[0], mass[0], f_max[0], x_max[0], Vs_max[0], RM3, Hs_struct[0],
                                               T_struct[0], waves_are_irreg=False)
-
+        #missing P_matrix
         outputs['P_elec'] = P_elec
         outputs['F_heave_max'] = f_heave
 
@@ -127,6 +130,8 @@ class heavenDynamicsComponent(om.ExplicitComponent):
             p = 1
             G = 1
             omega = G * xdot
+            #print("test")
+            #print(V,L,p,omega,I)
             Vs = np.sqrt(V ** 2 + (L * p * omega * I) ** 2)
             return Vs_max - Vs.flatten()
 
@@ -192,3 +197,31 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         ptoPlusBumpstop = force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves)
         f_heave = np.max(np.abs(np.add(inertia, ptoPlusBumpstop)))
         return -results[0].fun, f_heave
+
+prob = om.Problem()
+prob.model.add_subsystem('test', heavenDynamicsComponent())
+prob.setup()
+#print(prob.model.list_inputs())
+prob.set_val('test.h_f', 4.0)  # Ensure you reference inputs correctly, especially if within a subsystem
+prob.set_val('test.h_f_2', 5.2)
+prob.set_val('test.D_f', 6.0)
+prob.set_val('test.D_s', 20.0)
+prob.set_val('test.T_f', 5.2)
+prob.set_val('test.g', 9.81)
+prob.set_val('test.rho_w', 1000.0)
+prob.set_val('test.mass', 208000)
+prob.set_val('test.mesh_density', 8)
+prob.set_val('test.F_max', 1e7)
+prob.set_val('test.x_max', 1.0)
+prob.set_val('test.Vs_max', 1e6)
+prob.set_val('test.Hs_struct', 3.0)
+prob.set_val('test.T_struct', 8.0)
+
+
+prob.run_model()
+#prob.model.add_objective('test.F_heave_max', scaler=-1)
+#prob.setup()
+prob.model.list_inputs(
+)
+prob.model.list_outputs()
+#
