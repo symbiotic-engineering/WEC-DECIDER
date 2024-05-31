@@ -11,7 +11,10 @@ from omxdsm import write_xdsm
 b = var_bounds()
 p = parameters()
 #top = waveEnergy_run_driver(b,p,D_f=30,D_s_over_D_f=0.252,T_s_over_h_s=0.41,F_max=100,w_n=10)
-top = waveEnergy_run_driver(b,p, M=1)
+
+top = waveEnergy_run_driver(b,p, M=1, dynamic_version='new')
+
+"""
 #write_xdsm(top, filename='waveEnergy', out_format='pdf', show_browser=True, equations=True, include_solver=True,
 #           quiet=True, output_side='left', include_indepvarcomps=True, class_names=False)
 
@@ -36,3 +39,4 @@ design_var_names = [
 ]
 plot_openmdao_outputs(output_dict,design_var_names,'econComponent.LCOE')
 generate_csv(outputs,"outputs.csv")
+"""

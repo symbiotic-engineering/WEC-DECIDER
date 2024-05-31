@@ -3,9 +3,6 @@ import openmdao.api as om
 from ratioComponent import ratioComponent
 from geometryComponent import geometryComponent
 from dynamicsComponent import dynamicsComponent
-from hydroComponent import hydroComponent
-from heavenDynamicsComponent import heavenDynamicsComponent
-from surgeAndVariationComponent import surgeAndVariationComponent
 from structureComponent import structureComponent
 from environmentComponent import environmentComponent
 from econComponent import econComponent
@@ -39,18 +36,14 @@ class waveEnergy(om.Group):
         self.add_subsystem('ivc', ivc)
         self.add_subsystem('ratioComponent', ratioComponent())
         self.add_subsystem('geometryComponent', geometryComponent())
-        self.add_subsystem('hydroComponent', hydroComponent())
-        self.add_subsystem('heavenDynamicsComponent', heavenDynamicsComponent())
-        self.add_subsystem('surgeAndVariationComponent', surgeAndVariationComponent())
-        #print(self.dynamic_version)
-        """
+        print(self.dynamic_version)
         if self.dynamic_version == 'old':
+
             print("old dynam")
             self.add_subsystem('dynamicsComponent', dynamicsComponent())
-        """
-
-        #print("new dynam")
-        #self.add_subsystem('dynamicsComponent', DynamicsNewComponent())
+        else:
+            print("new dynam")
+            self.add_subsystem('dynamicsComponent', DynamicsNewComponent())
         self.add_subsystem('structureComponent', structureComponent())
         self.add_subsystem('environmentComponent', environmentComponent())
         self.add_subsystem('econComponent', econComponent())
@@ -79,41 +72,20 @@ class waveEnergy(om.Group):
 
         # Dynamics
         #ivc to dynamics
-        ivc_to_hydro = ['D_f']
-        for var_name in ivc_to_hydro:
-            self.connect(f"ivc.{var_name}", f"hydroComponent.{var_name}")
+        ivc_to_dynam = ['rho_w', 'g', 'JPD', 'Hs', 'Hs_struct', 'T', 'T_struct', 'power_max', 'eff_pto', 'D_f', 'F_max', 'B_p', 'w_n']
 
-        #ratio_to_hydro
-        ratio_to_hydro = ['h_f','D_s','T_f',]
-        for var_name in ratio_to_hydro:
-            self.connect(f"ratioComponent.{var_name}", f"hydroComponent.{var_name}")
+        for var_name in ivc_to_dynam:
+            self.connect(f"ivc.{var_name}", f"dynamicsComponent.{var_name}")
 
-        #ivc to heavendynam
-        ivc_to_heavendynam = ['g','rho_w','F_max','Hs_struct','T_struct']
-        for var_name in ivc_to_heavendynam:
-            self.connect(f"ivc.{var_name}", f"heavenDynamicsComponent.{var_name}")
+        #ratio to dynam
+        ratio_to_dymn = ['h_f', 'T_f','T_s', 'h_s', 'D_s']
+        for var_name in ratio_to_dymn:
+            self.connect(f"ratioComponent.{var_name}", f"dynamicsComponent.{var_name}")
 
-        #hydro to heavendynam
-        self.connect('hydroComponent.RM3','heavenDynamicsComponent.RM3')
-
-        #ivc to surgeAndVariation
-        ivc_to_surgeAndVariation = ['F_max', 'D_f', 'Hs_struct', 'T','T_struct', 'rho_w','g', 'JPD']
-        for var_name in ivc_to_surgeAndVariation:
-            self.connect(f"ivc.{var_name}", f"surgeAndVariationComponent.{var_name}")
-        #ratio to surgeAndVariation
-        ratio_to_surgeAndVariation = ['h_f']
-        for var_name in ratio_to_surgeAndVariation:
-            self.connect(f"ratioComponent.{var_name}", f"surgeAndVariationComponent.{var_name}")
-
-        #heavendynam to surgeAndVariation
-        heavendynam_to_surgeAndVariation = ['P_matrix',]
-        for var_name in heavendynam_to_surgeAndVariation:
-            self.connect(f"heavenDynamicsComponent.{var_name}", f"surgeAndVariationComponent.{var_name}")
-
-        #geo_to_surgeAndVariation
-        self.connect('geometryComponent.m_f_tot', 'surgeAndVariationComponent.m_float')
-        self.connect('geometryComponent.V_d', 'surgeAndVariationComponent.V_d')
-        self.connect('geometryComponent.T', 'surgeAndVariationComponent.draft')
+        #geo_to_dynam
+        self.connect('geometryComponent.m_f_tot', 'dynamicsComponent.m_float')
+        self.connect('geometryComponent.V_d', 'dynamicsComponent.V_d')
+        self.connect('geometryComponent.T', 'dynamicsComponent.draft')
 
 
         # Structure
@@ -134,9 +106,9 @@ class waveEnergy(om.Group):
         self.connect('geometryComponent.r_over_t', 'structureComponent.r_over_t')
         self.connect('geometryComponent.I', 'structureComponent.I')
 
-        # surgeAndVariation, heavenDynamicsComponent to structure
-        self.connect('heavenDynamicsComponent.F_heave_max', 'structureComponent.F_heave')
-        self.connect('surgeAndVariationComponent.F_surge_max','structureComponent.F_surge')
+        # dynam to structure
+        self.connect('dynamicsComponent.F_heave_max', 'structureComponent.F_heave')
+        self.connect('dynamicsComponent.F_surge_max','structureComponent.F_surge')
 
         #ivc to environment
         ivc_to_env = ['distance', 's_points','f_points', 'd_points', 'SCC']
@@ -156,14 +128,14 @@ class waveEnergy(om.Group):
         # geo to econ
         self.connect('geometryComponent.m_m', 'econComponent.m_m')
 
-        # surgeAndVariationComponent to econ
-        self.connect('heavenDynamicsComponent.P_elec', 'econComponent.P_elec')
+        # dynm to econ
+        self.connect('dynamicsComponent.P_elec', 'econComponent.P_elec')
 
 
         #Connect to outcome component
         self.connect('environmentComponent.eco_value','outcomeComponent.eco_value')
         self.connect('econComponent.LCOE', 'outcomeComponent.LCOE')
-        self.connect('surgeAndVariationComponent.P_var','outcomeComponent.P_var')
+        self.connect('dynamicsComponent.P_var','outcomeComponent.P_var')
         self.connect('geometryComponent.V_f_pct', 'outcomeComponent.V_f_pct')
         self.connect('geometryComponent.V_s_pct','outcomeComponent.V_s_pct')
         self.connect('geometryComponent.GM', 'outcomeComponent.GM')
@@ -172,12 +144,12 @@ class waveEnergy(om.Group):
         self.connect('structureComponent.FOS3Y', 'outcomeComponent.FOS3Y')
         self.connect('structureComponent.FOS_buckling', 'outcomeComponent.FOS_buckling')
         self.connect('ivc.FOS_min', 'outcomeComponent.FOS_min')
-        self.connect('heavenDynamicsComponent.P_elec', 'outcomeComponent.P_elec')
+        self.connect('dynamicsComponent.P_elec', 'outcomeComponent.P_elec')
         self.connect('ratioComponent.D_d','outcomeComponent.D_d')
         self.connect('ivc.D_d_min','outcomeComponent.D_d_min')
-        self.connect('surgeAndVariationComponent.h_s_extra', 'outcomeComponent.h_s_extra')
+        self.connect('dynamicsComponent.h_s_extra', 'outcomeComponent.h_s_extra')
         self.connect('ivc.LCOE_max', 'outcomeComponent.LCOE_max')
-        self.connect('surgeAndVariationComponent.F_ptrain_max', 'outcomeComponent.F_ptrain_max')
+        self.connect('dynamicsComponent.F_ptrain_max', 'outcomeComponent.F_ptrain_max')
         self.connect('ivc.F_max', 'outcomeComponent.F_max')
         return
 

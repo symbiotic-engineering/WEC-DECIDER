@@ -6,49 +6,43 @@ import math
 class heavenDynamicsComponent(om.ExplicitComponent):
 
     def setup(self):
-        self.add_input('h_f', 0, desc="height of straight section of float, before the frustum (m)")
-        self.add_input('h_f_2', 20, desc="height of entire float, including the frustum at the bottom (m)")  # missing
-        self.add_input('D_f', 0, desc="outer diameter of float (m)")
-        self.add_input('D_s', 0, desc="diameter of spar (inner diameter of float) (m)")  # mssing in the old dynamic
-        self.add_input('T_f', 0)
         self.add_input('g', val=0.0, desc="acceleration of gravity (m/s2)")
         self.add_input('rho_w', val=0.0, desc="water density (kg/m3)")
         self.add_input('mass', 208000, desc="mass of RM3 (kg)")  # missing
-        self.add_input('mesh_density', 8)  # missing
         self.add_input('F_max', 0, desc="maximum force (N)")
         self.add_input('x_max', 0.04, desc="maximum position (m)")  # missing
         self.add_input('Vs_max', 1.5e5, desc="maximum voltage (V)")  # missing
         self.add_input('Hs_struct', val=np.zeros(1, ), desc="100 year wave height (m)")
         self.add_input('T_struct', val=np.zeros(1, ), desc="100 year wave period (s)")
+        self.add_input('RM3',desc="RM3 generate from hydro")
+
 
         self.add_output("P_elec")
         self.add_output("F_heave_max")
+        self.add_output('P_matrix', shape=(14, 15))
     def setup_partials(self):
         self.declare_partials('*', '*', method='fd')
 
 
     def compute(self, inputs, outputs):
-        h_f = inputs['h_f']
-        h_f_2 = inputs['h_f_2']
-        D_f = inputs['D_f']
-        D_s = inputs['D_s']
-        T_f = inputs['T_f']
         g = inputs['g']
         rho_w = inputs['rho_w']
         mass = inputs['mass']
-        mesh_density = int(inputs['mesh_density'][0])
         f_max = inputs['F_max'] * 1e6
         x_max = inputs['x_max']
         Vs_max = inputs['Vs_max']
         Hs_struct = inputs['Hs_struct']
         T_struct = inputs['T_struct']
+        RM3 = inputs['RM3'][0]
 
-        RM3 = self.make_RM3(h_f[0], h_f_2[0], D_s[0], D_f[0], T_f[0], int(mesh_density))
+        #RM3 = self.make_RM3(h_f[0], h_f_2[0], D_s[0], D_f[0], T_f[0], int(mesh_density))
+        # RM3 another model hydro
         P_elec, f_heave = self.inner_function(g[0], rho_w[0], mass[0], f_max[0], x_max[0], Vs_max[0], RM3, Hs_struct[0],
                                               T_struct[0], waves_are_irreg=False)
         #missing P_matrix
         outputs['P_elec'] = P_elec
         outputs['F_heave_max'] = f_heave
+        outputs['P_matrix'] = np.zeros((14,15)) #TO-DO
 
     def body_from_profile(self, x, y, z, nphi):
         xyz = np.array([np.array([x / math.sqrt(2), y / math.sqrt(2), z]) for x, y, z in
@@ -197,7 +191,7 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         ptoPlusBumpstop = force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves)
         f_heave = np.max(np.abs(np.add(inertia, ptoPlusBumpstop)))
         return -results[0].fun, f_heave
-
+"""
 prob = om.Problem()
 prob.model.add_subsystem('test', heavenDynamicsComponent())
 prob.setup()
@@ -225,3 +219,4 @@ prob.model.list_inputs(
 )
 prob.model.list_outputs()
 #
+"""

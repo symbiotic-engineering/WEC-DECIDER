@@ -20,7 +20,7 @@ def find_nominal_inputs(b, display_on):
 
 
     def errFunc(x):
-        print("hi from err_func")
+
         X = b["X_noms"].copy()
         X = np.concatenate((X, [0]))
         X[4:7] = x  # Adjust index for Python's 0-based indexing
@@ -79,6 +79,9 @@ def retrieve_g_val_from_openMdao(model):
     FOS_buckling = model.get_val('structureComponent.FOS_buckling')
     P_var = model.get_val('dynamicsComponent.P_var')[0]
     P_unsat = model.get_val('dynamicsComponent.P_unsat')
+
+    temp = model.get_val('geometryComponent.m_f_tot')
+
     val = {
         'mass_f': mass[0],
         'mass_vc': mass[1],

@@ -103,7 +103,6 @@ class geometryComponent(om.ExplicitComponent):
         A_f = np.pi / 4 * (D_f ** 2 - D_s ** 2)
         V_f_d = A_f * T_f
         m_f_tot = V_f_d * rho_w
-
         # Ballast
         m_f_b = m_f_tot - m_f_m
         V_f_b = m_f_b / rho_w

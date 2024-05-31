@@ -137,6 +137,7 @@ class DynamicsNewComponent(om.ExplicitComponent):
         assert np.isreal(P_elec)
 
         # Use max sea states for structural forces and max amplitude
+        # first component Surge_max  - outputing F_surge_max PVar ( constraints)
         _, _, _, F_heave_max, F_surge_max, F_ptrain_max = self.get_power_force(
             D_f, T_f, rho_w, g, B_p, w_n, f_max, h_s, T_s, h_f, T_struct, Hs_struct, m_float, V_d, draft)
 
@@ -149,12 +150,12 @@ class DynamicsNewComponent(om.ExplicitComponent):
         #compute
         print("check")
 
-
+        # second one RM3 - hydro - output RM3 for HeavenDynamics
         RM3 = self.make_RM3(h_f[0], h_f_2[0], D_s[0], D_f[0], T_f[0], int(mesh_density))
-        #print(RM3)
-        #exit(255)
+        exit(255)
         #print(g[0],rho_w[0],mass[0], f_max[0], x_max[0], Vs_max[0], RM3, Hs_struct[0], T_struct[0])
         #exit(255)
+        # third one heavenDynamics - outputing P_elec, f_heaven_max
         P_elec, f_heave = self.inner_function(g[0],rho_w[0],mass[0], f_max[0], x_max[0], Vs_max[0], RM3, Hs_struct[0], T_struct[0], waves_are_irreg=False)
         #assign outputs
         outputs['P_elec'] = P_elec
@@ -178,19 +179,19 @@ class DynamicsNewComponent(om.ExplicitComponent):
         z1 = np.linspace(-h_f_2+freeboard,-h_f+freeboard,mesh_density)
         x1 = np.linspace(D_s/2, D_f/2, mesh_density) 
         y1 = np.linspace(D_s/2, D_f/2,mesh_density)
-        bottom_frustum = body_from_profile(x1,y1,z1,mesh_density**2)
+        bottom_frustum = self.body_from_profile(x1,y1,z1,mesh_density**2)
         z3 = np.linspace(-h_f+freeboard, freeboard, mesh_density)
         x3 = np.full_like(z3, D_f/2)
         y3 = np.full_like(z3, D_f/2)
-        outer_surface = body_from_profile(x3,y3,z3,mesh_density**2)
+        outer_surface = self.body_from_profile(x3,y3,z3,mesh_density**2)
         z4 = np.linspace(freeboard,+freeboard,mesh_density)
         x4 = np.linspace(D_f/2, D_s/2, mesh_density)
         y4 = np.linspace(D_f/2, D_s/2, mesh_density)
-        top_surface = body_from_profile(x4,y4,z4, mesh_density**2)
+        top_surface = self.body_from_profile(x4,y4,z4, mesh_density**2)
         z2 = np.linspace(freeboard, -h_f_2+freeboard, mesh_density)
         x2 = np.full_like(z2, D_s/2)
         y2 = np.full_like(z2, D_s/2)
-        inner_surface = body_from_profile(x2,y2,z2,mesh_density**2)
+        inner_surface = self.body_from_profile(x2,y2,z2,mesh_density**2)
         RM3 = bottom_frustum.join_bodies(outer_surface, top_surface, inner_surface).keep_immersed_part()
         RM3.center_of_mass=[0,0, -(0.5*h_f*h_f+(h_f+(h_f_2-h_f)/3)*(h_f_2-h_f)*0.5)/(h_f+(h_f_2-h_f)*0.5)-T_f]
         RM3.rotation_center = RM3.center_of_mass
