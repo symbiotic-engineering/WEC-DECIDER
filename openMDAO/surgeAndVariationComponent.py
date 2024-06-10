@@ -14,7 +14,13 @@ class surgeAndVariationComponent(om.ExplicitComponent):
         self.add_input('rho_w', val=0.0, desc="water density (kg/m3)")
         self.add_input('g', val=0.0, desc="acceleration of gravity (m/s2)")
         self.add_input('JPD', val=np.zeros((14, 15)), desc="joint probability distribution of wave (%)")
-        self.add_input('P_matrix', val=np.zeros((14, 15)), desc="P Matrix")
+        self.add_input('P_matrix', val=np.zeros((14, 15)),shape=((14,15)), desc="P Matrix")
+        self.add_input('P_elec')
+        self.add_input('B_p')
+        self.add_input('w_n')
+        self.add_input('T_f')
+        self.add_input('T_s')
+        self.add_input('h_s')
         #self.add_input('P_elec', val=0, desc="P_elec")
         #self.add_input('F_heave_max',val=0, desc="F_heaven_max")
 
@@ -41,7 +47,7 @@ class surgeAndVariationComponent(om.ExplicitComponent):
         rho_w = inputs['rho_w']
         g = inputs['g']
         JPD = inputs['JPD']
-        P_matrix = inputs['P_matrix'][0]
+        P_matrix = inputs['P_matrix']
         P_elec = inputs['P_elec'][0]
 
         m_float = inputs['m_float']
@@ -58,11 +64,12 @@ class surgeAndVariationComponent(om.ExplicitComponent):
         _, h_s_extra, _, F_heave_max, F_surge_max, F_ptrain_max = self.get_power_force(
             D_f, T_f, rho_w, g, B_p, w_n, f_max, h_s, T_s, h_f, T_struct, Hs_struct, m_float, V_d, draft)
 
+
         average, P_var = self.weighted_avg_and_std(P_matrix, JPD) / P_elec
+
         P_var *= 100  # Convert to percentage
 
         #outputs['F_heave_max'] = inputs['F_heave_max'][0]
-        print("F_surge_max:" + F_surge_max)
         outputs['P_var'] = P_var
         outputs['F_surge_max'] = F_surge_max
         #outputs['P_elec'] = inputs['P_elec'][0]

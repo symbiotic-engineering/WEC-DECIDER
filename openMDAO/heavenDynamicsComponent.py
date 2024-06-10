@@ -3,6 +3,7 @@ import autograd.numpy as np
 import wecopttool as wot
 import capytaine as cpy
 import math
+import xarray as xr
 class heavenDynamicsComponent(om.ExplicitComponent):
 
     def setup(self):
@@ -14,7 +15,22 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         self.add_input('Vs_max', 1.5e5, desc="maximum voltage (V)")  # missing
         self.add_input('Hs_struct', val=np.zeros(1, ), desc="100 year wave height (m)")
         self.add_input('T_struct', val=np.zeros(1, ), desc="100 year wave period (s)")
-        self.add_input('RM3',desc="RM3 generate from hydro")
+        #self.add_input('RM3',desc="RM3 generate from hydro")
+
+        self.add_input('ndof')
+        self.add_input('added_mass', shape=(10, 1, 1))
+        self.add_input('radiation_damping',shape=(10, 1, 1))
+        self.add_input('diffraction_force', shape= (10,1,1))
+        self.add_input('Froude_Krylov_force', shape= (10,1,1))
+        self.add_input('excitation_force', shape= (10,1,1))
+        self.add_input('inertia_matrix', shape= (1,1))
+        self.add_input('hydrostatic_stiffness', shape= (1,1))
+
+        self.add_input('water_depth')
+        self.add_input('forward_speed')
+        self.add_input('wave_direction')
+        self.add_input('omega', shape=(10,))
+        self.add_input('period', shape=(10,))
 
 
         self.add_output("P_elec")
@@ -25,20 +41,68 @@ class heavenDynamicsComponent(om.ExplicitComponent):
 
 
     def compute(self, inputs, outputs):
-        g = inputs['g']
-        rho_w = inputs['rho_w']
+        g = inputs['g'][0]
+        rho_w = inputs['rho_w'][0]
         mass = inputs['mass']
-        f_max = inputs['F_max'] * 1e6
-        x_max = inputs['x_max']
-        Vs_max = inputs['Vs_max']
-        Hs_struct = inputs['Hs_struct']
-        T_struct = inputs['T_struct']
-        RM3 = inputs['RM3'][0]
+        f_max = inputs['F_max'][0] * 1e6
+        x_max = inputs['x_max'][0]
+        Vs_max = inputs['Vs_max'][0]
+        Hs_struct = inputs['Hs_struct'][0]
+        T_struct = inputs['T_struct'][0]
+
+        ndof = int(inputs['ndof'][0])
+        added_mass = inputs['added_mass']
+        radiation_damping = inputs['radiation_damping']
+        diffraction_force = inputs['diffraction_force']
+        Froude_Krylov_force = inputs['Froude_Krylov_force']
+        excitation_force = inputs['excitation_force']
+        inertia_matrix = inputs['inertia_matrix']
+        hydrostatic_stiffness = inputs['hydrostatic_stiffness']
+        water_depth = inputs['water_depth']
+        forward_speed = inputs['forward_speed']
+        wave_direction = inputs['wave_direction']
+        omega = inputs['omega']
+        period = inputs['period']
+
+        print("inertia_matrix", inertia_matrix[0])
+
+        coords = {
+            'g': inputs['g'],
+            'rho': inputs['rho_w'],
+            'body_name': np.array(['axisymmetric_mesh+axisymmetric_mesh+axisymmetric_mesh+axisymmetric_mesh_immersed']),
+            'water_depth': inputs['water_depth'],
+            'forward_speed': inputs['forward_speed'],
+            'wave_direction': inputs['wave_direction'],
+            'omega': xr.DataArray(inputs['omega'], dims=['omega']),
+            'radiating_dof': xr.DataArray(np.array(['Heave']), dims=['radiating_dof']),
+            'influenced_dof': xr.DataArray(np.array(['Heave']), dims=['influenced_dof']),
+            'period': xr.DataArray(inputs['period'], dims=['omega'])
+        }
+        data_vars = {
+            'added_mass': (('omega', 'radiating_dof', 'influenced_dof'), inputs['added_mass']),
+            'radiation_damping': (('omega', 'radiating_dof', 'influenced_dof'), inputs['radiation_damping']),
+            'diffraction_force': (
+            ('omega', 'wave_direction', 'influenced_dof'), inputs['diffraction_force'].astype(np.complex128)),
+            'Froude_Krylov_force': (
+            ('omega', 'wave_direction', 'influenced_dof'), inputs['Froude_Krylov_force'].astype(np.complex128)),
+            'excitation_force': (
+            ('omega', 'wave_direction', 'influenced_dof'), inputs['excitation_force'].astype(np.complex128)),
+            'inertia_matrix': (('influenced_dof', 'radiating_dof'), inputs['inertia_matrix']),
+            'hydrostatic_stiffness': (('influenced_dof', 'radiating_dof'), inputs['hydrostatic_stiffness'])
+        }
+        bem_data = xr.Dataset(coords, data_vars)
+
+        #RM3 = inputs['RM3'][0]
+
+
 
         #RM3 = self.make_RM3(h_f[0], h_f_2[0], D_s[0], D_f[0], T_f[0], int(mesh_density))
         # RM3 another model hydro
-        P_elec, f_heave = self.inner_function(g[0], rho_w[0], mass[0], f_max[0], x_max[0], Vs_max[0], RM3, Hs_struct[0],
-                                              T_struct[0], waves_are_irreg=False)
+        P_elec, f_heave = self.inner_function(ndof, g, rho_w, mass, f_max, x_max, Vs_max, bem_data, Hs_struct,
+                                              T_struct, waves_are_irreg=False)
+
+        print(P_elec,f_heave)
+        #exit(123)
         #missing P_matrix
         outputs['P_elec'] = P_elec
         outputs['F_heave_max'] = f_heave
@@ -50,43 +114,18 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         body = cpy.FloatingBody(cpy.AxialSymmetricMesh.from_profile(xyz, nphi=nphi))
         return body
 
-
-    def make_RM3(self, h_f, h_f_2, D_s, D_f, T_f, mesh_density):
-        cpy.set_logging('ERROR')  # to get rid off the warnings
-        freeboard = h_f_2 - T_f
-        # normal vectors have to be facing outwards
-        z1 = np.linspace(-h_f_2 + freeboard, -h_f + freeboard, mesh_density)
-        x1 = np.linspace(D_s / 2, D_f / 2, mesh_density)
-        y1 = np.linspace(D_s / 2, D_f / 2, mesh_density)
-        bottom_frustum = self.body_from_profile(x1, y1, z1, mesh_density ** 2)
-        z3 = np.linspace(-h_f + freeboard, freeboard, mesh_density)
-        x3 = np.full_like(z3, D_f / 2)
-        y3 = np.full_like(z3, D_f / 2)
-        outer_surface = self.body_from_profile(x3, y3, z3, mesh_density ** 2)
-        z4 = np.linspace(freeboard, +freeboard, mesh_density)
-        x4 = np.linspace(D_f / 2, D_s / 2, mesh_density)
-        y4 = np.linspace(D_f / 2, D_s / 2, mesh_density)
-        top_surface = self.body_from_profile(x4, y4, z4, mesh_density ** 2)
-        z2 = np.linspace(freeboard, -h_f_2 + freeboard, mesh_density)
-        x2 = np.full_like(z2, D_s / 2)
-        y2 = np.full_like(z2, D_s / 2)
-        inner_surface = self.body_from_profile(x2, y2, z2, mesh_density ** 2)
-        RM3 = bottom_frustum.join_bodies(outer_surface, top_surface, inner_surface).keep_immersed_part()
-        RM3.center_of_mass = [0, 0, -(0.5 * h_f * h_f + (h_f + (h_f_2 - h_f) / 3) * (h_f_2 - h_f) * 0.5) / (
-                    h_f + (h_f_2 - h_f) * 0.5) - T_f]
-        RM3.rotation_center = RM3.center_of_mass
-        return RM3
-    def inner_function(self, g, rho, mass, f_max, x_max, Vs_max, fb, Hs, Tp, waves_are_irreg=False):
+    def inner_function(self, ndof, g, rho, mass, f_max, x_max, Vs_max, bem_data, Hs, Tp, waves_are_irreg=False):
         # g = 9.8
         # rho = 1000 #rho_w
-        fb.add_translation_dof(name="Heave")
-        ndof = fb.nb_dofs
-        fb.mass = np.atleast_2d(mass)
+        #b.add_translation_dof(name="Heave")
+        #ndof = fb.nb_dofs
+        #fb.mass = np.atleast_2d(mass)
         f1 = 0.05  # Hz
         nfreq = 10
-        freq = wot.frequency(f1, nfreq, False)  # False -> no zero frequency
-        bem_data = wot.run_bem(fb, freq, rho=rho, g=g)
+        #freq = wot.frequency(f1, nfreq, False)  # False -> no zero frequency
+        #bem_data = wot.run_bem(fb, freq, rho=rho, g=g)
         name = ["PTO_Heave", ]
+        #print(ndof)
         kinematics = np.eye(ndof)
         controller = None
         loss = None
@@ -139,6 +178,7 @@ class heavenDynamicsComponent(om.ExplicitComponent):
             ineq_cons1,
             ineq_cons2
         ]
+
         wec = wot.WEC.from_bem(
             bem_data,
             constraints=constraints,

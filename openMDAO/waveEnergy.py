@@ -94,19 +94,35 @@ class waveEnergy(om.Group):
             self.connect(f"ivc.{var_name}", f"heavenDynamicsComponent.{var_name}")
 
         #hydro to heavendynam
-        self.connect('hydroComponent.RM3','heavenDynamicsComponent.RM3')
+        #self.connect('hydroComponent.RM3','heavenDynamicsComponent.RM3')
+        self.connect('hydroComponent.ndof', 'heavenDynamicsComponent.ndof')
+        self.connect('hydroComponent.added_mass', 'heavenDynamicsComponent.added_mass')
+        self.connect('hydroComponent.radiation_damping', 'heavenDynamicsComponent.radiation_damping')
+        self.connect('hydroComponent.diffraction_force', 'heavenDynamicsComponent.diffraction_force')
+        self.connect('hydroComponent.Froude_Krylov_force', 'heavenDynamicsComponent.Froude_Krylov_force')
+        self.connect('hydroComponent.excitation_force', 'heavenDynamicsComponent.excitation_force')
+        self.connect('hydroComponent.inertia_matrix', 'heavenDynamicsComponent.inertia_matrix')
+        self.connect('hydroComponent.hydrostatic_stiffness', 'heavenDynamicsComponent.hydrostatic_stiffness')
+
+        #self.connect('hydroComponent.g', 'heavenDynamicsComponent.g')
+        #self.connect('hydroComponent.rho', 'heavenDynamicsComponent.rho')
+        self.connect('hydroComponent.water_depth', 'heavenDynamicsComponent.water_depth')
+        self.connect('hydroComponent.forward_speed', 'heavenDynamicsComponent.forward_speed')
+        self.connect('hydroComponent.wave_direction', 'heavenDynamicsComponent.wave_direction')
+        self.connect('hydroComponent.omega', 'heavenDynamicsComponent.omega')
+        self.connect('hydroComponent.period', 'heavenDynamicsComponent.period')
 
         #ivc to surgeAndVariation
-        ivc_to_surgeAndVariation = ['F_max', 'D_f', 'Hs_struct', 'T','T_struct', 'rho_w','g', 'JPD']
+        ivc_to_surgeAndVariation = ['F_max', 'D_f', 'Hs_struct', 'T','T_struct', 'rho_w','g', 'JPD','B_p','w_n']
         for var_name in ivc_to_surgeAndVariation:
             self.connect(f"ivc.{var_name}", f"surgeAndVariationComponent.{var_name}")
         #ratio to surgeAndVariation
-        ratio_to_surgeAndVariation = ['h_f']
+        ratio_to_surgeAndVariation = ['h_f','T_f','T_s', 'h_s']
         for var_name in ratio_to_surgeAndVariation:
             self.connect(f"ratioComponent.{var_name}", f"surgeAndVariationComponent.{var_name}")
 
         #heavendynam to surgeAndVariation
-        heavendynam_to_surgeAndVariation = ['P_matrix',]
+        heavendynam_to_surgeAndVariation = ['P_matrix','P_elec']
         for var_name in heavendynam_to_surgeAndVariation:
             self.connect(f"heavenDynamicsComponent.{var_name}", f"surgeAndVariationComponent.{var_name}")
 

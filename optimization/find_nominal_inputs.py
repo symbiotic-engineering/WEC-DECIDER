@@ -73,12 +73,12 @@ def retrieve_g_val_from_openMdao(model):
     capex = model.get_val('econComponent.capex')[0]
     opex = model.get_val('econComponent.opex')[0]
     LCOE = model.get_val('econComponent.LCOE')[0]
-    P_elec = model.get_val('dynamicsComponent.P_elec')[0]
-    P_matrix = model.get_val('dynamicsComponent.P_matrix')
-    F_heave_max = model.get_val('dynamicsComponent.F_heave_max')
+    P_elec = model.get_val('heavenDynamicsComponent.P_elec')[0]
+    P_matrix = model.get_val('heavenDynamicsComponent.P_matrix')
+    F_heave_max = model.get_val('heavenDynamicsComponent.F_heave_max')
     FOS_buckling = model.get_val('structureComponent.FOS_buckling')
-    P_var = model.get_val('dynamicsComponent.P_var')[0]
-    P_unsat = model.get_val('dynamicsComponent.P_unsat')
+    P_var = model.get_val('surgeAndVariationComponent.P_var')[0]
+    #P_unsat = model.get_val('dynamicsComponent.P_unsat')
 
     temp = model.get_val('geometryComponent.m_f_tot')
 
@@ -95,7 +95,7 @@ def retrieve_g_val_from_openMdao(model):
         'force_heave': np.array([F_heave_max]), #to match the old result
         'FOS_b': np.array([FOS_buckling]),
         'c_v': P_var,
-        'power_unsat': P_unsat
+        #'power_unsat': P_unsat
     }
 
     return g, val if 'val' in locals() else None
