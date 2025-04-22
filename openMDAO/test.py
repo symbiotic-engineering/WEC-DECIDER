@@ -12,10 +12,12 @@ b = var_bounds()
 p = parameters()
 #top = waveEnergy_run_driver(b,p,D_f=30,D_s_over_D_f=0.252,T_s_over_h_s=0.41,F_max=100,w_n=10)
 
-top = waveEnergy_run_driver(b,p, M=1, dynamic_version='new')
+top = waveEnergy_run_driver(b,p, M=0, dynamic_version='new')
+write_xdsm(top, filename='waveEnergy_updated', out_format='tex', show_browser=True, equations=True, include_solver=True,
+           quiet=True, output_side=None, include_indepvarcomps=False, class_names=False)
 
 """
-#write_xdsm(top, filename='waveEnergy', out_format='pdf', show_browser=True, equations=True, include_solver=True,
+write_xdsm(top, filename='waveEnergy', out_format='pdf', show_browser=True, equations=True, include_solver=True,
 #           quiet=True, output_side='left', include_indepvarcomps=True, class_names=False)
 
 # Extract outputs

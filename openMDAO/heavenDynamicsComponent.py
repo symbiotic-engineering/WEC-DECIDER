@@ -72,7 +72,9 @@ class heavenDynamicsComponent(om.ExplicitComponent):
             'body_name': np.array(['axisymmetric_mesh+axisymmetric_mesh+axisymmetric_mesh+axisymmetric_mesh_immersed']),
             'water_depth': inputs['water_depth'],
             'forward_speed': inputs['forward_speed'],
-            'wave_direction': inputs['wave_direction'],
+            #'wave_direction': inputs['wave_direction'],
+            'wave_direction':  np.array([0.]),
+            #'wave_direction':  np.array([5.729]),
             'omega': xr.DataArray(inputs['omega'], dims=['omega']),
             'radiating_dof': xr.DataArray(np.array(['Heave']), dims=['radiating_dof']),
             'influenced_dof': xr.DataArray(np.array(['Heave']), dims=['influenced_dof']),
@@ -90,6 +92,7 @@ class heavenDynamicsComponent(om.ExplicitComponent):
             'inertia_matrix': (('influenced_dof', 'radiating_dof'), inputs['inertia_matrix']),
             'hydrostatic_stiffness': (('influenced_dof', 'radiating_dof'), inputs['hydrostatic_stiffness'])
         }
+        print("wave direction from bem",inputs['wave_direction'])
         bem_data = xr.Dataset(coords, data_vars)
 
         #RM3 = inputs['RM3'][0]
@@ -101,7 +104,7 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         P_elec, f_heave = self.inner_function(ndof, g, rho_w, mass, f_max, x_max, Vs_max, bem_data, Hs_struct,
                                               T_struct, waves_are_irreg=False)
 
-        print(P_elec,f_heave)
+        print("hi", P_elec,f_heave)
         #exit(123)
         #missing P_matrix
         outputs['P_elec'] = P_elec
@@ -115,9 +118,13 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         return body
 
     def inner_function(self, ndof, g, rho, mass, f_max, x_max, Vs_max, bem_data, Hs, Tp, waves_are_irreg=False):
-        # g = 9.8
-        # rho = 1000 #rho_w
-        #b.add_translation_dof(name="Heave")
+        print(Hs, Tp, waves_are_irreg)
+        #print(Tp)
+        #exit(101)
+
+        g = 9.8
+        rho = 1000 #rho_w
+        #fb.add_translation_dof(name="Heave")
         #ndof = fb.nb_dofs
         #fb.mass = np.atleast_2d(mass)
         f1 = 0.05  # Hz
@@ -131,6 +138,7 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         loss = None
         pto_impedance = None
         pto = wot.pto.PTO(ndof, kinematics, controller, pto_impedance, loss, name)
+        #print(pto)
 
         def force_on_wec_with_bumpstop(wec, x_wec, x_opt, waves, nsubsteps=1):
             pos = pto.position(wec, x_wec, x_opt, waves, nsubsteps)
@@ -184,10 +192,13 @@ class heavenDynamicsComponent(om.ExplicitComponent):
             constraints=constraints,
             f_add=f_add,
         )
+        #print(wec)
+        #exit(103)
         # regular waves
         wavefreq = 0.3
         amplitude = 1
         phase = 0
+        #wavedir = 0
         wavedir = 0
         waves_regular = wot.waves.regular_wave(f1, nfreq, wavefreq, amplitude, phase, wavedir)
 
@@ -205,7 +216,7 @@ class heavenDynamicsComponent(om.ExplicitComponent):
         obj_fun = pto.average_power
         nstate_opt = 2 * nfreq
 
-        options = {'maxiter': 1000}
+        options = {'maxiter': 3}
         scale_x_wec = 1e4
         scale_x_opt = 1e-3
         scale_obj = 1e-3
