@@ -174,9 +174,22 @@ Highs.log
 **/Results*/
 **/TDR_Results/
 **/Cases/
+**/resource_profiles/
+**/resource_groups/
+*.sqlite3
+*.sqlite
+*.db
+*.parquet
+**/wecc-6/
+**/efs_files_utc/
+**/efs/
+**/dist-gen/
+**/modules/CEM/inputs/
+
 
 # Power genome logs
 log.txt
 
 # DECIDER data
 data/*
+

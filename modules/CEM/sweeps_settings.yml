@@ -1,3 +1,4 @@
+
 # Model years and planning parameters
 model_year: [2030, 2040] #deleted 2050 for now; must add later
 model_first_planning_year: [2030, 2040]
@@ -8,6 +9,7 @@ settings_management:
       full:
         reduce_time_domain: false
   2040:
+    # existing_gen_units_fn: ./results/2030/p1_2030/extra_outputs//existing_gen_units.csv
     time_series:
       full:
         reduce_time_domain: false
@@ -15,21 +17,29 @@ settings_management:
         reduce_time_domain: false
 
 # Geographic model regions
+# model_regions:
+#   - NE
+#   - CA
+#   #- Northwest 
+#   #- CAISO
+#   #- ISONE_NYISO
+#   #- PJM
+#   #- Southeast
+
 model_regions:
-  - NE
-  - CA
-  #- Northwest 
-  #- CAISO
-  #- ISONE_NYISO
-  #- PJM
-  #- Southeast
+  - CA_N
+  - CA_S
+
 
 input_folder: extra_inputs
 scenario_definitions_fn: scenario_inputs.csv 
 case_id_description_fn: case_id_description.csv
-eia_860m_fn: december_generator2020.xlsx
+eia_860m_fn: january_generator2025.xlsx
+excel_engine: openpyxl
 capacity_limit_spur_fn: resource_capacity_spur.csv
 misc_gen_inputs_fn: misc_gen_inputs.csv
+
+
 
 proposed_status_included:
   - V # Under construction, more than 50 percent complete
@@ -131,32 +141,46 @@ cost_multiplier_technology_map:
   Geothermal: [Geothermal_hydroflash, Geothermal_hydrobinary]
   Conventional hydropower: [Hydropower]
 
+# Transmission financial information to calculate annual investment costs
+# capex_mw_mile: Capital cost per MW-mile for all (numeric) or each model region (dict).
+# WACC and investment years from https://www.sciencedirect.com/science/article/abs/pii/S0301421519305816
 transmission_investment_cost:
   # If true, uses interconnect_annuity when available
   use_total: true
   spur:
     capex_mw_mile:
-      CA: 9458
-      NE: 9458
-    wacc: 0.00000000001 
-    investment_years: 1 
-  offshore_spur: 
-    # If missing NREL ATB capex_mw_mile is used
+      CA_N: 8775 # 2.5x the rest of WECC
+      CA_S: 8775 # 2.5x the rest of WECC
+      WECC_AZ: 3900
+    wacc: 0.044
+    investment_years: 60
+  offshore_spur:
+    # If missing, NREL ATB capex_mw_mile is used
     capex_mw_mile:
-    wacc: 0.00000000001 
-    investment_years: 1 
+    wacc: 0.044
+    investment_years: 60
   tx:
     capex_mw_mile:
-      CA: 3274
-      NE: 2964
-    wacc: 0.00000000001 
-    investment_years: 1 
+      CA_N: 3037.5 # 2.5x the rest of WECC
+      CA_S: 3037.5 # 2.5x the rest of WECC
+      WECC_AZ: 1350
+    wacc: 0.044
+    investment_years: 60
+
+# Percent expansion in planning period above and beyond existing transmission
+tx_expansion_per_period: 1.0
+
+tx_line_loss_100_miles: 0.01
+
+partial_ces: false
 
 
 # Region aggregations for combined areas
 region_aggregations:
-  NE: [NENG_CT, NENG_ME, NENGREST, NY_Z_A, NY_Z_B, NY_Z_C&E, NY_Z_D, NY_Z_F, NY_Z_G-I, NY_Z_J, NY_Z_K]
-  CA: [WEC_BANC, WEC_CALN, WEC_LADW, WEC_SDGE, WECC_IID, WECC_SCE]
+  CA_N: [WEC_CALN, WEC_BANC]
+  CA_S: [WEC_LADW, WECC_SCE, WEC_SDGE, WECC_IID]
+  # NE: [NENG_CT, NENG_ME, NENGREST, NY_Z_A, NY_Z_B, NY_Z_C&E, NY_Z_D, NY_Z_F, NY_Z_G-I, NY_Z_J, NY_Z_K]
+  # CA: [WEC_BANC, WEC_CALN, WEC_LADW, WEC_SDGE, WECC_IID, WECC_SCE]
 
 # Demand scenarios
 demand_scenarios:
@@ -225,12 +249,44 @@ reserves_fn: 'reserves.csv'
 eia_data_years: [2020]
 capacity_col: 'summer_capacity_mw'
 
+# num_clusters:
+#   Conventional Steam Coal: 1
+#   Natural Gas Fired Combined Cycle: 1
+#   Natural Gas Fired Combustion Turbine: 1
+#   Nuclear: 1
+#   Conventional Hydroelectric: 1
+#   Wood/Wood Waste Biomass: 1
+#   Natural Gas Internal Combustion Engine: 1
+#   Natural Gas Steam Turbine: 1
+#   Geothermal: 1
+#   Solar Photovoltaic: 1
+#   Onshore Wind Turbine: 1
+#   Offshore Wind Turbine: 1
+#   # Solar Thermal with Energy Storage: 1
+#   # Solar Thermal without Energy Storage: 1
+#   Small Hydroelectric: 1
+#   Petroleum Liquids: 1
+#   Landfill Gas: 1
+#   Municipal Solid Waste: 1
+#   Other Waste Biomass: 1
+#   Hydroelectric Pumped Storage: 1
+#   Biomass: 1
+#   Other_peaker: 1
+
+# alt_cluster_method: ~
+
+# cluster_by_owner_regions: ~
+
 # Technology groups and operational settings
 num_clusters:
   Natural Gas Fired Combined Cycle: 1
   Natural Gas Fired Combustion Turbine: 1
   Solar Photovoltaic: 1
   Offshore Wind Turbine: 1
+
+alt_cluster_method: ~
+
+cluster_by_owner_regions: ~
 
 group_technologies: true
 tech_groups:
@@ -334,52 +390,80 @@ generator_columns: [
 model_tag_names:
   - THERM
   - VRE
+  - Num_VRE_Bins
   - MUST_RUN
   - STOR
   - FLEX
   - HYDRO
+  - LDS
+  - Commit
+  - ESR_1
+  - ESR_2
+  - New_Build
+  - Hydro_level
+  - CapRes_1
+  - CapRes_2
+  - Hydro_Energy_to_Power_Ratio
+  - MinCapTag_1
+  - MinCapTag_2
+  - Reg_Max
+  - Rsv_Max
+
+default_model_tag: 0
 
 model_tag_values:
   THERM:
-    Biomass: 1
-    Biopower: 1
+    NaturalGas_CCAvgCF_Moderate: 1
+    NaturalGas_CTAvgCF_Moderate: 1
+    # Biomass: 1
+    # Biopower: 1
     Coal Integrated Gasification Combined Cycle: 1
     Conventional Steam Coal: 1
     CSP: 1
-    Geothermal: 1
+    # Geothermal: 1
     Landfill Gas: 1
-    Municipal Solid Waste: 1 
-    NaturalGas: 1
+    Municipal Solid Waste: 1
+    Natural Gas: 1
     Natural Gas Fired Combined Cycle: 1
     Natural Gas Fired Combustion Turbine: 1
-    NaturalGas Internal Combustion Engine: 1
-    NaturalGas Steam Turbine: 1
+    Natural Gas Internal Combustion Engine: 1
+    Natural Gas Steam Turbine: 1
     NGCCS100: 1
     Nuclear: 1
     Other Gases: 1
     Other Natural Gas: 1
     Other Waste Biomass: 1
-    Other Peaker: 1 
+    Other_peaker: 1 # Is there any way to do this based on the underlying categories?
     Petroleum Coke: 1
     Petroleum Liquids: 1
     Wood/Wood Waste Biomass: 1
-  DISP:
+  VRE:
+    Offshore Wind Turbine: 1
     CSP: 1
-    Landbased Wind: 1
+    LandbasedWind: 1
     OffshoreWind: 1
     Onshore Wind: 1
     Solar Photovoltaic: 1
     Solar Thermal without Energy Storage: 1
-    Utility PV: 1
+    UtilityPV: 1
+  Num_VRE_Bins:
+    CSP: 1
+    LandbasedWind: 1
+    OffshoreWind: 1
+    Onshore Wind: 1
+    Solar Photovoltaic: 1
+    Solar Thermal without Energy Storage: 1
+    UtilityPV: 1
   NDISP:
     Biomass: 1
     Geothermal: 1
     Small Hydroelectric: 1
     Wood/Wood Waste Biomass: 1
   STOR:
-    Battery: 2
+    Battery: 1
     Hydroelectric Pumped Storage: 1
-  DR: ~
+  FLEX:
+    ev_load_shifting: 1
   HYDRO:
     Conventional Hydroelectric: 1
     Hydropower: 1
@@ -388,52 +472,35 @@ model_tag_values:
     Biopower: 1
     Coal Integrated Gasification Combined Cycle: 1
     Conventional Steam Coal: 1
-    NaturalGas: 1
+    Natural Gas: 1
     Natural Gas Fired Combined Cycle: 1
     Natural Gas Fired Combustion Turbine: 1
     Natural Gas Internal Combustion Engine: 1
     Natural Gas Steam Turbine: 1
     NGCCS100: 1
     Nuclear: 1
-    Other Peaker: 1 # Is there any way to do this based on the underlying categories?
+    Other_peaker : 1 # Is there any way to do this based on the underlying categories?
     Petroleum Coke: 1
     Petroleum Liquids: 1
-  RPS:
+  ESR_1:
     Biomass: 1
     Biopower: 1
     Conventional Hydroelectric: 0 # Need they key here to update value in 2045 cases
     CSP: 1
     Geothermal: 1
-    Landbased Wind: 1
-    OffshoreWind: 1
-    Onshore Wind: 1
-    Small Hydroelectric: 1
-    Solar Photovoltaic: 1
-    UtilityPV: 1
-  VRE:
-    CSP: 1
     LandbasedWind: 1
     OffshoreWind: 1
-    Offshore Wind Turbine: 1
     Onshore Wind: 1
-    Solar Photovoltaic: 1
-    Solar Thermal without Energy Storage: 1
-    UtilityPV: 1
-  FLEX:
-    trans_light_duty: 1
-    res_water_heat: 1
-  MUST_RUN:
     Small Hydroelectric: 1
-    Geothermal: 1
-    Wood/Wood Waste Biomass: 1
-    Biomass: 1
-  CES:
+    Solar Photovoltaic: 1
+    UtilityPV: 1
+  ESR_2:
     Biomass: 1
     Biopower: 1
     Conventional Hydroelectric: 1
     CSP: 1
     Geothermal: 1
-    Landbased Wind: 1
+    LandbasedWind: 1
     Natural Gas CCS100: 1
     NGCCS100: 1
     Nuclear: 1
@@ -441,23 +508,25 @@ model_tag_values:
     Onshore Wind: 1
     Small Hydroelectric: 1
     Solar Photovoltaic: 1
-    Utility PV: 1
+    UtilityPV: 1
+  MinCapTag_1: # Do not need to list anything here. All values will be 0 by default
+    LandbasedWind: 1
   New_Build:
     Battery: 1
     Biomass: -1
     Biopower: 1
     Conventional Hydroelectric: -1
     Geothermal: -1
-    Landbased Wind: 1
-    NaturalGas: 1
+    LandbasedWind: 1
+    Natural Gas: 1
     NGCCS100: 1
-    Offshore Wind: 1
+    OffshoreWind: 1
     Small Hydroelectric: -1
-    Utility PV: 1
+    UtilityPV: 1
     Nuclear_*: 1
   Hydro_level:
     Conventional Hydroelectric: 0.5
-  CapRes:
+  CapRes_1:
     Conventional Steam Coal: 0.9
     Natural Gas Fired Combined Cycle: 0.9
     Natural Gas Fired Combustion Turbine: 0.9
@@ -474,22 +543,75 @@ model_tag_values:
     Other Waste Biomass: 0.9
     Other Gases: 0.9
     Other Natural Gas: 0.9
-    Other_peaker: 0.9 
+    Other_peaker: 0.9 # Is there any way to do this based on the underlying categories?
+    Biomass: 0.9
     NaturalGas_: 0.9
     Biopower_: 0.9
     Nuclear_: 0.9
     CSP_: 0.9
-    NGCCS0.900: 0.9
+    NGCCS100: 0.9
+    OffshoreWind: 0.8
+    LandbasedWind: 0.8
+    UtilityPV: 0.8
+    Conventional Hydroelectric: 0.8
+    Onshore Wind: 0.8
+    Small Hydroelectric: 0.8
+    Solar Photovoltaic: 0.8
+    Battery: 0.95
+    Hydroelectric Pumped Storage: 0.95
+    ev_load_shifting: 0.95
+  CapRes_2:
+    Conventional Steam Coal: 0.9
+    Natural Gas Fired Combined Cycle: 0.9
+    Natural Gas Fired Combustion Turbine: 0.9
+    Petroleum Liquids: 0.9
+    Natural Gas Internal Combustion Engine: 0.9
+    Nuclear: 0.9
+    Natural Gas Steam Turbine: 0.9
+    Wood/Wood Waste Biomass: 0.9
+    Petroleum Coke: 0.9
+    Geothermal: 0.9
+    Municipal Solid Waste: 0.9
+    Landfill Gas: 0.9
+    Coal Integrated Gasification Combined Cycle: 0.9
+    Other Waste Biomass: 0.9
+    Other Gases: 0.9
+    Other Natural Gas: 0.9
+    Other_peaker: 0.9 # Is there any way to do this based on the underlying categories?
+    Biomass: 0.9
+    NaturalGas_: 0.9
+    Biopower_: 0.9
+    Nuclear_: 0.9
+    CSP_: 0.9
+    NGCCS100: 0.9
+    OffshoreWind: 0.8
+    LandbasedWind: 0.8
+    UtilityPV: 0.8
+    Conventional Hydroelectric: 0.8
+    Onshore Wind: 0.8
+    Small Hydroelectric: 0.8
+    Solar Photovoltaic: 0.8
+    Battery: 0.95
+    Hydroelectric Pumped Storage: 0.95
+    ev_load_shifting: 0.95
+  MUST_RUN:
+    Small Hydroelectric: 1
+    Geothermal: 1
+    Wood/Wood Waste Biomass: 1
+    Biomass: 1
+    distributed_generation: 1
 
 regional_tag_values:
   NENG_CT:
     MinCapTag_1:
       LandbasedWind: 0
       Natural Gas Fired Combined Cycle: 1
+      NaturalGas_CTAvgCF_Moderate: 1
   NENGREST:
     MinCapTag_2:
       OffShoreWind: 1
       Natural Gas Fired Combustion Turbine: 1
+      NaturalGas_CTAvgCF_Moderate: 1
     MinCapTag_3:
       UtilityPV: 1
       Solar Photovoltaic: 1
@@ -497,12 +619,36 @@ regional_tag_values:
     New_Build:
       Hydroelectric Pumped Storage: 1
       Natural Gas Fired Combustion Turbine: 1
+      NaturalGas_CTAvgCF_Moderate: 1
       Nuclear: 0
   CA_N:
     New_Build:
       Nuclear: 0
       Solar Photovoltaic: 1
       Natural Gas Fired Combined Cycle: 1
+      NaturalGas_CTAvgCF_Moderate: 1
+  NE_S:
+      New_Build:
+        Hydroelectric Pumped Storage: 1
+        Natural Gas Fired Combustion Turbine: 1
+        NaturalGas_CTAvgCF_Moderate: 1
+        Nuclear: 0
+  NE_N:
+    New_Build:
+      Nuclear: 0
+      Solar Photovoltaic: 1
+      Natural Gas Fired Combined Cycle: 1
+      NaturalGas_CTAvgCF_Moderate: 1
+
+MinCapReq:
+  MinCapTag_1:
+    description: Landbasedwind
+    min_mw: 8000
+  MinCapTag_2:
+    description: CA_S_solar
+    min_mw: 10000
+
+
 
 # LOAD GROWTH ASSUMPTIONS
 #
@@ -584,10 +730,10 @@ future_load_region_map:
 alt_growth_rate: ~
   # WECC_AZ: 0.02
 
-
-PUDL_DB: ../WEC-DECIDER/data/pudl/pudl.sqlite
-PG_DB: ../WEC-DECIDER/data/pg/pg_misc_tables_efs.sqlite
-RESOURCE_GROUP_PROFILES: ../WEC-DECIDER/data/resource_profiles
-EFS_DATA: ../WEC-DECIDER/data/efs
-DISTRIBUTED_GEN_DATA: ../WEC-DECIDER/data/cambium
+regional_load_source: EFS
+PUDL_DB: ./data/pudl/pudl.sqlite
+PG_DB: ./data/pg/pg_misc_tables_efs.sqlite
+RESOURCE_GROUP_PROFILES: ./data/resource_profiles
+EFS_DATA: ./data/efs/efs_files_utc
+DISTRIBUTED_GEN_DATA: ./data/cambium
 #RESOURCE_GROUPS: ../WEC-DECIDER/data/resource_groups
