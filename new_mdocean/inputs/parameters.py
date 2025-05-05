@@ -1,6 +1,6 @@
 import pandas as pd
-from trim_jpd import *
-from get_spar_exc import get_spar_exc, get_hydro
+from wave_conditions.trim_jpd import *
+from new_mdocean.inputs.validation.get_spar_exc import get_spar_exc, get_hydro
 import math
 
 def parameters(mode:str=""):
@@ -32,7 +32,7 @@ def parameters(mode:str=""):
         power_scale_multibody = 0.595
 
     # nrows switched from 15 to 14 to match the matrix. - Jordan
-    mat = pd.read_excel('RM3-CBS.xlsx', sheet_name='Performance & Economics', usecols='D:S', skiprows=21, nrows=15)
+    mat = pd.read_excel('inputs/validation/RM3-CBS.xlsx', sheet_name='Performance & Economics', usecols='D:S', skiprows=21, nrows=15)
     mat = mat.to_numpy()
     mat[1, -1] = np.finfo(float).eps
     jpd_full = trim_jpd(mat)

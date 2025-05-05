@@ -184,5 +184,3 @@ def var_bounds(mode: str = ''):
 
     return b
 
-
-var_bounds("")
