@@ -17,6 +17,7 @@ function [FOS1Y,FOS2Y,FOS3Y,FOS_buckling] = structures(...
         self.add_input('F_heave_storm', 0)
         self.add_input('F_surge_storm', 0)
         self.add_input('F_heave_op', 0)
+        self.add_input('F_surge_op', 0)
 
         # bulk dimensions
         self.add_input('h_s', 0)
@@ -85,7 +86,21 @@ function [FOS1Y,FOS2Y,FOS3Y,FOS_buckling] = structures(...
         s_vm = np.sqrt(principal_term + shear_term)
         return s_vm
 
+    def structures_one_case(
+            F_heave, F_surge, sigma_max,
+            h_s, T_s, D_s, D_f, D_f_in, num_sections, D_f_tu, D_d, L_dt, theta_dt, D_d_tu,
+            t_s_r, I, A_c, A_lat_sub, t_bot, t_top, t_d, t_d_tu, h_d, A_dt,
+            h_stiff_f, w_stiff_f, h_stiff_d, w_stiff_d,
+            rho_w, g, E, nu, num_terms_plate, radial_mesh_plate, num_stiff_d
+    ):
+        # Placeholder for the function logic
+        # You would implement the actual computation here
+        FOS1Y = None
+        FOS2Y = None
+        FOS3Y = None
+        FOS_spar_local = None
 
+        return FOS1Y, FOS2Y, FOS3Y, FOS_spar_local
 
     def compute(self, inputs, outputs):
         # Stress calculations
@@ -98,51 +113,88 @@ function [FOS1Y,FOS2Y,FOS3Y,FOS_buckling] = structures(...
 
         """
         # Retrieve Inputs
-        T_s = inputs['T_s'][0]
-        rho_w = inputs['rho_w'][0]
-        g = inputs['g'][0]
-        F_surge = inputs['F_surge']
-        A_lat_sub = inputs['A_lat_sub']
-        r_over_t = inputs['r_over_t']
-        F_heave = inputs['F_heave']
-        A_c = inputs['A_c']
-        h_s = inputs['h_s'][0]
-        sigma_y = inputs['sigma_y']
-        E = inputs['E']
-        M = int(inputs['M'][0])
+        F_heave_storm = inputs['F_heave_storm']
+        F_surge_storm = inputs['F_surge_storm']
+        F_heave_op = inputs['F_heave_op']
+        F_surge_op = inputs['F_surge_op']
+
+        # bulk dimensions
+        h_s = inputs['h_s']
+        T_s = inputs['T_s']
+        D_s = inputs['D_s']
+        D_f = inputs['D_f']
+        D_f_in = inputs['D_f_in']
+        num_sections = inputs['num_sections']
+        D_f_tu = inputs['D_f_tu']
+        D_d = inputs['D_d']
+        L_dt = inputs['L_dt']
+        theta_dt = inputs['theta_dt']
+        D_d_tu = inputs['D_d_tu']
+
+        # structural dimensions
+        t_s_r = inputs['t_s_r']
         I = inputs['I']
+        A_c = inputs['A_c']
+        A_lat_sub=  inputs['A_lat_sub']
+        t_bot = inputs['t_bot']
+        t_top = inputs['t_top']
+        t_d = inputs['t_d']
+        t_d_tu = inputs['t_d_tu']
+        h_d = inputs['h_d']
+        A_dt = inputs['A_dt']
 
+        # stiffener dimensions
+        h_stiff_f = inputs['h_stiff_f']
+        w_stiff_f = inputs['w_stiff_f']
+        h_stiff_d = inputs['h_stiff_d']
+        w_stiff_d = inputs['w_stiff_d']
 
-        # Stress calculations
+        # Constant
+        M = int(inputs['M'])
+        rho_w = inputs['rho_w']
+        g = inputs['g']
+        sigma_y = inputs['sigma_y']
+        sigma_e = inputs['sigma_y']
+        E = inputs['E']
+        nu = inputs['nu']
 
-        depth = np.array([0, T_s, T_s])
-        P_hydrostatic = rho_w * g * depth
-        sigma_surge = F_surge / A_lat_sub
-        sigma_rr = P_hydrostatic + sigma_surge  # radial compression
-        sigma_tt = P_hydrostatic * r_over_t  # hoop stress
-        sigma_zz = F_heave / A_c  # axial compression
-        sigma_rt = sigma_surge  # shear
-        sigma_tz = np.array([0, 0, 0])
-        sigma_zr = np.array([0, 0, 0])
+        # plate hyperparameters
+        num_terms_plate = inputs['num_terms_plate']
+        radial_mesh_plate = inputs['radial_mesh_plate']
+        num_stiff_d = inputs['num_stiff_d']
 
-        # Calculate von Mises stress
-        sigma_vm = self.von_mises(sigma_rr, sigma_tt, sigma_zz, sigma_rt, sigma_tz, sigma_zr)
+        F_heave_peak = max(F_heave_storm, F_heave_op)
+        F_surge_peak = max(F_surge_storm, F_surge_op)
 
-        # Buckling calculation
-        K = 2  # fixed-free - top is fixed by float angular stiffness, bottom is free
-        L = h_s
+        # Inputs for both DLCs
+        shared_inputs = [
+            h_s, T_s, D_s, D_f, D_f_in, num_sections, D_f_tu, D_d, L_dt, theta_dt, D_d_tu,
+            t_s_r, I, A_c, A_lat_sub, t_bot, t_top, t_d, t_d_tu, h_d, A_dt,
+            h_stiff_f, w_stiff_f, h_stiff_d, w_stiff_d,
+            rho_w, g, E[M], nu[M], num_terms_plate, radial_mesh_plate, num_stiff_d
+        ]
 
+        # DLC 1: peak
+        sigma_buckle = sigma_y[M]  # TODO: for ultimate, implement ABS buckling formulas
+        sigma_u = np.sqrt(sigma_y[M] * sigma_buckle)
 
-        F_buckling = np.pi ** 2 * E[M] * I[1] / (K * L) ** 2
+        FOS1Y, FOS2Y, FOS3Y, FOS_buckling = self.structures_one_case(
+            F_heave_peak, F_surge_peak, sigma_u, *shared_inputs
+        )
 
-        # Factor of Safety (FOS) Calculations
-        FOS_yield = sigma_y[M] / sigma_vm
+        # DLC 2: endurance limit (long cycle fatigue)
+        FOS1Y[1], FOS2Y[1], FOS3Y[1], FOS_buckling[1] = self.structures_one_case(
+            F_heave_op, F_surge_op, sigma_e[M], *shared_inputs
+        )
+
 
         # added [0]
-        outputs['FOS1Y'] = FOS1Y = FOS_yield[0][0]
-        outputs['FOS2Y'] = FOS2Y = FOS_yield[0][1]
-        outputs['FOS3Y'] = FOS3Y = FOS_yield[0][2]
-        outputs['FOS_buckling'] = FOS_buckling = F_buckling / F_heave
+        outputs['FOS1Y'] = FOS1Y
+        outputs['FOS2Y'] = FOS2Y
+        outputs['FOS3Y'] = FOS3Y
+        outputs['FOS_buckling'] = FOS_buckling
+
+
 
 
 
