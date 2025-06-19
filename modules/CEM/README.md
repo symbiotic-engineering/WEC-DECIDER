@@ -2,7 +2,7 @@
 
 0. Clone this repo: `git clone git@github.com:symbiotic-engineering/WEC-DECIDER.git`
 1. Install anaconda, miniconda, or mamba and setup the python environment: `conda env create -f environment.yml`.
-2. For the powergenome environment, two edits must be made to powergenome. Find the package at `/envs/wec-decider/lib/python3.10/site-packages/powergenome/`. Change line 212 of `run_powergenome_multiple_outputs_cli.py` and line 124 of `util.py`. See [here](https://github.com/PowerGenome/PowerGenome/pulls?q=is%3Apr+author%3Arebeccamccabe) for the exact changes.
+2. If using powergenome version 0.6.1 or earlier, two edits must be made to powergenome. Find the package at `/envs/wec-decider/lib/python3.10/site-packages/powergenome/`. Change line 212 of `run_powergenome_multiple_outputs_cli.py` and line 124 of `util.py`. See [here](https://github.com/PowerGenome/PowerGenome/pulls?q=is%3Apr+author%3Arebeccamccabe) for the exact changes.
 3. Run `get-powergenome-data.sh` to download PG data inputs and run PG.
 4. Install Julia using the instructions [here](https://julialang.org/downloads/). Use julia version 1.8 (recommend setting it as default).
 5. Install Gurobi Optimizer using the "full installation" instructions [here](https://support.gurobi.com/hc/en-us/articles/4534161999889-How-do-I-install-Gurobi-Optimizer).
