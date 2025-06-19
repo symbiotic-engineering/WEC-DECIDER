@@ -30,4 +30,4 @@ if ! [ -d ./data/resource_profiles ]; then
 fi
 
 # run sweep
-run_powergenome_multiple -sf ./test_settings.yml -rf ./results
+run_powergenome_multiple -sf ./sweeps_settings.yml -rf ./results
