@@ -3,19 +3,18 @@ channels:
   - conda-forge
   - nrel
 dependencies: 
-  - python = 3.9
+  - python
   - pandas
-  - numpy=1.22
+  - numpy 
   - numpy-financial # econ module
   - scipy 
   - matplotlib 
   - h5pyd
   - requests
-  # - wecopttool  # dynamics module
+  - wecopttool  # dynamics module
   - nrel-pysam  # econ module
   - pyxdsm      # diagram generation
   - openmdao
-  #- powergenome # CEM module
   - gdown       # data for CEM module
   - ipykernel   # jupyter
   - pyjuliacall # julia for CEM module
@@ -27,11 +26,9 @@ dependencies:
 #  - petsc4py
   - pip:
     - mhkit
-    - capytaine==1.4.2
-    - powergenome==0.6.2
+    - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/tree/fix-double-input-folder
     - gridstatus
     - wecopttool[geometry]
     - omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master
-    
 #    - GenX
 #    - pygenx
