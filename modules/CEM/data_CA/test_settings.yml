@@ -421,14 +421,15 @@ use_cost_multiplier_regions: true
 misc_gen_inputs_fn: misc_gen_inputs.csv
 demand_segments_fn: demand_segments_voll.csv
 # regional_load_source: "efs"
-# efs_data_fn: ./efs/EFS_REF_load_2020.parquet
+# efs_data_fn: ./data/efs/EFS_REF_load_2020.parquet
 # regional_load_includes_demand_response: true
 
-PUDL_DB: ./pudl.sqlite
-PG_DB: ./_pg_misc_tables.sqlite3
-RESOURCE_GROUP_PROFILES: ./resource_profiles
-EFS_DATA: ./efs
-DISTRIBUTED_GEN_DATA: ./dist_gen
+PUDL_DB: ./data/pudl/pudl.sqlite
+#PG_DB: ./data/_pg_misc_tables.sqlite3
+PG_DB: ./data/pg/_pg_misc_tables.sqlite3
+RESOURCE_GROUP_PROFILES: ./data/resource_profiles
+EFS_DATA: ./data/efs/efs_files_utc
+DISTRIBUTED_GEN_DATA: ./data/cambium
 regional_load_source: USER
 regional_load_fn: ./test_regional_load_profiles.csv
 electrification: reference  
