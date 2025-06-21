@@ -55,4 +55,10 @@ wget -nc -P data_CA $url7 $url8 $url9
 
 # run sweep
 run_powergenome_multiple -sf ./data_CA/test_settings.yml     -rf ./data_CA/results
+
+echo "PowerGenome ran for CA."
+echo "======================================================================="
+
 run_powergenome_multiple -sf ./data_east/test_settings_2.yml -rf ./data_east/results
+
+echo "PowerGenome ran for NE."
