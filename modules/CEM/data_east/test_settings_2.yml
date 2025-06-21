@@ -1158,8 +1158,8 @@ RESOURCE_GROUP_PROFILES: ./data/resource_profiles
 # RESOURCE_GROUPS: ./data/eastern-20-zone
 EFS_DATA: ./data/efs/efs_files_utc
 DISTRIBUTED_GEN_DATA: ./data/cambium
-regional_load_source: USER
-regional_load_fn: ./load_curves_output.csv
+#regional_load_source: EFS
+#regional_load_fn: ./load_curves_output.csv
 electrification: reference  
 
 

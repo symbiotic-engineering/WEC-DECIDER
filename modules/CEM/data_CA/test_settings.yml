@@ -430,8 +430,8 @@ PG_DB: ./data/pg/_pg_misc_tables.sqlite3
 RESOURCE_GROUP_PROFILES: ./data/resource_profiles
 EFS_DATA: ./data/efs/efs_files_utc
 DISTRIBUTED_GEN_DATA: ./data/cambium
-regional_load_source: USER
-regional_load_fn: ./test_regional_load_profiles.csv
+#regional_load_source: EFS
+#regional_load_fn: ./test_regional_load_profiles.csv
 electrification: reference  
 
 eia_series_scenario_names:
