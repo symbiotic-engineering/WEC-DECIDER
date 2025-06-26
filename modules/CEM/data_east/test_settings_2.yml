@@ -916,10 +916,10 @@ atb_battery_wacc: UtilityPV
 # Provide the filename (no path needed) in the parameter below or "~" for none.
 # All technologies listed in the file will be included in the outputs unless they are
 # also included in "new_gen_not_available".
+#additional_technologies_fn: ../data/extra_inputs/AZ_additional_tech.csv
 additional_technologies_fn: AZ_additional_tech.csv
 
-additional_new_gen: 
-  - Nuclear_mid
+additional_new_gen: [Nuclear_mid]
 
 
 # Dictionary of lists with model region as key and ATB tech (string matching) in list.
@@ -1070,11 +1070,11 @@ settings_management:
         wave_variability: 0.1
     wave_cost:
       high:
-        additional_new_gen: Nuclear_high
+        additional_new_gen: [Nuclear_high,]
       med:
-        additional_new_gen: Nuclear_mid
+        additional_new_gen: [Nuclear_mid,]
       low:
-        additional_new_gen: Nuclear_low
+        additional_new_gen: [Nuclear_low,]
   2045:
 
 
