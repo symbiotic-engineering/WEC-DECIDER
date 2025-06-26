@@ -31,6 +31,10 @@ if ! [ -d ./data/resource_profiles ]; then
     gdown --quiet --folder -O data/resource_profiles 1ZYxnl4U_3HXlYPxm8qlmqyWB8NyC3PpG 
 fi
 
+if ! [ -d ./data/resource_groups ]; then
+    gdown --quiet --folder -O data/resource_groups 1Svkz6fKgc1m9ewUMPjVHJJV5TWDYKdmw
+fi
+
 if ! [ -d ./data/network_costs ]; then
     gdown --quiet --folder -O data/network_costs 16bnl3VSUMP8UNEhA881VGpFqCkmeadcm
 fi

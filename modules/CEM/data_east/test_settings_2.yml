@@ -798,7 +798,7 @@ atb_new_gen:
 
 renewables_clusters:
   - region: all
-    technology: LandbasedWind
+    technology: landbasedwind
     filter:
       - feature: lcoe
         max: 75
@@ -810,7 +810,7 @@ renewables_clusters:
       - feature: cf
         q: 2
   - region: all
-    technology: solar
+    technology: utilitypv
     filter:
       - feature: lcoe
         max: 50
@@ -1155,7 +1155,7 @@ reserves_fn: Reserves.csv
 PUDL_DB: ./data/pudl/pudl.sqlite
 PG_DB: ./data/pg/pg_misc_tables_efs_2023.2.sqlite
 RESOURCE_GROUP_PROFILES: ./data/resource_profiles
-# RESOURCE_GROUPS: ./data/eastern-20-zone
+RESOURCE_GROUPS: ./data/resource_groups/eastern-20-zone
 EFS_DATA: ./data/efs/efs_files_utc
 DISTRIBUTED_GEN_DATA: ./data/cambium
 #regional_load_source: EFS
