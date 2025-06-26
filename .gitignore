@@ -170,21 +170,14 @@ Highs.log
 # Microsoft office temporary files
 ~$*
 
-# GenX output folders
+# GenX and PowerGenome output folders
+modules/CEM/data/
+modules/CEM/data_*/results/
+modules/CEM/data_*/cluster_assignments/
+modules/CEM/data_*/*.csv
 **/Results*/
 **/TDR_Results/
 **/Cases/
-**/resource_profiles/
-**/resource_groups/
-*.sqlite3
-*.sqlite
-*.db
-*.parquet
-**/wecc-6/
-**/efs_files_utc/
-**/efs/
-**/dist-gen/
-**/modules/CEM/inputs/
 
 
 # Power genome logs
