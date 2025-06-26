@@ -175,6 +175,7 @@ modules/CEM/data/
 modules/CEM/data_*/results/
 modules/CEM/data_*/cluster_assignments/
 modules/CEM/data_*/*.csv
+!modules/CEM/data_*/scenario_inputs.csv
 **/Results*/
 **/TDR_Results/
 **/Cases/

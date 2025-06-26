@@ -129,8 +129,8 @@ avg_distribution_loss: 0.0453
 # trans_bus (transit buses)
 
 
-electrification_stock_fn: SCENARIO_STOCK.parquet # EFS_STOCK_AGG.parquet
-electrification_scenario: current_policy # REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+electrification_stock_fn: EFS_STOCK_AGG.parquet
+electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
 # Name of the flexible resource, fraction of load that can be shifted, and model-specific
 # parameters that will be applied to each resource.
 # Table 5.1 from the NREL report "Electrification Futures Study:
@@ -822,7 +822,6 @@ renewables_clusters:
         q: 2
   - region: all
     technology: offshorewind
-    turbine_type: fixed
     pref_site: 1
     filter:
       - feature: lcoe
@@ -917,9 +916,10 @@ atb_battery_wacc: UtilityPV
 # Provide the filename (no path needed) in the parameter below or "~" for none.
 # All technologies listed in the file will be included in the outputs unless they are
 # also included in "new_gen_not_available".
-additional_technologies_fn: ~
+additional_technologies_fn: AZ_additional_tech.csv
 
-additional_new_gen: ~
+additional_new_gen: 
+  - Nuclear_mid
 
 
 # Dictionary of lists with model region as key and ATB tech (string matching) in list.
@@ -1047,13 +1047,36 @@ additional_retirements: ~
 # case.
 settings_management:
   2030:
-    time_series:
-      full:
-        reduce_time_domain: false
+    electrification:
+      high:
+        electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+      med:
+        electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+      ref:
+        electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+    carbon_constraint:
+      high:
+        carbon_constraint: 0.0 # emission_policies.csv
+      med:
+        carbon_constraint: 0.0
+      low:
+        carbon_constraint: 0.0
+    wave_variability:
+      high:
+        wave_variability: 0.5
+      med:
+        wave_variability: 0.25
+      low:
+        wave_variability: 0.1
+    wave_cost:
+      high:
+        additional_new_gen: Nuclear_high
+      med:
+        additional_new_gen: Nuclear_mid
+      low:
+        additional_new_gen: Nuclear_low
   2045:
-    time_series:
-      full:
-        reduce_time_domain: false
+
 
 # STARTUP COSTS
 # The values in this file have been selected from NREL reports. Only change them if you
