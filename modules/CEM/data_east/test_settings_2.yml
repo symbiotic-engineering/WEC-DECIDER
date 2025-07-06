@@ -1209,6 +1209,7 @@ user_transmission_costs: ../data/network_costs/network_costs_ipm.csv
 user_transmission_constraints_fn: ../data/extra_inputs/ipm_tx_corrections.csv
 co2_pipeline_cost_fn: ../data/extra_inputs/co2_pipeline_cost_percentiles.csv
 reserves_fn: Reserves.csv
+genx_settings_folder: ../template/Settings
 
 PUDL_DB: ./data/pudl/pudl.sqlite
 PG_DB: ./data/pg/pg_misc_tables_efs_2023.2.sqlite
