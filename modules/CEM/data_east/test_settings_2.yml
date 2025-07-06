@@ -458,6 +458,7 @@ model_tag_values:
     Solar Photovoltaic: 1
     Solar Thermal without Energy Storage: 1
     UtilityPV: 1
+    Wave: 1
   Num_VRE_Bins:
     CSP: 1
     LandbasedWind: 1
@@ -467,6 +468,7 @@ model_tag_values:
     Solar Thermal without Energy Storage: 1
     UtilityPV: 1
     Offshore Wind Turbine: 1
+    Wave: 1
   STOR:
     Batteries: 1
     Battery: 1
@@ -504,6 +506,7 @@ model_tag_values:
     Small Hydroelectric: 1
     Solar Photovoltaic: 1
     UtilityPV: 1
+    Wave: 1
   ESR_2:
     Biomass: 1
     Biopower: 1
@@ -519,6 +522,7 @@ model_tag_values:
     Small Hydroelectric: 1
     Solar Photovoltaic: 1
     UtilityPV: 1
+    Wave: 1
   MinCapTag_1:
     LandbasedWind: 1
     Onshore Wind: 1
@@ -536,6 +540,7 @@ model_tag_values:
     UtilityPV: 1
     Nuclear_Nuclear: 1
     Nuclear: -1
+    Wave: 1
   CapRes_1:
     Conventional Steam Coal: 0.9
     Natural Gas Fired Combined Cycle: 0.9
@@ -569,6 +574,7 @@ model_tag_values:
     Solar Photovoltaic: 0.8
     Battery: 0.95
     Hydroelectric Pumped Storage: 0.95
+    Wave: 0.8
   CapRes_2:
     Conventional Steam Coal: 0.9
     Natural Gas Fired Combined Cycle: 0.9
@@ -602,6 +608,7 @@ model_tag_values:
     Solar Photovoltaic: 0.8
     Battery: 0.95
     Hydroelectric Pumped Storage: 0.95
+    Wave: 0.8
   MUST_RUN:
     Small Hydroelectric: 1
     Geothermal: 1
@@ -628,6 +635,7 @@ regional_tag_values:
       UtilityPV: 1
       Nuclear_Nuclear: 1
       Nuclear: -1
+      Wave: 1
     MinCapTag_1:
       LandbasedWind: 0
   NENGREST:
@@ -701,6 +709,7 @@ num_clusters:
   Biomass: 1
   Other_peaker: 1
   Batteries: 1
+  Wave: 1
 
 
 # Group these technologies
@@ -917,7 +926,7 @@ atb_battery_wacc: UtilityPV
 # also included in "new_gen_not_available".
 additional_technologies_fn: ../data/extra_inputs/AZ_additional_tech.csv
 
-additional_new_gen: [Nuclear_mid]
+#additional_new_gen: [Nuclear_mid]
 
 
 # Dictionary of lists with model region as key and ATB tech (string matching) in list.
@@ -953,7 +962,7 @@ cost_multiplier_technology_map:
   Biomass: [Biopower_CofireOld, Biopower_CofireNew, Biopower_Dedicated]
   MSW - landfill gas: []
   Wind: [LandbasedWind_Class3]
-  Wind offshore: [OffShoreWind_Class3]
+  Wind offshore: [OffShoreWind_Class3, Wave_low, Wave_mid, Wave_high]
   Solar thermal: [CSP]
   Solar PV - tracking: [UtilityPV_Class1, CommPV, ResPV]
   Battery storage: [Battery_*]
@@ -1054,26 +1063,54 @@ settings_management:
         electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
     carbon_constraint:
       high:
-        carbon_constraint: 0.0 # emission_policies.csv
+        emission_policies_fn: emission_policies_no_limit.csv
       med:
-        carbon_constraint: 0.0
+        emission_policies_fn: emission_policies_orig.csv
       low:
-        carbon_constraint: 0.0
+        emission_policies_fn: emission_policies_net_zero.csv
     wave_variability:
-      high:
-        wave_variability: 0.5
-      med:
-        wave_variability: 0.25
-      low:
-        wave_variability: 0.1
+      zeta_01_omega_n_04_P_limit_200:
+        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
+      zeta_01_omega_n_04_P_limit_400:
+        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
+      zeta_01_omega_n_04_P_limit_600:
+        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
     wave_cost:
       high:
-        additional_new_gen: [Nuclear_high,]
+        additional_new_gen: [Wave_high,]
       med:
-        additional_new_gen: [Nuclear_mid,]
+        additional_new_gen: [Wave_mid,]
       low:
-        additional_new_gen: [Nuclear_low,]
+        additional_new_gen: [Wave_low,]
   2045:
+    electrification:
+      high:
+        electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+      med:
+        electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+      ref:
+        electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+    carbon_constraint:
+      high:
+        emission_policies_fn: emission_policies_no_limit.csv
+      med:
+        emission_policies_fn: emission_policies_orig.csv
+      low:
+        emission_policies_fn: emission_policies_net_zero.csv
+    wave_variability:
+      zeta_01_omega_n_04_P_limit_200:
+        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
+      zeta_01_omega_n_04_P_limit_400:
+        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
+      zeta_01_omega_n_04_P_limit_600:
+        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
+    wave_cost:
+      high:
+        additional_new_gen: [Wave_high,]
+      med:
+        additional_new_gen: [Wave_mid,]
+      low:
+        additional_new_gen: [Wave_low,]
 
 
 # STARTUP COSTS
