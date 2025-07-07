@@ -1,5 +1,6 @@
 import numpy as np
-
+from get_hydro_coeffs_MEEM import get_hydro_coeffs_MEEM
+from get_hydro_coeffs import get_hydro_coeffs
 def get_dynamic_coeffs(Hs, T, D_f, T_f, D_s, D_d, T_s, h,
                        m_float, m_spar, spar_excitation_coeffs,
                        C_d_float, C_d_spar,
@@ -85,3 +86,62 @@ def get_dynamic_coeffs(Hs, T, D_f, T_f, D_s, D_d, T_s, h,
             B_f_over_rho_w, B_s_over_rho_w, B_c_over_rho_w,
             gamma_f_over_rho_g, gamma_s_over_rho_g,
             gamma_phase_f, gamma_phase_s)
+
+
+def dispersion(w, h, g=9.81):
+    """
+    Calculate wave number k from angular frequency w and depth h
+    using dispersion relation with approximations and fixed-point iteration.
+
+    Parameters:
+    w : ndarray
+        Angular frequency array (rad/s)
+    h : float
+        Water depth (m)
+    g : float
+        Gravitational acceleration (m/s^2), default is 9.81
+
+    Returns:
+    k : ndarray
+        Wave number array (rad/m)
+    """
+    w = np.asarray(w)
+
+    # Thresholds for deep/shallow water
+    h_lambda_deep = 0.4
+    h_lambda_shallow = 0.05
+
+    k = np.zeros_like(w)
+
+    # Determine regimes
+    deep_cutoff = np.sqrt(h_lambda_deep * 2 * np.pi * g / h)
+    shallow_cutoff = h_lambda_shallow * 2 * np.pi * np.sqrt(g / h)
+
+    idx_deep = w > deep_cutoff
+    idx_shallow = w < shallow_cutoff
+    idx_mid = ~(idx_deep | idx_shallow)
+
+    # Deep water: k = w^2 / g
+    k[idx_deep] = w[idx_deep] ** 2 / g
+
+    # Shallow water: k = w / sqrt(g*h)
+    k[idx_shallow] = w[idx_shallow] / np.sqrt(g * h)
+
+    # Intermediate depths: solve dispersion relation with fixed-point iteration
+    if np.any(idx_mid):
+        k_deep_guess = w[idx_mid] ** 2 / g
+        k_guess = k_deep_guess.copy()
+        err = 1.0
+        iters = 0
+        max_iters = 50
+        tol = 0.2
+        k_new = 0
+        while err > tol and iters < max_iters:
+            k_new = (w[idx_mid] ** 2 / g) / np.tanh(k_guess * h)
+            err = np.max(np.abs((k_new - k_guess) / k_deep_guess))
+            k_guess = k_new
+            iters += 1
+
+        k[idx_mid] = k_new
+
+    return k
