@@ -20,4 +20,4 @@ using GenX
 
 # Uncomment to run caserunner from original GenX GitHub version
 case_dir = joinpath(cem_dir, "data_east", "results", "case1","Inputs","Inputs_p1")
-run_genx_case!(case_dir) #, Gurobi.Optimizer)
+run_genx_case!(case_dir, Gurobi.Optimizer)
