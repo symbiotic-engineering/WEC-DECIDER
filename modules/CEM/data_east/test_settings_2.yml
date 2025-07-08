@@ -830,6 +830,7 @@ renewables_clusters:
         q: 2
   - region: all
     technology: offshorewind
+    turbine_type: floating
     pref_site: 1
     filter:
       - feature: lcoe
@@ -1214,7 +1215,7 @@ genx_settings_folder: ../template/Settings
 PUDL_DB: ./data/pudl/pudl.sqlite
 PG_DB: ./data/pg/pg_misc_tables_efs_2023.2.sqlite
 RESOURCE_GROUP_PROFILES: ./data/resource_profiles
-RESOURCE_GROUPS: ./data/resource_groups/eastern-20-zone
+RESOURCE_GROUPS: ./data/resource_groups/ipm_regions
 EFS_DATA: ./data/efs/efs_files_utc
 DISTRIBUTED_GEN_DATA: ./data/cambium
 electrification: reference  
