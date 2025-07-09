@@ -58,11 +58,11 @@ url9="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/maste
 wget -nc -P data_CA $url7 $url8 $url9
 
 # run sweep
-run_powergenome_multiple -sf ./data_CA/test_settings.yml     -rf ./data_CA/results
+#run_powergenome_multiple -sf ./data_CA/test_settings.yml     -rf ./data_CA/results
 
-echo "PowerGenome ran for CA."
+#echo "PowerGenome ran for CA."
 echo "======================================================================="
 
-run_powergenome_multiple -sf ./data_east/test_settings_2.yml -rf ./data_east/results
+run_powergenome_multiple -sf ./data_east/settings/ -rf ./data_east/results
 
 echo "PowerGenome ran for NE."

@@ -1053,65 +1053,65 @@ additional_retirements: ~
 # - The values under this third set of keys are a key: value pair where the key is a
 # parameter from this settings file with a value that should be modified for a specific
 # case.
-settings_management:
-  2030:
-    electrification:
-      high:
-        electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-      med:
-        electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-      ref:
-        electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-    carbon_constraint:
-      high:
-        emission_policies_fn: emission_policies_no_limit.csv
-      med:
-        emission_policies_fn: emission_policies_orig.csv
-      low:
-        emission_policies_fn: emission_policies_net_zero.csv
-    wave_variability:
-      zeta_01_omega_n_04_P_limit_200:
-        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
-      zeta_01_omega_n_04_P_limit_400:
-        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
-      zeta_01_omega_n_04_P_limit_600:
-        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
-    wave_cost:
-      high:
-        additional_new_gen: [Wave_high,]
-      med:
-        additional_new_gen: [Wave_mid,]
-      low:
-        additional_new_gen: [Wave_low,]
-  2045:
-    electrification:
-      high:
-        electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-      med:
-        electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-      ref:
-        electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-    carbon_constraint:
-      high:
-        emission_policies_fn: emission_policies_no_limit.csv
-      med:
-        emission_policies_fn: emission_policies_orig.csv
-      low:
-        emission_policies_fn: emission_policies_net_zero.csv
-    wave_variability:
-      zeta_01_omega_n_04_P_limit_200:
-        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
-      zeta_01_omega_n_04_P_limit_400:
-        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
-      zeta_01_omega_n_04_P_limit_600:
-        additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
-    wave_cost:
-      high:
-        additional_new_gen: [Wave_high,]
-      med:
-        additional_new_gen: [Wave_mid,]
-      low:
-        additional_new_gen: [Wave_low,]
+# settings_management:
+#   2030:
+#     electrification:
+#       high:
+#         electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+#       med:
+#         electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+#       ref:
+#         electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+#     carbon_constraint:
+#       high:
+#         emission_policies_fn: emission_policies_no_limit.csv
+#       med:
+#         emission_policies_fn: emission_policies_orig.csv
+#       low:
+#         emission_policies_fn: emission_policies_net_zero.csv
+#     wave_variability:
+#       zeta_01_omega_n_04_P_limit_200:
+#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
+#       zeta_01_omega_n_04_P_limit_400:
+#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
+#       zeta_01_omega_n_04_P_limit_600:
+#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
+#     wave_cost:
+#       high:
+#         additional_new_gen: [Wave_high,]
+#       med:
+#         additional_new_gen: [Wave_mid,]
+#       low:
+#         additional_new_gen: [Wave_low,]
+#   2045:
+#     electrification:
+#       high:
+#         electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+#       med:
+#         electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+#       ref:
+#         electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
+#     carbon_constraint:
+#       high:
+#         emission_policies_fn: emission_policies_no_limit.csv
+#       med:
+#         emission_policies_fn: emission_policies_orig.csv
+#       low:
+#         emission_policies_fn: emission_policies_net_zero.csv
+#     wave_variability:
+#       zeta_01_omega_n_04_P_limit_200:
+#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
+#       zeta_01_omega_n_04_P_limit_400:
+#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
+#       zeta_01_omega_n_04_P_limit_600:
+#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
+#     wave_cost:
+#       high:
+#         additional_new_gen: [Wave_high,]
+#       med:
+#         additional_new_gen: [Wave_mid,]
+#       low:
+#         additional_new_gen: [Wave_low,]
 
 
 # STARTUP COSTS
@@ -1201,7 +1201,7 @@ tx_expansion_mw_per_period: 400
 
 # The location and name of additional input files needed to create outputs
 input_folder: . # Subfolder directly below the location of this settings file
-scenario_definitions_fn: scenario_inputs.csv # Define policy/cost scenarios for each case
+scenario_definitions_fn: scenario_input.csv # Define policy/cost scenarios for each case
 emission_policies_fn: emission_policies.csv # Emission policies for each model_year/region/case_id
 capacity_limit_spur_fn: resource_capacity_spur.csv # Max capacity and spur line distance for each renewable resource
 demand_segments_fn: demand_segments_voll.csv
