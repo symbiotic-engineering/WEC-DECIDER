@@ -2,6 +2,15 @@ name: WEC-DECIDER
 title: WEC DECIDER
 description: Wave Energy Converter Design Convergence Impact Driven 
   Engineering Roadmap
+notebooks:
+  - path: modules/CEM/make_additional_tech_csv.ipynb
+    title: setup-sweep
+  - path: modules/CEM/analyze_results.ipynb
+    title: analyze-results
+  - path: modules/CEM/iterate_locations.ipynb
+    title: iterate-locations
+  - path: modules/CEM/make_batch_csv.ipynb
+    title: make-batch-csv
 environments:
   decider:
     path: calkit-environment.yml
