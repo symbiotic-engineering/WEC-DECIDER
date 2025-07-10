@@ -45,17 +45,15 @@ fi
 
 # files from powergenome
 url1="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/misc_gen_inputs.csv"
-url2="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/scenario_inputs.csv"
-url3="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/demand_segments_voll.csv"
-url4="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/resource_capacity_spur.csv"
-url5="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/emission_policies.csv"
-url6="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/Reserves.csv"
-wget -nc -P data_east $url1 $url2 $url3 $url4 $url5 $url6
+url2="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/demand_segments_voll.csv"
+url3="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/resource_capacity_spur.csv"
+url4="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/emission_policies.csv"
+url5="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/ISONE/extra_inputs/Reserves.csv"
+wget -nc -P data_east $url1 $url2 $url3 $url4 $url5
 
-url7="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/CA_AZ/extra_inputs/test_scenario_inputs.csv"
-url8="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/CA_AZ/extra_inputs/test_demand_segments_voll.csv"
-url9="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/CA_AZ/extra_inputs/test_misc_gen_inputs.csv"
-wget -nc -P data_CA $url7 $url8 $url9
+url6="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/CA_AZ/extra_inputs/test_demand_segments_voll.csv"
+url7="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/CA_AZ/extra_inputs/test_misc_gen_inputs.csv"
+wget -nc -P data_CA $url6 $url7
 
 # run sweep
 #run_powergenome_multiple -sf ./data_CA/test_settings.yml     -rf ./data_CA/results
