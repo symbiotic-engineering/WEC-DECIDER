@@ -1,0 +1,26 @@
+name: wec-decider-decider
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pandas
+  - numpy
+  - scipy
+  - matplotlib
+  - h5pyd
+  - requests
+  - wecopttool
+  - pyxdsm
+  - openmdao
+  - gdown
+  - ipykernel
+  - pyjuliacall
+  - pip
+  - catalystcoop.pudl <= 2022.11.30, >= 0.6.0
+  - pyarrow = 7
+  - pyogrio
+  - pip:
+      - mhkit
+      - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/@fix-double-input-folder
+      - wecopttool[geometry]
+      - omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master

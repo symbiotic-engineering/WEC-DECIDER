@@ -2,3 +2,7 @@ name: WEC-DECIDER
 title: WEC DECIDER
 description: Wave Energy Converter Design Convergence Impact Driven 
   Engineering Roadmap
+environments:
+  decider:
+    path: calkit-environment.yml
+    kind: conda
