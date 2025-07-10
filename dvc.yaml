@@ -6,10 +6,9 @@ stages:
     outs:
     - modules/CEM/data/
     - modules/CEM/data_CA/test_misc_gen_inputs.csv
+    - modules/CEM/data_CA/test_demand_segments_voll.csv
     - modules/CEM/data_east/Reserves.csv
     - modules/CEM/data_east/emission_policies.csv
-    - modules/CEM/data_east/emission_policies_net_zero.csv
-    - modules/CEM/data_east/emission_policies_no_limit.csv
-    - modules/CEM/data_east/emission_policies_orig.csv
     - modules/CEM/data_east/misc_gen_inputs.csv
     - modules/CEM/data_east/resource_capacity_spur.csv
+    - modules/CEM/data_east/demand_segments_voll.csv
