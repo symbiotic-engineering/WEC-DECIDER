@@ -137,13 +137,19 @@ settings_management:
       Avail_zeta_0.2_omega_n_0.7_limited_1000:
         additional_technologies_fn: wave_profiles/Avail_zeta_0.2_omega_n_0.7_limited_1000.csv
     wave_cost:
-      low:
+      Wave_500:
         additional_new_gen:
-        - Wave_low
-      mid:
+        - Wave_500
+      Wave_750:
         additional_new_gen:
-        - Wave_mid
-      high:
+        - Wave_750
+      Wave_1000:
         additional_new_gen:
-        - Wave_high
+        - Wave_1000
+      Wave_1250:
+        additional_new_gen:
+        - Wave_1250
+      Wave_1500:
+        additional_new_gen:
+        - Wave_1500
   2045: *id001
