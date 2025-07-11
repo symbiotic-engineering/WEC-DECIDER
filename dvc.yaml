@@ -1,14 +1,40 @@
 stages:
+  cd:
+    cmd: cd modules/CEM
   powergenome-data-download:
-    cmd: bash modules/CEM/get-powergenome-data.sh
+    cmd: bash ./get-powergenome-data.sh
     deps:
-    - modules/CEM/get-powergenome-data.sh
+    - ./get-powergenome-data.sh
     outs:
-    - modules/CEM/data/
-    - modules/CEM/data_CA/test_misc_gen_inputs.csv
-    - modules/CEM/data_CA/test_demand_segments_voll.csv
-    - modules/CEM/data_east/Reserves.csv
-    - modules/CEM/data_east/emission_policies.csv
-    - modules/CEM/data_east/misc_gen_inputs.csv
-    - modules/CEM/data_east/resource_capacity_spur.csv
-    - modules/CEM/data_east/demand_segments_voll.csv
+    - ./data/
+    - ./data_CA/test_misc_gen_inputs.csv
+    - ./data_CA/test_demand_segments_voll.csv
+    - ./data_east/Reserves.csv
+    - ./data_east/emission_policies.csv
+    - ./data_east/misc_gen_inputs.csv
+    - ./data_east/resource_capacity_spur.csv
+    - ./data_east/demand_segments_voll.csv
+  powergenome-run:
+    cmd: bash ./run-powergenome.sh
+    deps:
+    - ./run-powergenome.sh
+    - ./data/
+    - ./data_CA/test_misc_gen_inputs.csv
+    - ./data_CA/test_demand_segments_voll.csv
+    - ./data_east/Reserves.csv
+    - ./data_east/emission_policies.csv
+    - ./data_east/misc_gen_inputs.csv
+    - ./data_east/resource_capacity_spur.csv
+    - ./data_east/demand_segments_voll.csv
+    outs:
+    - ./data_CA/results/
+    - ./data_east/results/
+  genx-run:
+    cmd: bash julia --project=./ ./Run.jl
+    deps:
+    - ./Run.jl
+    - ./data_CA/results/
+    - ./data_east/results/
+    outs:
+    - ./data_CA/results/Case_*/Inputs/Inputs_p1/results_*/
+    - ./data_east/results/Case_*/Inputs/Inputs_p1/results_*/
