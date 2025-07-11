@@ -20,6 +20,7 @@ dependencies:
   - pyarrow = 7
   - pyogrio
   - pip:
+      - calkit-python
       - mhkit
       - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/@fix-double-input-folder
       - wecopttool[geometry]

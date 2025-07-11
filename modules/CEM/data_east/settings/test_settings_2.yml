@@ -963,7 +963,7 @@ cost_multiplier_technology_map:
   Biomass: [Biopower_CofireOld, Biopower_CofireNew, Biopower_Dedicated]
   MSW - landfill gas: []
   Wind: [LandbasedWind_Class3]
-  Wind offshore: [OffShoreWind_Class3, Wave_low, Wave_mid, Wave_high]
+  Wind offshore: [OffShoreWind_Class3, Wave_500, Wave_750, Wave_1000, Wave_1250, Wave_1500]
   Solar thermal: [CSP]
   Solar PV - tracking: [UtilityPV_Class1, CommPV, ResPV]
   Battery storage: [Battery_*]

@@ -23,7 +23,7 @@ case_folder_dir = joinpath(cem_dir, "data_east", "results")
 for i=1:length(readdir(case_folder_dir))
     if occursin("Case_", readdir(case_folder_dir)[i])
         println("Running GenX for case: ", readdir(case_folder_dir)[i], " of ", length(readdir(case_folder_dir)))
-        case_dir = joinpath(case_folder_dir, readdir(case_folder_dir)[i],"Inputs","Inputs_p1")
+        case_dir = joinpath(case_folder_dir, readdir(case_folder_dir)[i])
         run_genx_case!(case_dir, Gurobi.Optimizer)
     end
 end

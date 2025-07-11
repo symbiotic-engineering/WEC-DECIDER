@@ -1,12 +1,14 @@
+script_dir=$(dirname "$0")
+
 # run sweep
-#run_powergenome_multiple -sf ./data_CA/test_settings.yml     -rf ./data_CA/results
+#run_powergenome_multiple -sf ./data_CA/test_settings.yml     -rf ./data_CA/cases
 
 #echo "PowerGenome ran for CA."
 echo "======================================================================="
 
-run_powergenome_multiple -sf ./data_east/settings/ -rf ./data_east/results
-for i in ./data_east/results/Case_*; do
-    cp -r ./template/settings/ "$i/Inputs/Inputs_p1/"
+run_powergenome_multiple -sf $script_dir/data_east/settings/ -rf $script_dir/data_east/cases
+for i in $script_dir/data_east/cases/Case_*; do
+    cp -r $script_dir/template/settings/ "$i"
 done
 
 

@@ -1,0 +1,68 @@
+schema: '2.0'
+stages:
+  _check-env-decider:
+    cmd: calkit check environment --name decider
+    deps:
+    - path: calkit-environment.yml
+      hash: md5
+      md5: 5dfa8dfdaae0973402428743ca94d53c
+      size: 523
+    outs:
+    - path: .calkit/env-locks/decider.yml
+      hash: md5
+      md5: d5d4e9354c44097982fb109fea711dc9
+      size: 15652
+  _clean-nb-setup-sweep:
+    cmd: calkit nb clean "modules/CEM/make_additional_tech_csv.ipynb"
+    deps:
+    - path: modules/CEM/make_additional_tech_csv.ipynb
+      hash: md5
+      md5: 041c64a4ae2ffd9ea727332149a6e393
+      size: 942560
+    outs:
+    - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
+      hash: md5
+      md5: 60763924ef9977e62f4367fb1b61d82d
+      size: 15283
+  powergenome-data-download:
+    cmd: bash modules/CEM/get-powergenome-data.sh
+    deps:
+    - path: modules/CEM/get-powergenome-data.sh
+      hash: md5
+      md5: c9fd10966cf7628b9875c2cc74aa7c0d
+      size: 3054
+      isexec: true
+    outs:
+    - path: modules/CEM/data/
+      hash: md5
+      md5: 16bb919bdee674c50f18d3e0f142f1a9.dir
+      size: 10513696494
+      nfiles: 223
+    - path: modules/CEM/data_CA/test_demand_segments_voll.csv
+      hash: md5
+      md5: c43e30e32fa5bc63a01dd279648e32cc
+      size: 122
+    - path: modules/CEM/data_CA/test_misc_gen_inputs.csv
+      hash: md5
+      md5: c72902fedbe39f69d4c943c520e085ff
+      size: 2087
+    - path: modules/CEM/data_east/Reserves.csv
+      hash: md5
+      md5: eb96009f00918d5d86ea890e94b2932f
+      size: 189
+    - path: modules/CEM/data_east/demand_segments_voll.csv
+      hash: md5
+      md5: 8434b5682b57411696689e4883dd46fd
+      size: 158
+    - path: modules/CEM/data_east/emission_policies.csv
+      hash: md5
+      md5: d67c56e902690315130682298d87cf83
+      size: 200
+    - path: modules/CEM/data_east/misc_gen_inputs.csv
+      hash: md5
+      md5: 685b36c27546ed661b2eef5a9d5abc4d
+      size: 2316
+    - path: modules/CEM/data_east/resource_capacity_spur.csv
+      hash: md5
+      md5: 7254e40ce132416ebc9c2ab3ca55cd2a
+      size: 589
