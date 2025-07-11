@@ -54,13 +54,3 @@ wget -nc -P data_east $url1 $url2 $url3 $url4 $url5
 url6="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/CA_AZ/extra_inputs/test_demand_segments_voll.csv"
 url7="https://raw.githubusercontent.com/PowerGenome/PowerGenome/refs/heads/master/example_systems/CA_AZ/extra_inputs/test_misc_gen_inputs.csv"
 wget -nc -P data_CA $url6 $url7
-
-# run sweep
-#run_powergenome_multiple -sf ./data_CA/test_settings.yml     -rf ./data_CA/results
-
-#echo "PowerGenome ran for CA."
-echo "======================================================================="
-
-run_powergenome_multiple -sf ./data_east/settings/ -rf ./data_east/results
-
-echo "PowerGenome ran for NE."
