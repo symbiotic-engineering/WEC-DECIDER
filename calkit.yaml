@@ -15,3 +15,18 @@ environments:
   decider:
     path: calkit-environment.yml
     kind: conda
+pipeline:
+  stages:
+    setup-sweep:
+      kind: python-script
+      environment: decider
+      wdir:
+      inputs: []
+      outputs:
+        - modules/CEM/data_east/wave_profiles
+        - modules/CEM/data_east/settings/settings_management.yml
+        - modules/CEM/data_east/scenario_input.csv
+      always_run: false
+      iterate_over:
+      script_path: modules/CEM/make_additional_tech_csv.ipynb
+      args: []
