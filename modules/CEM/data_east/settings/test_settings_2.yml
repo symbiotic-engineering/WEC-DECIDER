@@ -925,50 +925,13 @@ atb_battery_wacc: UtilityPV
 # Provide the filename (no path needed) in the parameter below or "~" for none.
 # All technologies listed in the file will be included in the outputs unless they are
 # also included in "new_gen_not_available".
-additional_technologies_fn: ../data/extra_inputs/AZ_additional_tech.csv
-
-#additional_new_gen: [Nuclear_mid]
-
+additional_technologies_fn: ~
 
 # Dictionary of lists with model region as key and ATB tech (string matching) in list.
 # It isn't necessary to include wind/solar resources here. If they aren't included in
 # the renewables_clusters parameter below, they won't be included in the final generators
 # dataframe.
 new_gen_not_available: ~
-
-
-# The keys in cost_multiplier_technology_map are technologies listed in EIA's capital
-# cost assumptions document. The 2020 version is available at
-# https://www.eia.gov/outlooks/archive/aeo20/assumptions/pdf/table_8.2.pdf
-# Values in the list are string-matched to technologies (`<tech>_<tech_detail>`) from ATB.
-# Be sure to include any custom technologies you are using from `additional_technologies_fn`
-# or `modified_atb_new_gen`.
-# If a value in one of the lists matches more than one technology, the cost multiplier
-# will only be applied to the first technology.
-# If you want to modify the regional cost corrections CSV, you can put your own copy in
-# the folder PowerGenome/data/cost_multipliers.
-cost_multiplier_fn: AEO_2020_regional_cost_corrections.csv
-cost_multiplier_technology_map:
-  Ultra-supercritical coal (USC): [Coal_newAvgCF, Coal_newHighCF]
-  # IGCC: [Coal_IGCCAvgCF, Coal_IGCCAvgCF]
-  USC with 30% CCS: [Coal_CCS30AvgCF, Coal_CCS30HighCF]
-  USC with 90% CCS: [Coal_CCS90AvgCF, Coal_CCS90HighCF]
-  CT - aeroderivative: []
-  CT - industrial frame: [NaturalGas_CTAvgCF, NaturalGas_CTHighCF]
-  CC - single shaft: []
-  CC - multi shaft: [NaturalGas_CCAvgCF, NaturalGas_CCHighCF]
-  CC with 90% CCS: [NaturalGas_CCCCSAvgCF, NaturalGas_CCCCSHighCF, NGCCS100, NaturalGas_CCS100, NaturalGas_CCS100_low,NaturalGas_CCS100_high]
-  Fuel cells: []
-  Advanced nuclear: [Nuclear_Nuclear, Nuclear_mid, Nuclear_low, Nuclear_high]
-  Biomass: [Biopower_CofireOld, Biopower_CofireNew, Biopower_Dedicated]
-  MSW - landfill gas: []
-  Wind: [LandbasedWind_Class3]
-  Wind offshore: [OffShoreWind_Class3, Wave_500, Wave_750, Wave_1000, Wave_1250, Wave_1500]
-  Solar thermal: [CSP]
-  Solar PV - tracking: [UtilityPV_Class1, CommPV, ResPV]
-  Battery storage: [Battery_*]
-  Geothermal: [Geothermal_HydroBinary, Geothermal_HydroFlash, Geothermal_NFEGSBinary, Geothermal_DeepEGSBinary, Geothermal_NFEGSFlash, Geothermal_DeepEGSFlash]
-  Conventional hydropower: [Hydropower]
 
 # Format for ATB is <technology>_<tech_detail>, all are Mid cost case
 # Might want to change this to list format like the new generators below
@@ -1042,7 +1005,7 @@ additional_retirements: ~
   # - [55177, ST1, 2031]
 
 
-# This is a nested dictionary of settings changes for each scenario defined in the
+# settings_management is a nested dictionary of settings changes for each scenario defined in the
 # "scenario_definitions_fn" file.
 # - The fist set of keys are planning years.
 # - The second set of keys are either "all_cases" or the name of a scenario in the
@@ -1053,65 +1016,6 @@ additional_retirements: ~
 # - The values under this third set of keys are a key: value pair where the key is a
 # parameter from this settings file with a value that should be modified for a specific
 # case.
-# settings_management:
-#   2030:
-#     electrification:
-#       high:
-#         electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-#       med:
-#         electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-#       ref:
-#         electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-#     carbon_constraint:
-#       high:
-#         emission_policies_fn: emission_policies_no_limit.csv
-#       med:
-#         emission_policies_fn: emission_policies_orig.csv
-#       low:
-#         emission_policies_fn: emission_policies_net_zero.csv
-#     wave_variability:
-#       zeta_01_omega_n_04_P_limit_200:
-#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
-#       zeta_01_omega_n_04_P_limit_400:
-#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
-#       zeta_01_omega_n_04_P_limit_600:
-#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
-#     wave_cost:
-#       high:
-#         additional_new_gen: [Wave_high,]
-#       med:
-#         additional_new_gen: [Wave_mid,]
-#       low:
-#         additional_new_gen: [Wave_low,]
-#   2045:
-#     electrification:
-#       high:
-#         electrification_scenario: HIGH ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-#       med:
-#         electrification_scenario: MEDIUM ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-#       ref:
-#         electrification_scenario: REFERENCE ELECTRIFICATION - MODERATE TECHNOLOGY ADVANCEMENT
-#     carbon_constraint:
-#       high:
-#         emission_policies_fn: emission_policies_no_limit.csv
-#       med:
-#         emission_policies_fn: emission_policies_orig.csv
-#       low:
-#         emission_policies_fn: emission_policies_net_zero.csv
-#     wave_variability:
-#       zeta_01_omega_n_04_P_limit_200:
-#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_200.csv
-#       zeta_01_omega_n_04_P_limit_400:
-#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_400.csv
-#       zeta_01_omega_n_04_P_limit_600:
-#         additional_technologies_fn: wave_profiles/Avail_zeta_0.1_omega_n_0.4_limited_600.csv
-#     wave_cost:
-#       high:
-#         additional_new_gen: [Wave_high,]
-#       med:
-#         additional_new_gen: [Wave_mid,]
-#       low:
-#         additional_new_gen: [Wave_low,]
 
 
 # STARTUP COSTS

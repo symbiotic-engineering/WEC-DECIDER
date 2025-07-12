@@ -25,6 +25,7 @@ stages:
     deps:
       - .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       - .calkit/env-locks/decider.yml
+      - modules/CEM/template/cost_mult_tech_map.yml
     outs:
       - modules/CEM/data_east/wave_profiles
       - modules/CEM/data_east/settings/settings_management.yml
@@ -95,6 +96,7 @@ stages:
       - modules/CEM/data_east/settings/test_settings_2.yml
       - modules/CEM/data_east/scenario_input.csv
       - modules/CEM/data_east/wave_profiles/
+      - modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
     outs:
       # - modules/CEM/data_CA/cases/Case_1/inputs
       # - modules/CEM/data_CA/cases/Case_2/inputs
