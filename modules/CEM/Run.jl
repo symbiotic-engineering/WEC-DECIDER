@@ -20,9 +20,10 @@ using GenX
 
 # Uncomment to run caserunner from original GenX GitHub version
 case_folder_dir = joinpath(cem_dir, "data_east", "results")
-for i=1:length(readdir(case_folder_dir))
+num_cases = sum(occursin.("Case_", readdir(case_folder_dir)))
+for i=1:num_cases
     if occursin("Case_", readdir(case_folder_dir)[i])
-        println("Running GenX for case: ", readdir(case_folder_dir)[i], " of ", length(readdir(case_folder_dir)))
+        println("Running GenX for case: ", readdir(case_folder_dir)[i], " of ", num_cases)
         case_dir = joinpath(case_folder_dir, readdir(case_folder_dir)[i])
         run_genx_case!(case_dir, Gurobi.Optimizer)
     end
