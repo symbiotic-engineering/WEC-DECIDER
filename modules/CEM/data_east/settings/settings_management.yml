@@ -137,19 +137,49 @@ settings_management:
       Avail_zeta_0.2_omega_n_0.7_limited_1000:
         additional_technologies_fn: wave_profiles/Avail_zeta_0.2_omega_n_0.7_limited_1000.csv
     wave_cost:
+      Wave_400:
+        additional_new_gen:
+        - Wave_400
+      Wave_425:
+        additional_new_gen:
+        - Wave_425
+      Wave_450:
+        additional_new_gen:
+        - Wave_450
+      Wave_475:
+        additional_new_gen:
+        - Wave_475
       Wave_500:
         additional_new_gen:
         - Wave_500
+      Wave_525:
+        additional_new_gen:
+        - Wave_525
+      Wave_550:
+        additional_new_gen:
+        - Wave_550
+      Wave_575:
+        additional_new_gen:
+        - Wave_575
+      Wave_600:
+        additional_new_gen:
+        - Wave_600
+      Wave_625:
+        additional_new_gen:
+        - Wave_625
+      Wave_650:
+        additional_new_gen:
+        - Wave_650
+      Wave_675:
+        additional_new_gen:
+        - Wave_675
+      Wave_700:
+        additional_new_gen:
+        - Wave_700
+      Wave_725:
+        additional_new_gen:
+        - Wave_725
       Wave_750:
         additional_new_gen:
         - Wave_750
-      Wave_1000:
-        additional_new_gen:
-        - Wave_1000
-      Wave_1250:
-        additional_new_gen:
-        - Wave_1250
-      Wave_1500:
-        additional_new_gen:
-        - Wave_1500
   2045: *id001
