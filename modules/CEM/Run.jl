@@ -19,7 +19,7 @@ using GenX
 #include(joinpath(cem_dir, "caserunner.jl"))
 
 # Uncomment to run caserunner from original GenX GitHub version
-case_folder_dir = joinpath(cem_dir, "data_east", "results")
+case_folder_dir = joinpath(cem_dir, "data_east", "cases")
 num_cases = sum(occursin.("Case_", readdir(case_folder_dir)))
 for i=1:num_cases
     if occursin("Case_", readdir(case_folder_dir)[i])
