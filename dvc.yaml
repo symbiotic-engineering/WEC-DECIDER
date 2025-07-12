@@ -49,8 +49,11 @@ stages:
       "modules/CEM/analyze_results.ipynb"
     deps:
       - .calkit/notebooks/cleaned/modules/CEM/analyze_results.ipynb
-      - modules/CEM/data_CA/cases/Case_*/results_*/
-      - modules/CEM/data_east/cases/Case_*/results_*/
+      - modules/CEM/data_east/cases/Case_1/results/
+      - modules/CEM/data_east/cases/Case_2/results/
+      - modules/CEM/data_east/cases/Case_3/results/
+      - modules/CEM/data_east/cases/Case_4/results/
+      - modules/CEM/data_east/cases/Case_5/results/
       - modules/CEM/data_east/scenario_input.csv
       - .calkit/env-locks/decider.yml
     outs:
@@ -74,9 +77,9 @@ stages:
       - modules/CEM/data_east/resource_capacity_spur.csv
       - modules/CEM/data_east/demand_segments_voll.csv
   powergenome-run:
-    cmd: bash modules/CEM/run-powergenome.sh
+    cmd: bash modules/CEM/run_powergenome.sh
     deps:
-      - modules/CEM/run-powergenome.sh
+      - modules/CEM/run_powergenome.sh
       - modules/CEM/data/
       - modules/CEM/data_CA/test_misc_gen_inputs.csv
       - modules/CEM/data_CA/test_demand_segments_voll.csv
@@ -86,14 +89,38 @@ stages:
       - modules/CEM/data_east/resource_capacity_spur.csv
       - modules/CEM/data_east/demand_segments_voll.csv
     outs:
-      - modules/CEM/data_CA/cases/Case_*/Inputs
-      - modules/CEM/data_east/cases/Case_*/Inputs
+      # - modules/CEM/data_CA/cases/Case_1/inputs
+      # - modules/CEM/data_CA/cases/Case_2/inputs
+      # - modules/CEM/data_CA/cases/Case_3/inputs
+      # - modules/CEM/data_CA/cases/Case_4/inputs
+      # - modules/CEM/data_CA/cases/Case_5/inputs
+      - modules/CEM/data_east/cases/Case_1/inputs
+      - modules/CEM/data_east/cases/Case_2/inputs
+      - modules/CEM/data_east/cases/Case_3/inputs
+      - modules/CEM/data_east/cases/Case_4/inputs
+      - modules/CEM/data_east/cases/Case_5/inputs
   genx-run:
-    cmd: bash julia --project=modules/CEM/ modules/CEM/Run.jl
+    cmd: julia --project=modules/CEM/ modules/CEM/Run.jl
     deps:
       - modules/CEM/Run.jl
-      - modules/CEM/data_CA/cases/Case_*/Inputs
-      - modules/CEM/data_east/cases/Case_*/Inputs
+      # - modules/CEM/data_CA/cases/Case_1/inputs
+      # - modules/CEM/data_CA/cases/Case_2/inputs
+      # - modules/CEM/data_CA/cases/Case_3/inputs
+      # - modules/CEM/data_CA/cases/Case_4/inputs
+      # - modules/CEM/data_CA/cases/Case_5/inputs
+      - modules/CEM/data_east/cases/Case_1/inputs
+      - modules/CEM/data_east/cases/Case_2/inputs
+      - modules/CEM/data_east/cases/Case_3/inputs
+      - modules/CEM/data_east/cases/Case_4/inputs
+      - modules/CEM/data_east/cases/Case_5/inputs
     outs:
-      - modules/CEM/data_CA/cases/Case_*/results_*/
-      - modules/CEM/data_east/cases/Case_*/results_*/
+      # - modules/CEM/data_CA/cases/Case_1/results/
+      # - modules/CEM/data_CA/cases/Case_2/results/
+      # - modules/CEM/data_CA/cases/Case_3/results/
+      # - modules/CEM/data_CA/cases/Case_4/results/
+      # - modules/CEM/data_CA/cases/Case_5/results/
+      - modules/CEM/data_east/cases/Case_1/results/
+      - modules/CEM/data_east/cases/Case_2/results/
+      - modules/CEM/data_east/cases/Case_3/results/
+      - modules/CEM/data_east/cases/Case_4/results/
+      - modules/CEM/data_east/cases/Case_5/results/
