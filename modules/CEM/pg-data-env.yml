@@ -1,0 +1,10 @@
+# these paths below must be absolute, or relative to where powergenome is being called from,
+# unlike all other paths in the pg settings file which are relative (to the settings file or input folder).
+# That is why we use the PG_DATA_FOLDER env variable, to make them absolute.
+# The env variable is expanded and the settings copied to the case settings folder in the run_powergenome.sh script.
+PUDL_DB: ${PG_DATA_FOLDER}/pudl/pudl.sqlite
+PG_DB: ${PG_DATA_FOLDER}/pg/pg_misc_tables_efs_2023.2.sqlite
+RESOURCE_GROUP_PROFILES: ${PG_DATA_FOLDER}/resource_profiles
+RESOURCE_GROUPS: ${PG_DATA_FOLDER}/resource_groups/ipm_regions
+EFS_DATA: ${PG_DATA_FOLDER}/efs/efs_files_utc
+DISTRIBUTED_GEN_DATA: ${PG_DATA_FOLDER}/cambium

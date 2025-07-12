@@ -81,13 +81,20 @@ stages:
     deps:
       - modules/CEM/run_powergenome.sh
       - modules/CEM/data/
+      - modules/CEM/pg-data-env.yml
       - modules/CEM/data_CA/test_misc_gen_inputs.csv
       - modules/CEM/data_CA/test_demand_segments_voll.csv
+      - modules/CEM/data_CA/settings/test_settings.yml
+      - modules/CEM/data_CA/test_scenario_input.csv
       - modules/CEM/data_east/Reserves.csv
       - modules/CEM/data_east/emission_policies.csv
       - modules/CEM/data_east/misc_gen_inputs.csv
       - modules/CEM/data_east/resource_capacity_spur.csv
       - modules/CEM/data_east/demand_segments_voll.csv
+      - modules/CEM/data_east/settings/settings_management.yml
+      - modules/CEM/data_east/settings/test_settings_2.yml
+      - modules/CEM/data_east/scenario_input.csv
+      - modules/CEM/data_east/wave_profiles/
     outs:
       # - modules/CEM/data_CA/cases/Case_1/inputs
       # - modules/CEM/data_CA/cases/Case_2/inputs
@@ -103,6 +110,8 @@ stages:
     cmd: julia --project=modules/CEM/ modules/CEM/Run.jl
     deps:
       - modules/CEM/Run.jl
+      #- modules/CEM/juliapkg.json
+      - modules/CEM/Project.toml
       # - modules/CEM/data_CA/cases/Case_1/inputs
       # - modules/CEM/data_CA/cases/Case_2/inputs
       # - modules/CEM/data_CA/cases/Case_3/inputs

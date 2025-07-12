@@ -1,0 +1,6 @@
+case_id,year,electrification,carbon_constraint,wave_variability,wave_cost
+Case_1,2030,ref,med,Avail_zeta_0.05_omega_n_0.4_limited_200,Wave_500
+Case_2,2030,ref,med,Avail_zeta_0.05_omega_n_0.4_limited_200,Wave_750
+Case_3,2030,ref,med,Avail_zeta_0.05_omega_n_0.4_limited_200,Wave_1000
+Case_4,2030,ref,med,Avail_zeta_0.05_omega_n_0.4_limited_200,Wave_1250
+Case_5,2030,ref,med,Avail_zeta_0.05_omega_n_0.4_limited_200,Wave_1500
