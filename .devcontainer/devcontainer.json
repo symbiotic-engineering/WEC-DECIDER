@@ -13,7 +13,8 @@
         "streetsidesoftware.code-spell-checker",
         "redhat.vscode-yaml",
         "akamud.vscode-theme-onedark",
-        "mechatroner.rainbow-csv"
+        "mechatroner.rainbow-csv",
+        "julialang.language-julia"
       ],
       "settings": {
         "latex-workshop.latex.external.build.command": "calkit",
