@@ -2,54 +2,47 @@ using CSV
 using DataFrames
 using YAML
 
-function run_caserunner(pg_id, location)
-    # Definitions of CaseRunner-specific strings
-    caserunner_specialstring() = "SPECIAL"
-    caserunner_templatefolder() = "inputs"
-    caserunner_jobscript() = "jobscript.sh"
-    caserunner_replacementscsv() = "replacements_" * location * ".csv"
-    main_case_folder() = "Cases"
-    settingsfolder() = "Settings"
+# Global constants accessible to all functions
+caserunner_specialstring() = "SPECIAL"
+caserunner_templatefolder() = "inputs"
+caserunner_jobscript() = "jobscript.sh"
+main_case_folder() = "Cases"
+settingsfolder() = "Settings"
+results_name() = "Results"
 
-    results_name() = "Results"
+csv2dataframe(path::AbstractString) = CSV.read(path, header=1, DataFrame)
+dataframe2csv(df::DataFrame, path::AbstractString) = CSV.write(path, df)
+yml2dict(path::AbstractString) = YAML.load_file(path)
+dict2yml(d::Dict, path::AbstractString) = YAML.write_file(path, d)
+
+function run_caserunner(pg_id, location)
+    caserunner_replacementscsv = "replacements_" * location * ".csv"
+    replacements_df = csv2dataframe(caserunner_replacementscsv)
+
     case_folder_name(i::Integer) = "case_" * string(i) * "_" * pg_id
     case_folder_path(i::Integer) = joinpath(main_case_folder(), case_folder_name(i))
 
-    replacements_df() = csv2dataframe(caserunner_replacementscsv())
-
-    csv2dataframe(path::AbstractString) = CSV.read(path, header=1, DataFrame)
-    dataframe2csv(df::DataFrame, path::AbstractString) = CSV.write(path, df)
-
-    yml2dict(path::AbstractString) = YAML.load_file(path)
-    dict2yml(d::Dict, path::AbstractString) = YAML.write_file(path, d)
-
-    # Change this variable. Valid entries are "BATCH" and "SEQUENTIAL"
-    joblocation = "SEQUENTIAL"
-
-    string_to_specialkey(s::AbstractString) = "__" * caserunner_specialstring() * "_" * s * "__"
-
-    launch_new_cases()
+    launch_new_cases(case_folder_name, case_folder_path, replacements_df)
 end
 
-function run_job(i)
+function run_job(i, joblocation, case_folder_path)
     if joblocation == "BATCH"
-        run_job_batch(i)
+        run_job_batch(i, case_folder_path)
     elseif joblocation == "SEQUENTIAL"
-        run_job_sequential(i)
+        run_job_sequential(i, case_folder_path)
     else
         error("The variable joblocation should be `BATCH` or `SEQUENTIAL`")
     end
 end
 
-function run_job_sequential(i)
+function run_job_sequential(i, case_folder_path)
     origdir = pwd()
-    path = case_folder_path(i)
-    path = joinpath(path, "Run.jl")
+    path = joinpath(case_folder_path(i), "Run.jl")
     include(path)
     cd(origdir)
 end
 
-function run_job_batch(i)
+function run_job_batch(i, case_folder_path)
     origdir = pwd()
     path = case_folder_path(i)
     cd(path)
@@ -63,13 +56,6 @@ function files_to_check()
     return vcat(csvs, ymls)
 end
 
-"""
-   `redetermine_file_type`(path::AbstractString)
-
-Check that the file type is one of the known types.
-This should only be used on files that have already been checked;
-it's just a mixed list of various file types now.
-"""
 function redetermine_file_type(path)
     last4 = path[end-3:end]
     if last4 == ".csv"
@@ -87,15 +73,10 @@ function csv_files_to_check()
 end
 
 function yaml_files_to_check()
-    tf = caserunner_templatefolder()
-    sf = settingsfolder()
-    path = joinpath(tf, sf)
+    path = joinpath(caserunner_templatefolder(), settingsfolder())
     all_entries = readdir(path);
-    return [joinpath(sf, f) for f in all_entries if f[end-3:end] == ".yml"]
+    return [joinpath(settingsfolder(), f) for f in all_entries if f[end-3:end] == ".yml"]
 end
-
-#---------------------------------------
-# Functions to handle the 'special keys'
 
 function isspecialkey(s::AbstractString)
     if length(s) < 13
@@ -106,15 +87,11 @@ function isspecialkey(s::AbstractString)
     if !test1 || !test2
         return false
     end
-
     elements = split(s, "_")
     nonblank_elements = [i for i in elements if i != ""]
     test3 = nonblank_elements[1] == caserunner_specialstring()
     test4 = length(nonblank_elements) == 2
-    if !test3 || !test4
-        return false
-    end
-    return true
+    return test3 && test4
 end
 
 function extractspecialkey(s::AbstractString)
@@ -123,8 +100,6 @@ function extractspecialkey(s::AbstractString)
     return nonblank_elements[2]
 end
 
-#-----------------------------------------------
-# Functions to look for and collect special keys
 function check_element(e)
     if e isa AbstractString && isspecialkey(e)
         return String[extractspecialkey(e)]
@@ -133,11 +108,6 @@ function check_element(e)
     end
 end
 
-"""
-   `check_datastructure`(d::Dict)
-
-Returns the list of special keys found in dictionary d
-"""
 function check_datastructure(d::Dict)
     key_fields_found = String[]
     for (key, value) in d
@@ -146,11 +116,6 @@ function check_datastructure(d::Dict)
     return key_fields_found
 end
 
-"""
-   `check_datastructure`(d::DataFrame)
-
-Returns the list of special keys found in dictionary d
-"""
 function check_datastructure(df::DataFrame)
     key_fields_found = String[]
     for c in eachcol(df)
@@ -161,12 +126,6 @@ function check_datastructure(df::DataFrame)
     return key_fields_found
 end
 
-"""
-   check_file(name)
-
-Returns the list of special keys found in template file `name`,
-e.g. `Reserves.csv`.
-"""
 function check_file(name)
     path = joinpath(caserunner_templatefolder(), name)
     if !isfile(path)
@@ -184,19 +143,9 @@ function check_file(name)
     end
 end
 
-#--------------------------------------------------------------------
-# Functions to check that the final special key lists are acceptable.
-function flag_dupekeys(key_fields::Vector{String})
-    if length(key_fields) != length(Set(key_fields))
-        error("Duplicate key found")
-    end
-end
-
-function flag_nonmatchingkeys(key_fields_found::Vector{String},
-                              replacements::Vector{String})
+function flag_nonmatchingkeys(key_fields_found::Vector{String}, replacements::Vector{String})
     kfs = Set(key_fields_found)
     replacementnames = Set(replacements)
-
     diff1 = setdiff(replacementnames, kfs)
     diff2 = setdiff(kfs, replacementnames)
 
@@ -215,13 +164,7 @@ function flag_nonmatchingkeys(key_fields_found::Vector{String},
     end
 end
 
-"""
-   `flag_badkeys`
-
-Throw an error if the keys found are not acceptable.
-"""
 function flag_badkeys(key_fields_found::Vector{String}, replacements::Vector{String})
-    #flag_dupekeys(key_fields_found)
     flag_nonmatchingkeys(key_fields_found, replacements)
 end
 
@@ -233,80 +176,57 @@ function check_files()
         if length(results) > 0
             push!(files_with_keys, f)
         end
-        key_fields_found = vcat(key_fields_found, check_file(f))
+        key_fields_found = vcat(key_fields_found, results)
     end
 
-    flag_badkeys(key_fields_found,  get_replacement_names())
+    flag_badkeys(key_fields_found, get_replacement_names())
 
     return files_with_keys, key_fields_found
 end
 
-#------------------------------------------------------------
-# Functions to create the case folders and check their status
 function ensure_main_cases_folder()
     if !isdir(main_case_folder())
         mkdir(main_case_folder())
     end
 end
 
-function case_folder_exists(i::Integer)
+function case_folder_exists(i::Integer, case_folder_name)
     path = joinpath(main_case_folder(), case_folder_name(i))
     return isdir(path)
 end
 
-function case_folder_complete(i::Integer)
+function case_folder_complete(i::Integer, case_folder_name)
     path = joinpath(main_case_folder(), case_folder_name(i), results_name())
     return isdir(path)
 end
 
-function copy_to_new_case_folder(i::Integer)
+function copy_to_new_case_folder(i::Integer, case_folder_name)
     ensure_main_cases_folder()
     path = joinpath(main_case_folder(), case_folder_name(i))
     cp(caserunner_templatefolder(), path)
 end
 
-#--------------------------------------------
-# Functions to handle the replacements
-function get_replacement_names(df=replacements_df())
+function get_replacement_names(df::DataFrame)
     names(df[:, Not([:Case, :Notes])])
-end
-
-function get_specific_replacements(i::Integer)
-    df=replacements_df()
-    return df[df[:, :Case] .== i, Not([:Case, :Notes])][1,:]
 end
 
 function get_specific_replacements(df::DataFrame, i::Integer)
     return df[df[:, :Case] .== i, Not([:Case, :Notes])][1,:]
 end
 
-function number_of_replacement_cases(df=replacements_df())
+function number_of_replacement_cases(df::DataFrame)
     return size(df)[1]
 end
 
-"""
-   `replace_elements!`(df::DataFrame, replacements::Dict)
-
-Scans through a dataframe element by element and replaces any strings that appear
-in the dict keys with the corresponding values.
-"""
 function replace_elements!(df::DataFrame, replacements::Dict)
-    for ci in 1:size(df)[2]
-        for ri in 1:size(df)[1]
-            element = df[ri, ci]
-            if element isa AbstractString && isspecialkey(element)
-                df[ri, ci] = string(replacements[element])
-            end
+    for ci in 1:size(df)[2], ri in 1:size(df)[1]
+        element = df[ri, ci]
+        if element isa AbstractString && isspecialkey(element)
+            df[ri, ci] = string(replacements[element])
         end
     end
 end
 
-"""
-   `replace_elements!`(d::Dict, replacements::Dict)
-
-Scans through a dict pair by pair and replaces any strings that appear
-in the dict values with the corresponding values from the replacement dict.
-"""
 function replace_elements!(d::Dict, replacements::Dict)
     for (key, value) in d
         if value in keys(replacements)
@@ -318,43 +238,23 @@ end
 function dataframerow2dict(r::DataFrameRow)
     replnames = string_to_specialkey.(names(r))
     replvalues = values(r)
-    replacement_dict = Dict(zip(replnames, replvalues))
-    return replacement_dict
+    return Dict(zip(replnames, replvalues))
 end
 
-"""
-   `replace_keys_in_csv_file`(path::AbstractString, replacements::DataFrameRow)
+string_to_specialkey(s::AbstractString) = "__" * caserunner_specialstring() * "_" * s * "__"
 
-Scans a csv file and overwrites it with replacements made.
-"""
 function replace_keys_in_csv_file(path::AbstractString, replacements::DataFrameRow)
     s = csv2dataframe(path)
-
-    replacement_dict = dataframerow2dict(replacements)
-    replace_elements!(s, replacement_dict)
-
+    replace_elements!(s, dataframerow2dict(replacements))
     dataframe2csv(s, path)
 end
 
-"""
-   `replace_keys_in_yml_file`(path::AbstractString, replacements::DataFrameRow)
-
-Scans a yml file and overwrites it with replacements made.
-"""
 function replace_keys_in_yml_file(path::AbstractString, replacements::DataFrameRow)
     s = yml2dict(path)
-
-    replacement_dict = dataframerow2dict(replacements)
-    replace_elements!(s, replacement_dict)
-
+    replace_elements!(s, dataframerow2dict(replacements))
     dict2yml(s, path)
 end
 
-"""
-   `replace_df_elements`(path::AbstractString, replacements::DataFrameRow)
-
-Scans a csv file and overwrites it with replacements made.
-"""
 function replace_keys_in_file(path::AbstractString, replacements::DataFrameRow)
     ftype = redetermine_file_type(path)
     if ftype == "csv"
@@ -366,9 +266,7 @@ function replace_keys_in_file(path::AbstractString, replacements::DataFrameRow)
     end
 end
 
-function replace_keys_in_folder(i::Int,
-                                replacements::DataFrameRow,
-                                files_with_keys::Vector{String})
+function replace_keys_in_folder(i::Int, replacements::DataFrameRow, files_with_keys::Vector{String}, case_folder_path)
     folder = case_folder_path(i)
     for f in files_with_keys
         path = joinpath(folder, f)
@@ -376,30 +274,24 @@ function replace_keys_in_folder(i::Int,
     end
 end
 
-# Case launching
-function launch_new_case(i::Integer, df::DataFrame, files_with_keys::Vector{String})
-    copy_to_new_case_folder(i)
+function launch_new_case(i::Integer, df::DataFrame, files_with_keys::Vector{String}, case_folder_name, case_folder_path)
+    copy_to_new_case_folder(i, case_folder_name)
     replacements = get_specific_replacements(df, i)
-    replace_keys_in_folder(i, replacements, files_with_keys)
-    run_job(i)
+    replace_keys_in_folder(i, replacements, files_with_keys, case_folder_path)
+    run_job(i, "SEQUENTIAL", case_folder_path)
 end
 
-function launch_new_cases()
-    df = replacements_df()
-
+function launch_new_cases(case_folder_name, case_folder_path, replacements_df)
     files_with_keys, keys_found = check_files()
-
-    cases = df[:, :Case]
+    cases = replacements_df[:, :Case]
     for c in cases
-        if case_folder_complete(c)
+        if case_folder_complete(c, case_folder_name)
             println("Case $c complete; skipping.")
-        elseif case_folder_exists(c)
+        elseif case_folder_exists(c, case_folder_name)
             println("Case $c exists; skipping.")
         else
             println("Case $c now creating")
-            launch_new_case(c, df, files_with_keys)
+            launch_new_case(c, replacements_df, files_with_keys, case_folder_name, case_folder_path)
         end
     end
 end
-
-
