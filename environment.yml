@@ -4,22 +4,30 @@ channels:
   - nrel
 dependencies: 
   - python
-  - pandas=1.5.2
+  - pandas
   - numpy 
-  - numpy-financial
+  - numpy-financial # econ module
   - scipy 
   - matplotlib 
   - h5pyd
   - requests
-  - wecopttool
-  - nrel-pysam
-  - pyxdsm
+  - wecopttool  # dynamics module
+  - nrel-pysam  # econ module
+  - pyxdsm      # diagram generation
   - openmdao
+  - gdown       # data for CEM module
+  - ipykernel   # jupyter
+  - pyjuliacall # julia for CEM module
+  - pip
+  - catalystcoop.pudl <= 2022.11.30, >= 0.6.0 # for powergenome (otherwise too new python version [3.11] is installed)
+  - pyarrow = 7
+  - pyogrio
 #  - mpi4py 
 #  - petsc4py
   - ipywidgets # for development (Jupyter notebook widgets)
   - pip:
     - mhkit
+    - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/tree/fix-double-input-folder
     - gridstatus
     - wecopttool[geometry]
     - omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master

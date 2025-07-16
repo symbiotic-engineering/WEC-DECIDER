@@ -1,0 +1,38 @@
+# The keys in cost_multiplier_technology_map are technologies listed in EIA's capital
+# cost assumptions document. The 2020 version is available at
+# https://www.eia.gov/outlooks/archive/aeo20/assumptions/pdf/table_8.2.pdf
+# Values in the list are string-matched to technologies (`<tech>_<tech_detail>`) from ATB.
+# Be sure to include any custom technologies you are using from `additional_technologies_fn`
+# or `modified_atb_new_gen`.
+# If a value in one of the lists matches more than one technology, the cost multiplier
+# will only be applied to the first technology.
+# If you want to modify the regional cost corrections CSV, you can put your own copy in
+# the folder PowerGenome/data/cost_multipliers.
+cost_multiplier_fn: AEO_2020_regional_cost_corrections.csv
+
+offshore_wind: &offshore_wind
+  - OffShoreWind_Class3
+
+cost_multiplier_technology_map:
+  Ultra-supercritical coal (USC): [Coal_newAvgCF, Coal_newHighCF]
+  # IGCC: [Coal_IGCCAvgCF, Coal_IGCCAvgCF]
+  USC with 30% CCS: [Coal_CCS30AvgCF, Coal_CCS30HighCF]
+  USC with 90% CCS: [Coal_CCS90AvgCF, Coal_CCS90HighCF]
+  CT - aeroderivative: []
+  CT - industrial frame: [NaturalGas_CTAvgCF, NaturalGas_CTHighCF]
+  CC - single shaft: []
+  CC - multi shaft: [NaturalGas_CCAvgCF, NaturalGas_CCHighCF]
+  CC with 90% CCS: [NaturalGas_CCCCSAvgCF, NaturalGas_CCCCSHighCF, NGCCS100, NaturalGas_CCS100, NaturalGas_CCS100_low,NaturalGas_CCS100_high]
+  Fuel cells: []
+  Advanced nuclear: [Nuclear_Nuclear, Nuclear_mid, Nuclear_low, Nuclear_high]
+  Biomass: [Biopower_CofireOld, Biopower_CofireNew, Biopower_Dedicated]
+  MSW - landfill gas: []
+  Wind: [LandbasedWind_Class3]
+  Wind offshore: *offshore_wind
+  Solar thermal: [CSP]
+  Solar PV - tracking: [UtilityPV_Class1, CommPV, ResPV]
+  Battery storage: [Battery_*]
+  Geothermal: [Geothermal_HydroBinary, Geothermal_HydroFlash, Geothermal_NFEGSBinary, Geothermal_DeepEGSBinary, Geothermal_NFEGSFlash, Geothermal_DeepEGSFlash]
+  Conventional hydropower: [Hydropower]
+
+  

@@ -1,0 +1,26 @@
+{
+    "julia": "1",
+    "packages": {
+        "Gurobi": {
+            "uuid": "2e9cd046-0924-5485-92f1-d5272153d98b",
+            "version": "1.2.3"
+        },
+        "GenX": {
+            "uuid": "5d317b1e-30ec-4ed6-a8ce-8d2d88d7cfac",
+            "version": "0.4.0",
+            "url": "https://github.com/GenXProject/GenX.jl"
+        },
+        "CSV": {
+            "uuid": "336ed68f-0bac-5ca0-87d4-7b16caf5d00b",
+            "version": "0"
+        },
+        "DataFrames": {
+            "uuid": "a93c6f00-e57d-5684-b7b6-d8193f3e46c0",
+            "version": "1"
+        },
+        "YAML": {
+            "uuid": "ddb6d928-2868-570f-bddf-ab3f9cf99eb6",
+            "version": "0"
+        }
+    }
+}
