@@ -9,7 +9,7 @@ def trim_jpd(jpd):
     trimmed = jpd[rows_keep, :][:, cols_keep]
     min_T = trimmed[0, 1]
     if min_T < 3.5:
-        raise ValueError("The series expansion used to compute the froude krylov force coefficient in dynamics.m requires 2 / (T * R^(5/8)) << 1. If pushing up against this limit, it is recommended to plot gamma vs omega to confirm smooth behavior at high frequencies.")
+        raise ValueError("The series expansion used to compute the froude krylov force coefficient in dynamicsComponent.py requires 2 / (T * R^(5/8)) << 1. If pushing up against this limit, it is recommended to plot gamma vs omega to confirm smooth behavior at high frequencies.")
 
     return trimmed
 

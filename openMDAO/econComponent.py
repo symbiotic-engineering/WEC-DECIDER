@@ -65,36 +65,3 @@ class econComponent(om.ExplicitComponent):
         outputs['LCOE'] = LCOE
         outputs['capex'] = capex
         outputs['opex'] = opex
-"""
-prob = om.Problem()
-
-promotesInputs = ["m_m", "M", "cost_m", "N_WEC", "P_elec", "FCR", "efficiency"]
-
-prob.model.add_subsystem('test', econComponent(), promotes_inputs= promotesInputs )
-
-prob.driver = om.ScipyOptimizeDriver()
-prob.driver.options['optimizer'] = 'SLSQP'
-
-prob.model.add_design_var('m_m')
-prob.model.add_objective('test.LCOE', scaler=-1)
-prob.setup()
-
-prob.set_val('m_m', 673340.9777013776)
-prob.set_val('M', 0)
-prob.set_val('cost_m', np.array([[4.28, 0.06812243, 4.048]]))
-prob.set_val('N_WEC', 100)
-prob.set_val('P_elec', 86820.38081528545)
-prob.set_val('FCR', 0.113)
-prob.set_val('efficiency', 0.9309999999999999)
-
-print(prob.get_val('test.LCOE'))
-print(prob.get_val('m_m'))
-prob.run_model()
-prob.model.list_inputs(val=True)
-# output structure
-# 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
-prob.model.list_outputs(val = True)
-write_xdsm(prob, filename='sellar_pyxdsm', out_format='html', show_browser=True,
-               quiet=False, output_side='left')
-
-"""

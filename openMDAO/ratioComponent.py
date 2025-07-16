@@ -1,7 +1,5 @@
 import openmdao.api as om
-import numpy as np
-from inputs.parameters import parameters
-from inputs.var_bounds import var_bounds
+
 
 
 class ratioComponent(om.ExplicitComponent):
@@ -52,12 +50,6 @@ class ratioComponent(om.ExplicitComponent):
         h_s = 1 / T_s_over_h_s * T_s
 
 
-        #inputs['D_f'] = 1
-        #outputs['F_max'] = F_max
-        #outputs['B_p'] = B_p
-        #outputs['w_n'] = w_n
-        #outputs['M'] = M
-
         outputs['D_s'] = D_s
         outputs['h_f'] = h_f
         outputs['T_f'] = T_f
@@ -65,29 +57,3 @@ class ratioComponent(om.ExplicitComponent):
         outputs['T_s'] = T_s
         outputs['h_d'] = h_d
         outputs['h_s'] = h_s
-
-
-"""
-prob = om.Problem()
-prob.model.add_subsystem('test', inputComponent())
-prob.setup()
-prob.run_model()
-prob.run_driver()
-prob.model.list_inputs(val=True,prom_name=False)
-prob.model.list_outputs(val=True,prom_name=False)
-
-p = parameters()
-b = var_bounds(p)
-X = np.concatenate((b['X_noms'], [0]))
-from sharedVariables import openmdao_ivc
-ivc = openmdao_ivc(X, p)
-
-prob2 = om.Problem()
-prob2.model.add_subsystem('test2', ivc)
-prob2.setup()
-prob2.run_model()
-prob2.run_driver()
-#prob2.model.list_inputs(val=True)
-prob2.model.list_outputs(val=True,prom_name=False)
-
-"""

@@ -48,6 +48,8 @@ class geometryComponent(om.ExplicitComponent):
         self.add_output('GM', 0)
         self.add_output('mass', np.zeros((3,)))
 
+        #self.declare_partials('*', '*', method='fd')
+
     # using wild cards to say that this component provides derivatives of all outputs with respect to all inputs.
     def setup_partials(self):
         self.declare_partials('*', '*')
@@ -193,48 +195,3 @@ class geometryComponent(om.ExplicitComponent):
         outputs['GM'] = GM
         outputs['mass'] = mass
 
-"""
-prob = om.Problem()
-
-promotesInputs = ["D_s", "D_f", "T_f", "h_f", "h_s", "t_ft", "t_fr", "t_fc",
-    "t_fb", "t_sr", "t_dt", "D_d", "D_dt", "theta_dt", "T_s",
-    "h_d", "M", "rho_m", "rho_w", "m_scale"]
-
-prob.model.add_subsystem('test', geometryComponent(), promotes_inputs= promotesInputs )
-
-prob.driver = om.ScipyOptimizeDriver()
-prob.driver.options['optimizer'] = 'SLSQP'
-
-prob.model.add_design_var('D_s')
-prob.model.add_objective('test.mass', scaler=-1)
-prob.setup()
-
-prob.set_val('D_s', 6.0)
-prob.set_val('D_f', 20.0)
-prob.set_val('T_f', 2.0)
-prob.set_val('h_f', 4.0)
-prob.set_val('t_ft', 0.0127)
-prob.set_val('t_fr', 0.011176)
-prob.set_val('t_fc', 0.011176)
-prob.set_val('t_fb', 0.014224)
-prob.set_val('t_sr', 0.0254)
-prob.set_val('t_dt', 0.0254)
-prob.set_val('D_d', 30.0)
-prob.set_val('D_dt', 1.2191999999999998)
-prob.set_val('theta_dt', 0.8621700546672264)
-prob.set_val('T_s', 35.0)
-prob.set_val('h_d', 0.0254)
-prob.set_val('M', 0)
-prob.set_val('rho_m', np.array([8000, 2400, 8000]))
-prob.set_val('rho_w', 1000)
-prob.set_val('m_scale', 1.25)
-
-
-print(prob.get_val('test.mass'))
-print(prob.get_val('D_s'))
-prob.run_model()
-prob.model.list_inputs(val=True)
-# output structure
-# 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
-prob.model.list_outputs(val = True)
-"""

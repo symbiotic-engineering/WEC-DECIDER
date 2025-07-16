@@ -24,6 +24,7 @@ dependencies:
   - pyogrio
 #  - mpi4py 
 #  - petsc4py
+  - ipywidgets # for development (Jupyter notebook widgets)
   - pip:
     - mhkit
     - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/tree/fix-double-input-folder

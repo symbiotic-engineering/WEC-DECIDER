@@ -1,5 +1,5 @@
 from optimization.find_nominal_inputs import *
-def var_bounds(p):
+def var_bounds():
     b = {}
 
     b['D_f_min'] = 6

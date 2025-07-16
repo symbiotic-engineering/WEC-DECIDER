@@ -59,8 +59,11 @@ class dynamicsComponent(om.ExplicitComponent):
         power_max = inputs['power_max']
         eff_pto = inputs['eff_pto']
         D_f = inputs['D_f']
-        F_max = inputs['F_max']
-        B_p = inputs['B_p']
+        #F_max = inputs['F_max']
+        F_max = inputs['F_max'] * 1e6
+        #print("F_max", F_max)
+        #B_p = inputs['B_p']
+        B_p = inputs['B_p'] * 1e6
         w_n = inputs['w_n']
         h_f = inputs['h_f']
         T_f = inputs['T_f']
@@ -82,7 +85,6 @@ class dynamicsComponent(om.ExplicitComponent):
 
         # Saturate maximum power
         P_matrix = np.minimum(P_matrix, power_max)
-
         # Weight power across all sea states
         P_weighted = P_matrix * JPD / 100
         P_elec = np.sum(P_weighted)
@@ -338,145 +340,3 @@ class dynamicsComponent(om.ExplicitComponent):
         c_q = t10 + t11 - t13 + t14 + t15 + t6 * t11 + t5 * t15 - t4 * t5 * t6 * t8 + k * m * t5 * t6 * t7 * 2.0
 
         return a_q, b_q, c_q
-
-prob = om.Problem()
-
-#promotesInputs = [
-#    'rho_w', 'g', 'JPD', 'Hs', 'Hs_struct', 'T', 'T_struct', 'sigma_y', 'rho_m', 'E', 'cost_m',
-#    'm_scale', 't_ft', 't_fr', 't_fc', 't_fb', 't_sr', 't_dt', 'D_dt', 'theta_dt', 'FOS_min',
-#    'D_d_min', 'FCR', 'N_WEC', 'D_d_over_D_s', 'T_s_over_D_s', 'h_d_over_D_s', 'T_f_over_h_f',
-#    'LCOE_max', 'power_max', 'eff_pto', 'eff_array', 'D_f', 'F_max', 'B_p', 'w_n', 'M', 'D_s',
-#    'h_f', 'T_f', 'T_s', 'h_d', 'h_s', 'm_float', 'V_d', 'draft'
-#]
-
-"""
-prob.model.add_subsystem('test', dynamicsComponent())
-prob.setup()
-print(prob.model.list_inputs())
-"""
-"""
-prob.driver = om.ScipyOptimizeDriver()
-prob.driver.options['optimizer'] = 'SLSQP'
-
-prob.model.add_design_var('cost_m')
-prob.model.add_objective('test.F_heave_max', scaler=-1)
-prob.setup()
-
-
-prob.set_val('rho_w', 1000.0)
-prob.set_val('g', 9.8)
-prob.set_val('JPD', [[0.  , 0.  , 0.  , 0.02, 0.03, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
-        0.  , 0.  , 0.  , 0.  ],
-       [0.02, 0.46, 1.49, 2.68, 1.91, 1.1 , 0.53, 0.17, 0.02, 0.  , 0.  ,
-        0.  , 0.  , 0.  , 0.  ],
-       [0.01, 0.59, 4.11, 5.56, 4.48, 2.74, 1.28, 0.67, 0.33, 0.07, 0.02,
-        0.02, 0.  , 0.  , 0.  ],
-       [0.  , 0.12, 3.27, 5.14, 4.62, 3.93, 2.11, 1.24, 0.76, 0.31, 0.1 ,
-        0.03, 0.  , 0.  , 0.  ],
-       [0.  , 0.  , 0.92, 5.25, 3.68, 4.14, 2.87, 1.31, 0.84, 0.42, 0.2 ,
-        0.08, 0.02, 0.  , 0.  ],
-       [0.  , 0.  , 0.14, 2.43, 2.6 , 2.82, 2.85, 1.57, 0.8 , 0.32, 0.14,
-        0.06, 0.02, 0.  , 0.  ],
-       [0.  , 0.  , 0.  , 0.45, 1.54, 1.47, 1.96, 1.42, 0.79, 0.32, 0.11,
-        0.04, 0.02, 0.01, 0.01],
-       [0.  , 0.  , 0.  , 0.05, 0.49, 0.63, 1.08, 1.01, 0.63, 0.29, 0.1 ,
-        0.05, 0.02, 0.  , 0.  ],
-       [0.  , 0.  , 0.  , 0.  , 0.09, 0.21, 0.45, 0.56, 0.42, 0.21, 0.07,
-        0.02, 0.02, 0.  , 0.  ],
-       [0.  , 0.  , 0.  , 0.  , 0.02, 0.08, 0.12, 0.26, 0.27, 0.19, 0.07,
-        0.02, 0.01, 0.  , 0.  ],
-       [0.  , 0.  , 0.  , 0.  , 0.  , 0.03, 0.03, 0.11, 0.15, 0.13, 0.07,
-        0.02, 0.  , 0.  , 0.  ],
-       [0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.02, 0.07, 0.05, 0.05,
-        0.02, 0.  , 0.  , 0.  ],
-       [0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.03, 0.04, 0.02,
-        0.01, 0.  , 0.  , 0.  ],
-       [0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.02, 0.02,
-        0.  , 0.  , 0.  , 0.  ]])
-prob.set_val('Hs', [0.25, 0.75, 1.25, 1.75, 2.25, 2.75, 3.25, 3.75, 4.25, 4.75, 5.25, 5.75, 6.25, 6.75])
-prob.set_val('Hs_struct', 11.9)
-prob.set_val('T', [ 4.5,  5.5,  6.5,  7.5,  8.5,  9.5, 10.5, 11.5, 12.5, 13.5, 14.5,
-       15.5, 16.5, 17.5, 18.5])
-prob.set_val('T_struct', [17.1])
-prob.set_val('sigma_y', [2.48211252e+08, 3.10264065e+07, 2.06842710e+08])
-prob.set_val('rho_m', [8000, 2400, 8000])
-prob.set_val('E', [2.00000000e+11, 2.78506762e+07, 2.00000000e+11])
-prob.set_val('cost_m', [4.28, 0.06812243, 4.048])
-prob.set_val('m_scale', 1.25)
-prob.set_val('t_ft', 0.0127)
-prob.set_val('t_fr', 0.011176)
-prob.set_val('t_fc', 0.011176)
-prob.set_val('t_fb', 0.014224)
-prob.set_val('t_sr', 0.0254)
-prob.set_val('t_dt', 0.0254)
-prob.set_val('D_dt', 1.2191999999999998)
-prob.set_val('theta_dt', 0.8621700546672264)
-prob.set_val('FOS_min', 1.5)
-prob.set_val('D_d_min', 30.0)
-prob.set_val('FCR', 0.113)
-prob.set_val('N_WEC', 1)
-prob.set_val('D_d_over_D_s', 5.0)
-prob.set_val('T_s_over_D_s', 5.833333333333333)
-prob.set_val('h_d_over_D_s', 0.004233333333333333)
-prob.set_val('T_f_over_h_f', 0.5)
-prob.set_val('LCOE_max', 0.5)
-prob.set_val('power_max', 286000.0)
-prob.set_val('eff_pto', 0.8)
-prob.set_val('eff_array', 0.9309999999999999)
-prob.set_val('D_f', 20.0)
-prob.set_val('F_max', 5000000.0)
-prob.set_val('B_p', 10000000.0)
-prob.set_val('w_n', 0.8)
-prob.set_val('M', 0)
-prob.set_val('D_s', 6.0)
-prob.set_val('h_f', 4.0)
-prob.set_val('T_f', 2.0)
-prob.set_val('T_s', 35.0)
-prob.set_val('h_d', 0.0254)
-prob.set_val('h_s', 44.0)
-prob.set_val('m_float', 571769.8629533424)
-prob.set_val('V_d', [571.76986295, 989.60168588,  17.95420202])
-prob.set_val('draft', [2.00e+00, 3.50e+01, 2.54e-02])
-
-
-print(prob.get_val('test.V_d'))
-print(prob.get_val('D_s'))
-prob.run_model()
-prob.model.list_inputs(val=True)
-# output structure
-# 3.088498840031996 7.1377643021609884 735.3862533286745 [[63.7930595]]
-prob.model.list_outputs(val = True)
-full_matrix = prob['test.P_unsat']
-print(full_matrix)
-
-write_xdsm(prob, filename='sellar_pyxdsm', out_format='html', show_browser=True,
-               quiet=False, output_side='left')
-
-"""
-
-# self.add_input('sigma_y', val=np.zeros(3,), desc="yield strength (Pa)", units='Pa')
-# self.add_input('rho_m', val=np.zeros(3,), desc="material density (kg/m3)", units='kg/m ** 3')
-# self.add_input('E', val=np.zeros(3,), desc="young's modulus (Pa)", units='Pa')
-# self.add_input('cost_m', val=np.zeros(3,), desc="material cost ($/kg)", units='USD/kg')
-##self.add_input('m_scale', val=0, desc="factor to account for mass of neglected stiffeners (-)")
-# self.add_input('t_ft', val=0, desc="float top thickness (m)", units='m')
-# self.add_input('t_fr', val=0, desc="float radial wall thickness (m)", units='m')
-# self.add_input('t_fc', val=0, desc="float circumferential gusset thickness (m)", units='m')
-# self.add_input('t_fb', val=0, desc="float bottom thickness (m)", units='m')
-# self.add_input('t_sr', val=0, desc="vertical column thickness (m)", units='m')
-# self.add_input('t_dt', val=0, desc="damping plate support tube radial wall thickness (m)", units='m')
-# self.add_input('D_dt', val=0, desc="damping plate support tube diameter (m)", units='m')
-# self.add_input('theta_dt', val=0, desc="angle from horizontal of damping plate support tubes (rad)", units='rad')
-# self.add_input('FOS_min', val=0, desc="minimum FOS")
-# self.add_input('D_d_min', val=0, desc="minimum damping plate diameter")
-# self.add_input('FCR', val=0, desc="fixed charge rate (-)")
-# self.add_input('N_WEC', val=0, desc="number of WECs in array (-)")
-# self.add_input('D_d_over_D_s', val=0, desc="normalized damping plate diameter (-)")
-# self.add_input('T_s_over_D_s', val=0, desc="normalized spar draft (-)")
-# self.add_input('h_d_over_D_s', val=0, desc="normalized damping plate thickness (-)")
-# self.add_input('T_f_over_h_f', val=0, desc="normalized float draft (-)")
-# self.add_input('LCOE_max', val=0, desc="maximum LCOE ($/kWh)", units='USD/kW * h')
-#self.add_input('eff_array', val=0, desc="array availability and transmission efficiency (-)")
-# self.add_input('M', 0)
-# self.add_input('D_s', 0)
-# self.add_input('h_d', 0)

@@ -7,7 +7,7 @@ def parameters():
     yd2m = 0.9144  # yard to meter
     lb2kg = 1/2.2  # pound to kilogram
 
-    file = '/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
+    file = './inputs/wave_conditions/Humboldt_California_Wave Resource _SAM CSV.csv'
     jpd = pd.read_csv(file, skiprows=2, header=None).values
     trimmed_jpd = trim_jpd(jpd)
 
@@ -40,7 +40,8 @@ def parameters():
         'T_s_over_D_s': 35/6,  # normalized spar draft (-)
         'h_d_over_D_s': 1 * in2m / 6,  # normalized damping plate thickness (-)
         'T_f_over_h_f': 2/4,  # normalized float draft (-)
-        'LCOE_max': .5,  # maximum LCOE ($/kWh)
+        #'LCOE_max': 0.5,  # maximum LCOE ($/kWh)
+        'LCOE_max': 1,
         'power_max': float('inf'),  # maximum power (W)
         'eff_pto': 0.80,  # PTO efficiency (-)
         'eff_array': 0.95 * 0.98  # array availability and transmission efficiency (-)
