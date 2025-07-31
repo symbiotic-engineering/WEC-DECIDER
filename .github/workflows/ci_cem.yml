@@ -39,6 +39,7 @@ jobs:
           activate-environment: anaconda-client-env
           environment-file: envs/calkit-environment.yml
           auto-activate-base: false
+          python-version: ${{ matrix.python-version }}
       
       # Install Gurobi
       - name: Install Gurobi
@@ -57,7 +58,15 @@ jobs:
       
       - name: configure NREL HSDS
         shell: bash -l {0} # to use conda environment
-        run: hsconfigure --config-file .hscfg # uses the .hscfg file
+        run: |
+          # Create config file with actual secret value
+          cat > .github/workflows/.hscfg << EOF
+          hs_endpoint = https://developer.nrel.gov/api/hsds
+          hs_username = None
+          hs_password = None
+          hs_api_key = ${{ secrets.HSDS_API_KEY }}
+          EOF
+          hsconfigure --config-file .github/workflows/.hscfg
 
       - name: setup gurobi license
         shell: bash -l {0} # to use conda environment
