@@ -3,7 +3,7 @@
 Instructions for use:
 
 0. Clone this repo: `git clone git@github.com:symbiotic-engineering/WEC-DECIDER.git`
-1. Install anaconda, miniconda, or mamba and setup the python environment: `conda env create -f calkit-environment.yml`.
+1. Install anaconda, miniconda, or mamba and setup the python environment: `conda env create -f envs/calkit-environment.yml`.
 2. Install Julia using the instructions [here](https://julialang.org/downloads/). Use julia version 1.8 (recommend setting it as default).
 3. Install Gurobi Optimizer using the "full installation" instructions [here](https://support.gurobi.com/hc/en-us/articles/4534161999889-How-do-I-install-Gurobi-Optimizer).
 4. Obtain a Gurobi license (ie academic single-user) and install it (ie using `grbgetkey`). If the command is not found, use the full filepath, as described [here](https://support.gurobi.com/hc/en-us/articles/360040113232-How-do-I-resolve-the-error-grbgetkey-command-not-found-or-grbgetkey-is-not-recognized).
