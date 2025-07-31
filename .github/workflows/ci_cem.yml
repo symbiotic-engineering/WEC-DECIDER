@@ -56,10 +56,11 @@ jobs:
           echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/gurobi/linux64/lib" >> $GITHUB_ENV
       
       - name: configure NREL HSDS
+        shell: bash -l {0} # to use conda environment
         run: hsconfigure # uses the .hscfg file
         
       - name: setup gurobi license
-        shell: bash
+        shell: bash -l {0} # to use conda environment
         run: |
           # Set environment variables for the license setup script
           export WLSACCESSID="${{ secrets.WLSACCESSID }}"
@@ -83,6 +84,7 @@ jobs:
         run: chmod +x ./modules/CEM/run_all.sh
         
       - name: run CEM tests
+        shell: bash -l {0} # to use conda environment
         run: |
           ./modules/CEM/run_all.sh
         env:
