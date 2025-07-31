@@ -13,7 +13,7 @@ notebooks:
     title: make-batch-csv
 environments:
   decider:
-    path: calkit-environment.yml
+    path: envs/calkit-environment.yml
     kind: conda
 pipeline:
   stages:
