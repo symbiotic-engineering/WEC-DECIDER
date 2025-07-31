@@ -1,4 +1,4 @@
-name: wec-decider-decider
+name: wec-decider-decider-2
 channels:
   - conda-forge
 dependencies:

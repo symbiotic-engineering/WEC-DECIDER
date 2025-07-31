@@ -12,7 +12,8 @@ function run_for_one_location {
 
     run_powergenome_multiple -sf "$script_dir/$location/settings/" -rf "$script_dir/$location/cases"
     for i in "$script_dir/$location/cases"/Case_*; do
-        cp -r "$script_dir/template/settings/" "$i"
+        mkdir "$i/settings"
+        cp -r "$script_dir/template/settings/" "$i/settings/."
     done
 
     echo "PowerGenome ran for $location."
