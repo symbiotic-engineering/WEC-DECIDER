@@ -29,7 +29,7 @@ pipeline:
         - modules/CEM/data_east/scenario_input.csv
         - modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       notebook_path: modules/CEM/make_additional_tech_csv.ipynb
-      html_storage: null
+      html_storage: git
       executed_ipynb_storage: git
       cleaned_ipynb_storage: null
     analyze-results:
@@ -50,6 +50,6 @@ pipeline:
         - modules/CEM/data_east/scenario_input.csv
       outputs: []
       notebook_path: modules/CEM/analyze_results.ipynb
-      html_storage: null
+      html_storage: git
       executed_ipynb_storage: git
       cleaned_ipynb_storage: null
