@@ -1,0 +1,90 @@
+name: CI_CEM
+description: Continuous Integration workflow for PowerGenome and GenX CEM (capacity expansion model)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} - Julia ${{ matrix.julia-version }} - Python ${{ matrix.python-version }} - Gurobi ${{ matrix.gurobi-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        julia-version:
+          - '1.8'
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+        python-version:
+          - '3.12'
+        gurobi-version:
+          - 'gurobi11'
+
+    steps:
+      - uses: actions/checkout@v4 # Checkout the repository
+      - uses: julia-actions/setup-julia@v2 # Setup Julia environment
+        with:
+          version: ${{ matrix.julia-version }}
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: anaconda-client-env
+          environment-file: envs/calkit-environment.yml
+          auto-activate-base: false
+      
+      # Install Gurobi
+      - name: Install Gurobi
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          # Download and install Gurobi (Linux only for now)
+          wget -q https://packages.gurobi.com/11.0/gurobi11.0.0_linux64.tar.gz
+          tar xzf gurobi11.0.0_linux64.tar.gz
+          sudo mv gurobi1100 /opt/gurobi
+          rm gurobi11.0.0_linux64.tar.gz
+          
+          # Set environment variables
+          echo "GUROBI_HOME=/opt/gurobi/linux64" >> $GITHUB_ENV
+          echo "/opt/gurobi/linux64/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/gurobi/linux64/lib" >> $GITHUB_ENV
+      
+      - name: configure NREL HSDS
+        run: hsconfigure # uses the .hscfg file
+        
+      - name: setup gurobi license
+        shell: bash
+        run: |
+          # Set environment variables for the license setup script
+          export WLSACCESSID="${{ secrets.WLSACCESSID }}"
+          export WLSSECRET="${{ secrets.WLSSECRET }}"
+          export LICENSEID="${{ secrets.LICENSEID }}"
+          
+          # Run the license setup script
+          chmod +x scripts/setup_gurobi_license.sh
+          scripts/setup_gurobi_license.sh
+          
+          # Make the license file path available to subsequent steps
+          echo "GRB_LICENSE_FILE=/tmp/gurobi_env.lic" >> $GITHUB_ENV
+          
+      - name: Test Gurobi installation
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          # Run individual test or use the test runner
+          python tests/test_gurobi.py
+          
+      - name: make bash executable
+        run: chmod +x ./modules/CEM/run_all.sh
+        
+      - name: run CEM tests
+        run: |
+          ./modules/CEM/run_all.sh
+        env:
+          GUROBI_VERSION: ${{ matrix.gurobi-version }}
+        
