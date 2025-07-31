@@ -20,7 +20,7 @@ echo "$(date +"%Y-%m-%d %H:%M:%S") Running PowerGenome"
 bash modules/CEM/run_powergenome.sh
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") Running GenX"
-#julia modules/CEM/setup.jl
+julia modules/CEM/setup.jl
 julia modules/CEM/Run.jl
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") Plotting results"
