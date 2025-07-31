@@ -1,0 +1,28 @@
+name: wec-decider-decider-2
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pandas
+  - numpy
+  - scipy
+  - matplotlib
+  - h5pyd
+  - requests
+ # - wecopttool
+ # - pyxdsm
+ # - openmdao
+  - gdown
+  - ipykernel
+  - pip
+  - catalystcoop.pudl <= 2022.11.30, >= 0.6.0
+  - pydantic[email] >= 1.7, <2 # for pudl 2022.11.30
+  - pyarrow = 7
+  - nbconvert # calkit
+  - pyogrio
+  - pip:
+      #- calkit-python
+      - mhkit
+      - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/@fix-int-cap-recovery-period
+      #- wecopttool[geometry]
+      #- omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master
