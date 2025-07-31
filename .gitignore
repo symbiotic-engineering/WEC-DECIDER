@@ -184,12 +184,13 @@ Highs.log
 # GenX and PowerGenome output folders
 modules/CEM/data/
 modules/CEM/data_*/cases/
+modules/CEM/data_*/results/
 modules/CEM/data_*/cluster_assignments/
 modules/CEM/data_*/wave_profiles/
 modules/CEM/data_*/settings/pg-data-env-expanded.yml
 modules/CEM/data_*/settings/cost_mult_tech_map_updated.yml
+modules/CEM/data_*/settings/settings_management.yml
 modules/CEM/data_*/*.csv
-!modules/CEM/data_*/scenario_input.csv
 
 
 # Power genome logs
