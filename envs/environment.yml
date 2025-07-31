@@ -17,17 +17,19 @@ dependencies:
   - openmdao
   - gdown       # data for CEM module
   - ipykernel   # jupyter
-  - pyjuliacall # julia for CEM module
   - pip
   - catalystcoop.pudl <= 2022.11.30, >= 0.6.0 # for powergenome (otherwise too new python version [3.11] is installed)
+  - pydantic[email] >= 1.7, <2 # for pudl 2022.11.30
   - pyarrow = 7
+  - nbconvert # used by calkit
   - pyogrio
 #  - mpi4py 
 #  - petsc4py
   - ipywidgets # for development (Jupyter notebook widgets)
   - pip:
+  # - calkit-python
     - mhkit
-    - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/tree/fix-double-input-folder
+    - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/@fix-int-cap-recovery-period
     - gridstatus
     - wecopttool[geometry]
     - omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master
