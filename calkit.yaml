@@ -28,9 +28,9 @@ dependencies:
   - HSDS_API_KEY:
       kind: env-var
       notes: HSDS API key
-  - gurobi_cl:
-      kind: app
-      notes: Gurobi command line interface
+  # - gurobi_cl:
+  #     kind: app
+  #     notes: Gurobi command line interface
 pipeline:
   stages:
     setup-sweep:
