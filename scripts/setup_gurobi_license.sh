@@ -26,11 +26,9 @@ End
 EOF
         
         if gurobi_cl /tmp/gurobi_test.lp > /dev/null 2>&1; then
-            echo "✅ Gurobi license is working"
             rm -f /tmp/gurobi_test.lp
             return 0
         else
-            echo "❌ Gurobi license check failed (solver error)"
             rm -f /tmp/gurobi_test.lp
             return 1
         fi
