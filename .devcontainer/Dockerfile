@@ -12,7 +12,7 @@ ENV GUROBI_HOME="/opt/gurobi" \
     LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/gurobi/linux64/lib"
 
 # Copy license setup script
-COPY ../scripts/setup_gurobi_license.sh /usr/local/bin/setup_gurobi_license.sh
+COPY scripts/setup_gurobi_license.sh /usr/local/bin/setup_gurobi_license.sh
 RUN chmod +x /usr/local/bin/setup_gurobi_license.sh
 
 # Switch back to vscode user
