@@ -1,0 +1,54 @@
+name: Run pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  main:
+    name: Run calkit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+      - run: pip install calkit-python uv
+      - name: Restore DVC cache
+        id: cache-dvc-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: .dvc/cache
+          key: ${{ runner.os }}-dvc-cache
+      - run: calkit config remote-auth
+        env:
+          CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
+      - run: dvc pull
+      - run: calkit run
+        env:
+          WLSACCESSID: ${{ secrets.WLSACCESSID }}
+          WLSSECRET: ${{ secrets.WLSSECRET }}
+          LICENSEID: ${{ secrets.LICENSEID }}
+          HSDS_API_KEY: ${{ secrets.HSDS_API_KEY }}
+      - run: calkit save -am "Run pipeline"
+        env:
+          CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
+      - name: Save DVC cache
+        id: cache-dvc-save
+        uses: actions/cache/save@v4
+        with:
+          path: .dvc/cache
+          key: ${{ steps.cache-dvc-restore.outputs.cache-primary-key }}
