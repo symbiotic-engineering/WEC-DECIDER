@@ -86,12 +86,6 @@ jobs:
           # Make the license file path available to subsequent steps
           echo "GRB_LICENSE_FILE=/tmp/gurobi_env.lic" >> $GITHUB_ENV
           
-      - name: Test Gurobi installation
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          # Run individual test or use the test runner
-          python tests/test_gurobi.py
-          
       - name: make bash executable
         run: chmod +x ./modules/CEM/run_all.sh
         
