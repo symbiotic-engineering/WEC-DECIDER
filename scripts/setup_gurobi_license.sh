@@ -87,12 +87,17 @@ main() {
     if check_gurobi_license; then
         echo "✅ Gurobi license already configured and working"
         return 0
+    else
+        echo "Gurobi license not already configured. Trying to set up..."
     fi
     
     # 2. Try to set up from environment variables (CI case)
     if setup_wls_from_env && check_gurobi_license; then
         echo "✅ WLS license configured from environment variables"
         return 0
+    else
+        echo "Failed to set up WLS license from environment variables."
+        echo "Trying to find existing license files..."
     fi
     
     # 3. Try to find existing license files
