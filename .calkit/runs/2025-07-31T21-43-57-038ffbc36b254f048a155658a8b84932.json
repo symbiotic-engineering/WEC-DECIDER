@@ -1,0 +1,244 @@
+{
+  "id": "038ffbc36b254f048a155658a8b84932",
+  "system_id": "74f95eb17c1b32563cdc80de607ee53665e14974",
+  "start_time": "2025-07-31T21:43:57.311710+00:00",
+  "end_time": "2025-07-31T21:54:55.068691+00:00",
+  "targets": [],
+  "force": false,
+  "dvc_args": [],
+  "status": "completed",
+  "stages": {
+    "_check-env-decider": {
+      "start_time": "2025-07-31T21:43:57.645000",
+      "end_time": "2025-07-31T21:43:59.426000",
+      "status": "completed"
+    },
+    "_clean-nb-setup-sweep": {
+      "start_time": "2025-07-31T21:43:59.426000",
+      "end_time": "2025-07-31T21:43:59.426000",
+      "status": "skipped"
+    },
+    "setup-sweep": {
+      "start_time": "2025-07-31T21:43:59.436000",
+      "end_time": "2025-07-31T21:43:59.436000",
+      "status": "skipped"
+    },
+    "_clean-nb-analyze-results": {
+      "start_time": "2025-07-31T21:43:59.439000",
+      "end_time": "2025-07-31T21:43:59.439000",
+      "status": "skipped"
+    },
+    "powergenome-data-download": {
+      "start_time": "2025-07-31T21:43:59.457000",
+      "end_time": "2025-07-31T21:43:59.457000",
+      "status": "skipped"
+    },
+    "powergenome-run": {
+      "start_time": "2025-07-31T21:43:59.527000",
+      "end_time": "2025-07-31T21:50:51.919000",
+      "status": "completed"
+    },
+    "genx-run": {
+      "start_time": "2025-07-31T21:50:51.919000",
+      "end_time": "2025-07-31T21:54:44.594000",
+      "status": "completed"
+    },
+    "analyze-results": {
+      "start_time": "2025-07-31T21:54:44.594000"
+    }
+  },
+  "git_rev": "2704eb8133a2c3f461f1a4acdfff391b504d11d4",
+  "git_branch": "cem-ci",
+  "git_changed_files_before": [
+    "dvc.lock",
+    "dvc.yaml",
+    "modules/CEM/run_powergenome.sh"
+  ],
+  "git_staged_files_before": [],
+  "git_untracked_files_before": [
+    ".calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb",
+    ".calkit/runs/2025-07-31T20-31-25-cc49401e6b274a85a419e4cb96cc17a5.json",
+    ".calkit/runs/2025-07-31T21-08-15-f16eec6bfb694d26814d43852d6b8de2.json",
+    ".calkit/runs/2025-07-31T21-11-58-5f83f3b25efb4a13bd67b4a462286d9a.json",
+    ".calkit/runs/2025-07-31T21-37-11-2107e0766b1e44e993449a05f33640c5.json",
+    ".calkit/systems/74f95eb17c1b32563cdc80de607ee53665e14974.json",
+    "envs/wec-decider-6.yml",
+    "envs/wec-decider-7.yml",
+    "modules/CEM/CEM_cost_sweep.pdf",
+    "tests/run_tests.py",
+    "waveEnergy.pdf",
+    "waveEnergy.tex",
+    "waveEnergy.tikz"
+  ],
+  "git_changed_files_after": [
+    "dvc.lock",
+    "dvc.yaml",
+    "modules/CEM/run_powergenome.sh"
+  ],
+  "git_staged_files_after": [],
+  "git_untracked_files_after": [
+    ".calkit/notebooks/executed/modules/CEM/analyze_results.ipynb",
+    ".calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb",
+    ".calkit/runs/2025-07-31T20-31-25-cc49401e6b274a85a419e4cb96cc17a5.json",
+    ".calkit/runs/2025-07-31T21-08-15-f16eec6bfb694d26814d43852d6b8de2.json",
+    ".calkit/runs/2025-07-31T21-11-58-5f83f3b25efb4a13bd67b4a462286d9a.json",
+    ".calkit/runs/2025-07-31T21-37-11-2107e0766b1e44e993449a05f33640c5.json",
+    ".calkit/systems/74f95eb17c1b32563cdc80de607ee53665e14974.json",
+    "envs/wec-decider-6.yml",
+    "envs/wec-decider-7.yml",
+    "modules/CEM/CEM_cost_sweep.pdf",
+    "tests/run_tests.py",
+    "waveEnergy.pdf",
+    "waveEnergy.tex",
+    "waveEnergy.tikz"
+  ],
+  "dvc_status_before": {
+    "_check-env-decider": [
+      "always changed"
+    ],
+    "analyze-results": [
+      {
+        "changed deps": {
+          ".calkit/notebooks/cleaned/modules/CEM/analyze_results.ipynb": "modified",
+          "modules/CEM/data_east/cases/Case_1/results": "modified",
+          "modules/CEM/data_east/cases/Case_2/results": "modified",
+          "modules/CEM/data_east/cases/Case_3/results": "modified",
+          "modules/CEM/data_east/cases/Case_4/results": "modified",
+          "modules/CEM/data_east/cases/Case_5/results": "modified",
+          "modules/CEM/data_east/scenario_input.csv": "modified",
+          ".calkit/env-locks/decider.yml": "modified"
+        }
+      },
+      {
+        "changed outs": {
+          ".calkit/notebooks/executed/modules/CEM/analyze_results.ipynb": "deleted",
+          ".calkit/notebooks/html/modules/CEM/analyze_results.html": "deleted"
+        }
+      }
+    ],
+    "powergenome-run": [
+      {
+        "changed deps": {
+          "modules/CEM/run_powergenome.sh": "modified",
+          "modules/CEM/data": "modified",
+          "modules/CEM/pg-data-env.yml": "modified",
+          "modules/CEM/data_CA/test_misc_gen_inputs.csv": "modified",
+          "modules/CEM/data_CA/test_demand_segments_voll.csv": "modified",
+          "modules/CEM/data_CA/settings/test_settings.yml": "modified",
+          "modules/CEM/data_east/Reserves.csv": "modified",
+          "modules/CEM/data_east/emission_policies.csv": "modified",
+          "modules/CEM/data_east/misc_gen_inputs.csv": "modified",
+          "modules/CEM/data_east/resource_capacity_spur.csv": "modified",
+          "modules/CEM/data_east/demand_segments_voll.csv": "modified",
+          "modules/CEM/data_east/settings/settings_management.yml": "modified",
+          "modules/CEM/data_east/settings/test_settings_2.yml": "modified",
+          "modules/CEM/data_east/scenario_input.csv": "modified",
+          "modules/CEM/data_east/wave_profiles": "modified",
+          "modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml": "modified"
+        }
+      },
+      {
+        "changed outs": {
+          "modules/CEM/data_east/cases/Case_1/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_2/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_3/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_4/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_5/inputs": "deleted"
+        }
+      }
+    ],
+    "genx-run": [
+      {
+        "changed deps": {
+          "modules/CEM/Run.jl": "modified",
+          "modules/CEM/Project.toml": "modified",
+          "modules/CEM/data_east/cases/Case_1/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_2/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_3/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_4/inputs": "deleted",
+          "modules/CEM/data_east/cases/Case_5/inputs": "deleted"
+        }
+      },
+      {
+        "changed outs": {
+          "modules/CEM/data_east/cases/Case_1/results": "modified",
+          "modules/CEM/data_east/cases/Case_2/results": "modified",
+          "modules/CEM/data_east/cases/Case_3/results": "modified",
+          "modules/CEM/data_east/cases/Case_4/results": "modified",
+          "modules/CEM/data_east/cases/Case_5/results": "modified"
+        }
+      }
+    ]
+  },
+  "dvc_data_status_before": {
+    "not_in_cache": [],
+    "not_in_remote": [],
+    "committed": {
+      "added": [
+        "modules/CEM/data_east/wave_profiles/",
+        "modules/CEM/data_east/scenario_input.csv",
+        "modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml",
+        "modules/CEM/data_east/settings/settings_management.yml"
+      ]
+    },
+    "uncommitted": {
+      "added": [
+        "modules/CEM/data_east/cases/Case_4/results/",
+        "modules/CEM/data_east/cases/Case_1/results/",
+        "modules/CEM/data_east/cases/Case_2/results/",
+        "modules/CEM/data_east/cases/Case_3/results/",
+        "modules/CEM/data_east/cases/Case_5/results/"
+      ]
+    },
+    "untracked": [],
+    "unchanged": [
+      "modules/CEM/data_east/resource_capacity_spur.csv",
+      "modules/CEM/data_east/Reserves.csv",
+      "modules/CEM/data_CA/test_demand_segments_voll.csv",
+      "modules/CEM/data_CA/test_misc_gen_inputs.csv",
+      "modules/CEM/data_east/emission_policies.csv",
+      "modules/CEM/data_east/demand_segments_voll.csv",
+      "modules/CEM/data/",
+      "modules/CEM/data_east/misc_gen_inputs.csv"
+    ]
+  },
+  "dvc_status_after": {
+    "_check-env-decider": [
+      "always changed"
+    ]
+  },
+  "dvc_data_status_after": {
+    "not_in_cache": [],
+    "not_in_remote": [],
+    "committed": {
+      "added": [
+        "modules/CEM/data_east/wave_profiles/",
+        "modules/CEM/data_east/scenario_input.csv",
+        "modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml",
+        "modules/CEM/data_east/settings/settings_management.yml",
+        "modules/CEM/data_east/cases/Case_4/results/",
+        "modules/CEM/data_east/cases/Case_4/inputs/",
+        "modules/CEM/data_east/cases/Case_1/results/",
+        "modules/CEM/data_east/cases/Case_1/inputs/",
+        "modules/CEM/data_east/cases/Case_2/results/",
+        "modules/CEM/data_east/cases/Case_2/inputs/",
+        "modules/CEM/data_east/cases/Case_3/results/",
+        "modules/CEM/data_east/cases/Case_3/inputs/",
+        "modules/CEM/data_east/cases/Case_5/results/",
+        "modules/CEM/data_east/cases/Case_5/inputs/"
+      ]
+    },
+    "uncommitted": {},
+    "untracked": [],
+    "unchanged": [
+      "modules/CEM/data_east/resource_capacity_spur.csv",
+      "modules/CEM/data_east/Reserves.csv",
+      "modules/CEM/data_CA/test_demand_segments_voll.csv",
+      "modules/CEM/data_CA/test_misc_gen_inputs.csv",
+      "modules/CEM/data_east/emission_policies.csv",
+      "modules/CEM/data_east/demand_segments_voll.csv",
+      "modules/CEM/data/",
+      "modules/CEM/data_east/misc_gen_inputs.csv"
+    ]
+  }
+}
