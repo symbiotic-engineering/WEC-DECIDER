@@ -96,7 +96,7 @@ jobs:
         run: chmod +x ./modules/CEM/run_all.sh
         
       - name: run CEM tests
-        shell: bash -l {0} # to use conda environment
+        shell: bash -i {0} # to use conda environment
         run: |
           ./modules/CEM/run_all.sh
         env:
