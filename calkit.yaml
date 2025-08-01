@@ -15,6 +15,22 @@ environments:
   decider:
     path: envs/calkit-environment.yml
     kind: conda
+dependencies:
+  - name: WLSACCESSID
+    kind: env-var
+    description: Gurobi WLS Access ID (API key)
+  - name: WLSSECRET
+    kind: env-var
+    description: Gurobi WLS Secret
+  - name: LICENSEID
+    kind: env-var
+    description: Gurobi license ID
+  - name: HSDS_API_KEY
+    kind: env-var
+    description: HSDS API key
+  - name: gurobi_cl
+    kind: app
+    description: Gurobi command line interface
 pipeline:
   stages:
     setup-sweep:
