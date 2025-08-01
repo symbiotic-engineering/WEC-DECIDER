@@ -6,10 +6,13 @@ FROM ghcr.io/calkit/devcontainer:latest
 USER root
 COPY --from=gurobi-base /opt/gurobi /opt/gurobi
 
-# Set Gurobi environment variables for Julia access
-ENV GUROBI_HOME="/opt/gurobi" \
-    PATH="${PATH}:/opt/gurobi/linux64/bin" \
-    LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/gurobi/linux64/lib"
+# Set Gurobi environment variables (matching the official Gurobi image)
+ENV GUROBI_HOME=/opt/gurobi/linux \
+    PATH=$PATH:/opt/gurobi/linux/bin \
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/gurobi/linux/lib
+
+# make Gurobi command line executable
+RUN chmod +x /opt/gurobi/linux/bin/gurobi_cl
 
 # Copy license setup script
 COPY scripts/setup_gurobi_license.sh /usr/local/bin/setup_gurobi_license.sh
