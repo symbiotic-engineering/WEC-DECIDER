@@ -64,12 +64,13 @@ jobs:
         shell: bash -l {0} # to use conda environment
         run: |
           # Create config file with actual secret value
-          cat > ~/.hscfg << EOF
+          cat > .github/workflows/.hscfg << EOF
           hs_endpoint = https://developer.nrel.gov/api/hsds
           hs_username = None
           hs_password = None
           hs_api_key = ${{ secrets.HSDS_API_KEY }}
           EOF
+          hsconfigure --config-file .github/workflows/.hscfg
 
       - name: setup gurobi license
         shell: bash -l {0} # to use conda environment
@@ -96,7 +97,7 @@ jobs:
         run: chmod +x ./modules/CEM/run_all.sh
         
       - name: run CEM tests
-        shell: bash -i {0} # to use conda environment
+        shell: bash -l {0} # to use conda environment
         run: |
           ./modules/CEM/run_all.sh
         env:
