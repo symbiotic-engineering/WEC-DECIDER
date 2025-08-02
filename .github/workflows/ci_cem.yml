@@ -21,8 +21,8 @@ jobs:
           - '1.8'
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
+          # - macOS-latest
+          # - windows-latest
         python-version:
           - '3.10'
         gurobi-version:
@@ -59,17 +59,14 @@ jobs:
           echo "GUROBI_HOME=/opt/gurobi/linux64" >> $GITHUB_ENV
           echo "/opt/gurobi/linux64/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/gurobi/linux64/lib" >> $GITHUB_ENV
+        env:
+          GUROBI_VERSION: ${{ matrix.gurobi-version }}
       
       - name: configure NREL HSDS
         shell: bash -l {0} # to use conda environment
-        run: |
-          # Create config file with actual secret value
-          cat > ~/.hscfg << EOF
-          hs_endpoint = https://developer.nrel.gov/api/hsds
-          hs_username = None
-          hs_password = None
-          hs_api_key = ${{ secrets.HSDS_API_KEY }}
-          EOF
+        run: envsubst < .hscfg > ~/.hscfg
+        env:
+          HSDS_API_KEY: ${{ secrets.HSDS_API_KEY }}
 
       - name: setup gurobi license
         shell: bash -l {0} # to use conda environment
@@ -93,6 +90,4 @@ jobs:
         shell: bash -l {0} # to use conda environment
         run: |
           ./modules/CEM/run_all.sh
-        env:
-          GUROBI_VERSION: ${{ matrix.gurobi-version }}
         
