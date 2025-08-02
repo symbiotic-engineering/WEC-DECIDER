@@ -33,6 +33,13 @@ dependencies:
   #     notes: Gurobi command line interface
 pipeline:
   stages:
+    setup-hsds:
+      kind: shell-command
+      command: envsubst < .hscfg > ~/.hscfg
+      environment: decider
+      inputs:
+        - .hscfg
+      outputs: []
     setup-sweep:
       kind: jupyter-notebook
       environment: decider
