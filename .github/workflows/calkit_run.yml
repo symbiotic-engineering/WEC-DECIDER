@@ -43,6 +43,7 @@ jobs:
         env:
           CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
       - name: Save DVC cache
+        if: always()
         id: cache-dvc-save
         uses: actions/cache/save@v4
         with:
