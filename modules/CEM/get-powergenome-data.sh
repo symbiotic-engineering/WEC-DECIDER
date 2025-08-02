@@ -1,4 +1,4 @@
-set -e # if any command fails, exit immediately. Comment this out if you are using a debugger and have breakpoints on errors.
+#set -e # if any command fails, exit immediately. Comment this out if you are using a debugger and have breakpoints on errors.
 
 # this script must be run with working directory set to WEC-DECIDER/modules/CEM folder
 script_dir=$(dirname -- "$0")
@@ -23,7 +23,7 @@ if ! [ -d $script_dir/data/pg ]; then
     gdown --quiet -O $script_dir/data/pg.zip 1AT7vsfxLsKuf9N2JXBTlrt2-4I8Rg_hI
     unzip -n $script_dir/data/pg.zip -d $script_dir/data/pg
 fi
-wget --no-verbose -nc -P $script_dir/data/pg "https://github.com/PowerGenome/PowerGenome/raw/refs/heads/master/tests/data/_pg_misc_tables.sqlite3"
+# wget --no-verbose -nc -P $script_dir/data/pg "https://github.com/PowerGenome/PowerGenome/raw/refs/heads/master/tests/data/_pg_misc_tables.sqlite3"
 
 if ! [ -d $script_dir/data/pudl ]; then
     gdown --quiet -O $script_dir/data/pudl.zip 1tJipxJYxP_dcAnopJrdXdcZh7K3SlI1-
