@@ -41,11 +41,11 @@ pipeline:
         - .hscfg
       outputs: []
     powergenome-data-download:
-      kind: shell-script
-      script_path: ./modules/CEM/get-powergenome-data.sh
+      kind: python-script
+      script_path: ./modules/CEM/get-powergenome-data.py
       environment: decider-2
       inputs:
-        - modules/CEM/get-powergenome-data.sh
+        - modules/CEM/get-powergenome-data.py
       outputs:
         - modules/CEM/data/
         - modules/CEM/data_CA/test_misc_gen_inputs.csv
