@@ -103,14 +103,22 @@ pipeline:
       - modules/CEM/data_east/cases/Case_3/inputs
       - modules/CEM/data_east/cases/Case_4/inputs
       - modules/CEM/data_east/cases/Case_5/inputs
+    genx-setup:
+      kind: shell-command
+      command: julia modules/CEM/setup.jl
+      environment: decider-2
+      inputs:
+        - modules/CEM/Project.toml
+      outputs:
+        - modules/CEM/Manifest.toml
     genx-run:
       kind: shell-command
-      command: calkit run genx
+      command: julia modules/CEM/Run.jl
       environment: decider-2
       inputs:
         - modules/CEM/Run.jl
       # - modules/CEM/juliapkg.json
-        - modules/CEM/Project.toml
+        - modules/CEM/Manifest.toml
       # - modules/CEM/data_CA/cases/Case_1/inputs
       # - modules/CEM/data_CA/cases/Case_2/inputs
       # - modules/CEM/data_CA/cases/Case_3/inputs
