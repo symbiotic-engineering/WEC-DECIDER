@@ -1,0 +1,277 @@
+
+%%% Preamble Requirements %%%
+% \usepackage{geometry}
+% \usepackage{amsfonts}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{tikz}
+
+% Optional packages such as sfmath set through python interface
+% \usepackage{sfmath}
+
+% \usetikzlibrary{arrows,chains,positioning,scopes,shapes.geometric,shapes.misc,shadows}
+
+%%% End Preamble Requirements %%%
+
+\input{"/Users/jiaruiyang/Documents/GitHub/WEC-DECIDER/venv/lib/python3.9/site-packages/pyxdsm/diagram_styles"}
+\begin{tikzpicture}
+
+\matrix[MatrixSetup]{
+%Row 0
+\node [DataIO] (output_ScipyOptimizeDriver) {$\begin{array}{c}D\_f^{(0)} \\ D\_s\_over\_D\_f^{(0)} \\ h\_f\_over\_D\_f^{(0)} \\ T\_s\_over\_h\_s^{(0)} \\ F\_max^{(0)} \\ B\_p^{(0)} \\ w\_n^{(0)}\end{array}$};&
+&
+&
+\node [DataIO] (output_hydroComponent) {$<map object at 0x15b8e76d0>$};&
+\node [DataIO] (output_heaveDynamicsComponent) {$<map object at 0x15be7fd90>$};&
+&
+&
+\node [DataIO] (output_environmentComponent) {$<map object at 0x15b8f15e0>$};&
+&
+&
+&
+\\
+%Row 1
+\node [Optimization] (ScipyOptimizeDriver) {$\text{\text{0, 11 $ \rightarrow $ 1: ScipyOptimizeDriver}}$};&
+\node [DataInter] (ScipyOptimizeDriver-ratioComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-geometryComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-hydroComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-heaveDynamicsComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-surgeAndVariationComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-structureComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-environmentComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-econComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (ScipyOptimizeDriver-constraintComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+&
+\node [DataIO] (right_output_ScipyOptimizeDriver) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 2
+&
+\node [Function] (ratioComponent) {$\text{\text{1: ratioComponent}}$};&
+\node [DataInter] (ratioComponent-geometryComponent) {$\begin{array}{c}D\_d \\ D\_s \\ T\_f \\ T\_s \\ h\_d \\ h\_f \\ h\_s\end{array}$};&
+\node [DataInter] (ratioComponent-hydroComponent) {$\begin{array}{c}D\_s \\ T\_f \\ h\_f\end{array}$};&
+&
+\node [DataInter] (ratioComponent-surgeAndVariationComponent) {$\begin{array}{c}T\_f \\ T\_s \\ h\_f \\ h\_s\end{array}$};&
+\node [DataInter] (ratioComponent-structureComponent) {$\begin{array}{c}T\_s \\ h\_s\end{array}$};&
+&
+&
+\node [DataInter] (ratioComponent-constraintComponent) {$\begin{array}{c}D\_d\end{array}$};&
+&
+\node [DataIO] (right_output_ratioComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 3
+&
+&
+\node [Function] (geometryComponent) {$\text{\text{2: geometryComponent}}$};&
+&
+&
+\node [DataInter] (geometryComponent-surgeAndVariationComponent) {$\begin{array}{c}T \\ V\_d \\ m\_f\_tot\end{array}$};&
+\node [DataInter] (geometryComponent-structureComponent) {$\begin{array}{c}A\_c \\ A\_lat\_sub \\ I \\ r\_over\_t\end{array}$};&
+\node [DataInter] (geometryComponent-environmentComponent) {$\begin{array}{c}A\_fiberglass \\ m\_m\end{array}$};&
+\node [DataInter] (geometryComponent-econComponent) {$\begin{array}{c}m\_m\end{array}$};&
+\node [DataInter] (geometryComponent-constraintComponent) {$\begin{array}{c}GM \\ V\_f\_pct \\ V\_s\_pct\end{array}$};&
+&
+\node [DataIO] (right_output_geometryComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 4
+&
+&
+&
+\node [Function] (hydroComponent) {$\text{\text{3: hydroComponent}}$};&
+\node [DataInter] (hydroComponent-heaveDynamicsComponent) {$\begin{array}{c}Froude\_Krylov\_force \\ added\_mass \\ diffraction\_force \\ excitation\_force \\ forward\_speed \\ hydrostatic\_stiffness \\ inertia\_matrix \\ ndof \\ omega \\ period \\ radiation\_damping \\ water\_depth \\ wave\_direction\end{array}$};&
+&
+&
+&
+&
+&
+&
+\node [DataIO] (right_output_hydroComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 5
+&
+&
+&
+&
+\node [Function] (heaveDynamicsComponent) {$\text{\text{4: heaveDynamicsComponent}}$};&
+\node [DataInter] (heaveDynamicsComponent-surgeAndVariationComponent) {$\begin{array}{c}P\_elec \\ P\_matrix\end{array}$};&
+\node [DataInter] (heaveDynamicsComponent-structureComponent) {$\begin{array}{c}F\_heave\_max\end{array}$};&
+&
+\node [DataInter] (heaveDynamicsComponent-econComponent) {$\begin{array}{c}P\_elec\end{array}$};&
+\node [DataInter] (heaveDynamicsComponent-constraintComponent) {$\begin{array}{c}P\_elec\end{array}$};&
+&
+\node [DataIO] (right_output_heaveDynamicsComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 6
+&
+&
+&
+&
+&
+\node [Function] (surgeAndVariationComponent) {$\text{\text{5: surgeAndVariationComponent}}$};&
+\node [DataInter] (surgeAndVariationComponent-structureComponent) {$\begin{array}{c}F\_surge\_max\end{array}$};&
+&
+&
+\node [DataInter] (surgeAndVariationComponent-constraintComponent) {$\begin{array}{c}F\_ptrain\_max \\ P\_var \\ h\_s\_extra\end{array}$};&
+&
+\node [DataIO] (right_output_surgeAndVariationComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 7
+&
+&
+&
+&
+&
+&
+\node [Function] (structureComponent) {$\text{\text{6: structureComponent}}$};&
+&
+&
+\node [DataInter] (structureComponent-constraintComponent) {$\begin{array}{c}FOS1Y \\ FOS2Y \\ FOS3Y \\ FOS\_buckling\end{array}$};&
+&
+\node [DataIO] (right_output_structureComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 8
+&
+&
+&
+&
+&
+&
+&
+\node [Function] (environmentComponent) {$\text{\text{7: environmentComponent}}$};&
+&
+\node [DataInter] (environmentComponent-constraintComponent) {$\begin{array}{c}eco\_value\end{array}$};&
+&
+\node [DataIO] (right_output_environmentComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};\\
+%Row 9
+\node [DataInter] (econComponent-ScipyOptimizeDriver) {$\begin{array}{c}LCOE\end{array}$};&
+&
+&
+&
+&
+&
+&
+&
+\node [Function] (econComponent) {$\text{\text{8: econComponent}}$};&
+\node [DataInter] (econComponent-constraintComponent) {$\begin{array}{c}LCOE\end{array}$};&
+&
+\node [DataIO] (right_output_econComponent) {$\begin{array}{c}LCOE^{*}\end{array}$};\\
+%Row 10
+\node [DataInter] (constraintComponent-ScipyOptimizeDriver) {$\begin{array}{c}g\_0 \\ g\_1 \\ g\_2 \\ g\_3 \\ g\_4 \\ g\_5 \\ g\_6 \\ g\_7 \\ g\_8 \\ g\_9 \\ g\_10 \\ g\_11 \\ g\_12 \\ g\_13\end{array}$};&
+&
+&
+&
+&
+&
+&
+&
+&
+\node [Function] (constraintComponent) {$\text{\text{9: constraintComponent}}$};&
+&
+\node [DataIO] (right_output_constraintComponent) {$\begin{array}{c}g\_0^{*} \\ g\_1^{*} \\ g\_2^{*} \\ g\_3^{*} \\ g\_4^{*} \\ g\_5^{*} \\ g\_6^{*} \\ g\_7^{*} \\ g\_8^{*} \\ g\_9^{*} \\ g\_10^{*} \\ g\_11^{*} \\ g\_12^{*} \\ g\_13^{*}\end{array}$};\\
+%Row 11
+&
+&
+&
+&
+&
+&
+&
+&
+&
+&
+&
+\\
+};
+
+% XDSM process chains
+{ [start chain=process]
+ \begin{pgfonlayer}{process} 
+\chainin (ScipyOptimizeDriver);
+\chainin (ratioComponent) [join=by ProcessHV];
+\chainin (geometryComponent) [join=by ProcessHV];
+\chainin (hydroComponent) [join=by ProcessHV];
+\chainin (heaveDynamicsComponent) [join=by ProcessHV];
+\chainin (surgeAndVariationComponent) [join=by ProcessHV];
+\chainin (structureComponent) [join=by ProcessHV];
+\chainin (environmentComponent) [join=by ProcessHV];
+\chainin (econComponent) [join=by ProcessHV];
+\chainin (constraintComponent) [join=by ProcessHV];
+\chainin (ScipyOptimizeDriver) [join=by ProcessHV];
+\end{pgfonlayer}
+}
+
+\begin{pgfonlayer}{data}
+\path
+% Horizontal edges
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-surgeAndVariationComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-constraintComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-ratioComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-geometryComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-hydroComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-structureComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-econComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-heaveDynamicsComponent)
+(ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver-environmentComponent)
+(econComponent) edge [DataLine] (econComponent-ScipyOptimizeDriver)
+(constraintComponent) edge [DataLine] (constraintComponent-ScipyOptimizeDriver)
+(econComponent) edge [DataLine] (econComponent-constraintComponent)
+(environmentComponent) edge [DataLine] (environmentComponent-constraintComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-structureComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-environmentComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-constraintComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-surgeAndVariationComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-econComponent)
+(heaveDynamicsComponent) edge [DataLine] (heaveDynamicsComponent-structureComponent)
+(heaveDynamicsComponent) edge [DataLine] (heaveDynamicsComponent-constraintComponent)
+(heaveDynamicsComponent) edge [DataLine] (heaveDynamicsComponent-econComponent)
+(heaveDynamicsComponent) edge [DataLine] (heaveDynamicsComponent-surgeAndVariationComponent)
+(hydroComponent) edge [DataLine] (hydroComponent-heaveDynamicsComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-constraintComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-geometryComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-hydroComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-surgeAndVariationComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-structureComponent)
+(structureComponent) edge [DataLine] (structureComponent-constraintComponent)
+(surgeAndVariationComponent) edge [DataLine] (surgeAndVariationComponent-constraintComponent)
+(surgeAndVariationComponent) edge [DataLine] (surgeAndVariationComponent-structureComponent)
+(surgeAndVariationComponent) edge [DataLine] (right_output_surgeAndVariationComponent)
+(ScipyOptimizeDriver) edge [DataLine] (right_output_ScipyOptimizeDriver)
+(constraintComponent) edge [DataLine] (right_output_constraintComponent)
+(ratioComponent) edge [DataLine] (right_output_ratioComponent)
+(geometryComponent) edge [DataLine] (right_output_geometryComponent)
+(hydroComponent) edge [DataLine] (right_output_hydroComponent)
+(structureComponent) edge [DataLine] (right_output_structureComponent)
+(econComponent) edge [DataLine] (right_output_econComponent)
+(heaveDynamicsComponent) edge [DataLine] (right_output_heaveDynamicsComponent)
+(environmentComponent) edge [DataLine] (right_output_environmentComponent)
+% Vertical edges
+(ScipyOptimizeDriver-surgeAndVariationComponent) edge [DataLine] (surgeAndVariationComponent)
+(ScipyOptimizeDriver-constraintComponent) edge [DataLine] (constraintComponent)
+(ScipyOptimizeDriver-ratioComponent) edge [DataLine] (ratioComponent)
+(ScipyOptimizeDriver-geometryComponent) edge [DataLine] (geometryComponent)
+(ScipyOptimizeDriver-hydroComponent) edge [DataLine] (hydroComponent)
+(ScipyOptimizeDriver-structureComponent) edge [DataLine] (structureComponent)
+(ScipyOptimizeDriver-econComponent) edge [DataLine] (econComponent)
+(ScipyOptimizeDriver-heaveDynamicsComponent) edge [DataLine] (heaveDynamicsComponent)
+(ScipyOptimizeDriver-environmentComponent) edge [DataLine] (environmentComponent)
+(econComponent-ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver)
+(constraintComponent-ScipyOptimizeDriver) edge [DataLine] (ScipyOptimizeDriver)
+(econComponent-constraintComponent) edge [DataLine] (constraintComponent)
+(environmentComponent-constraintComponent) edge [DataLine] (constraintComponent)
+(geometryComponent-structureComponent) edge [DataLine] (structureComponent)
+(geometryComponent-environmentComponent) edge [DataLine] (environmentComponent)
+(geometryComponent-constraintComponent) edge [DataLine] (constraintComponent)
+(geometryComponent-surgeAndVariationComponent) edge [DataLine] (surgeAndVariationComponent)
+(geometryComponent-econComponent) edge [DataLine] (econComponent)
+(heaveDynamicsComponent-structureComponent) edge [DataLine] (structureComponent)
+(heaveDynamicsComponent-constraintComponent) edge [DataLine] (constraintComponent)
+(heaveDynamicsComponent-econComponent) edge [DataLine] (econComponent)
+(heaveDynamicsComponent-surgeAndVariationComponent) edge [DataLine] (surgeAndVariationComponent)
+(hydroComponent-heaveDynamicsComponent) edge [DataLine] (heaveDynamicsComponent)
+(ratioComponent-constraintComponent) edge [DataLine] (constraintComponent)
+(ratioComponent-geometryComponent) edge [DataLine] (geometryComponent)
+(ratioComponent-hydroComponent) edge [DataLine] (hydroComponent)
+(ratioComponent-surgeAndVariationComponent) edge [DataLine] (surgeAndVariationComponent)
+(ratioComponent-structureComponent) edge [DataLine] (structureComponent)
+(structureComponent-constraintComponent) edge [DataLine] (constraintComponent)
+(surgeAndVariationComponent-constraintComponent) edge [DataLine] (constraintComponent)
+(surgeAndVariationComponent-structureComponent) edge [DataLine] (structureComponent)
+(ScipyOptimizeDriver) edge [DataLine] (output_ScipyOptimizeDriver)
+(environmentComponent) edge [DataLine] (output_environmentComponent)
+(heaveDynamicsComponent) edge [DataLine] (output_heaveDynamicsComponent)
+(hydroComponent) edge [DataLine] (output_hydroComponent);
+\end{pgfonlayer}
+
+\end{tikzpicture}
