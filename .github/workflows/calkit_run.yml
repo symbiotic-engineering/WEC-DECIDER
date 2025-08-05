@@ -33,7 +33,7 @@ jobs:
         env:
           CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
       - run: dvc pull
-      - run: calkit run
+      - run: calkit run --verbose
         env:
           WLSACCESSID: ${{ secrets.WLSACCESSID }}
           WLSSECRET: ${{ secrets.WLSSECRET }}
