@@ -411,19 +411,19 @@ model_tag_names:
   - STOR
   - FLEX
   - HYDRO
-  - LDS
+  # - LDS
   - Commit
   - ESR_1
   - ESR_2
   - New_Build
-  - Hydro_level
+  # - Hydro_level
   - CapRes_1
   - CapRes_2
   - MinCapTag_1
   - MinCapTag_2
   - MinCapTag_3
-  - Reg_Max
-  - Rsv_Max
+  # - Reg_Max
+  # - Rsv_Max
 
 default_model_tag: 0
 
@@ -1083,7 +1083,7 @@ time_domain_days_per_period: 5 # The number of 24 hour days in each period/clust
 include_peak_day: true # If the system-wide peak load days should always be included
 demand_weight_factor: 1 # Demand profiles are scaled from 0-1, then scaled up using this value.
 
-
+tx_value_col: firm_ttc_mw
 # Transmission financial information to calculate annual investment costs
 # capex_mw_mile: Capital cost per MW-mile for all (numeric) or each model region (dict).
 # WACC and investment years from https://www.sciencedirect.com/science/article/abs/pii/S0301421519305816
@@ -1097,6 +1097,8 @@ transmission_investment_cost:
       NENG_ME: 8775
     wacc: 0.044
     investment_years: 60
+
+
 
 # Percent expansion in planning period above and beyond existing transmission
 tx_expansion_per_period: 1.0
