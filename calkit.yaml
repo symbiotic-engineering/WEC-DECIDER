@@ -98,11 +98,7 @@ pipeline:
       # - modules/CEM/data_CA/cases/Case_3/inputs
       # - modules/CEM/data_CA/cases/Case_4/inputs
       # - modules/CEM/data_CA/cases/Case_5/inputs
-      - modules/CEM/data_east/cases/Case_1/inputs
-      - modules/CEM/data_east/cases/Case_2/inputs
-      - modules/CEM/data_east/cases/Case_3/inputs
-      - modules/CEM/data_east/cases/Case_4/inputs
-      - modules/CEM/data_east/cases/Case_5/inputs
+      - modules/CEM/data_east/cases/Case_*/inputs
     genx-setup:
       kind: shell-command
       command: julia modules/CEM/setup.jl
@@ -124,22 +120,14 @@ pipeline:
       # - modules/CEM/data_CA/cases/Case_3/inputs
       # - modules/CEM/data_CA/cases/Case_4/inputs
       # - modules/CEM/data_CA/cases/Case_5/inputs
-        - modules/CEM/data_east/cases/Case_1/inputs
-        - modules/CEM/data_east/cases/Case_2/inputs
-        - modules/CEM/data_east/cases/Case_3/inputs
-        - modules/CEM/data_east/cases/Case_4/inputs
-        - modules/CEM/data_east/cases/Case_5/inputs
+        - modules/CEM/data_east/cases/Case_*/inputs
       outputs:
       # - modules/CEM/data_CA/cases/Case_1/results/
       # - modules/CEM/data_CA/cases/Case_2/results/
       # - modules/CEM/data_CA/cases/Case_3/results/
       # - modules/CEM/data_CA/cases/Case_4/results/
       # - modules/CEM/data_CA/cases/Case_5/results/
-      - modules/CEM/data_east/cases/Case_1/results/
-      - modules/CEM/data_east/cases/Case_2/results/
-      - modules/CEM/data_east/cases/Case_3/results/
-      - modules/CEM/data_east/cases/Case_4/results/
-      - modules/CEM/data_east/cases/Case_5/results/
+      - modules/CEM/data_east/cases/Case_*/results/
     analyze-results:
       kind: jupyter-notebook
       environment: decider-2
@@ -150,11 +138,7 @@ pipeline:
       # - modules/CEM/data_CA/cases/Case_3/results/
       # - modules/CEM/data_CA/cases/Case_4/results/
       # - modules/CEM/data_CA/cases/Case_5/results/
-        - modules/CEM/data_east/cases/Case_1/results/
-        - modules/CEM/data_east/cases/Case_2/results/
-        - modules/CEM/data_east/cases/Case_3/results/
-        - modules/CEM/data_east/cases/Case_4/results/
-        - modules/CEM/data_east/cases/Case_5/results/
+        - modules/CEM/data_east/cases/Case_*/results/
         - modules/CEM/data_east/scenario_input.csv
       outputs: []
       notebook_path: modules/CEM/analyze_results.ipynb
