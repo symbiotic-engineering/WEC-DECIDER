@@ -1,12 +1,5 @@
 FROM gurobi/optimizer:latest
 
-# Copy license setup script
-COPY scripts/setup_gurobi_license.sh /usr/local/bin/setup_gurobi_license.sh
-RUN chmod +x /usr/local/bin/setup_gurobi_license.sh
-
-# Set up license environment for the container startup
-RUN echo 'source /usr/local/bin/setup_gurobi_license.sh' >> ~/.bashrc
-
 # Copy Julia and its env vars from image
 COPY --from=julia:1.9.4-bullseye /usr/local/julia /usr/local/julia
 ENV JULIA_PATH=/usr/local/julia \
