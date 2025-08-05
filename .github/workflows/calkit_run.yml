@@ -39,7 +39,7 @@ jobs:
           WLSSECRET: ${{ secrets.WLSSECRET }}
           LICENSEID: ${{ secrets.LICENSEID }}
           HSDS_API_KEY: ${{ secrets.HSDS_API_KEY }}
-      - run: calkit save -am "Run pipeline"
+      - run: calkit save -am "Run pipeline" --git-push origin --git-push HEAD:${{ github.event.pull_request.head.ref }}
         if: always()
         env:
           CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
