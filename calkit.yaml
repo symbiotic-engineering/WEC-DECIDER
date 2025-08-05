@@ -15,6 +15,11 @@ environments:
   decider-2:
     path: envs/calkit-environment.yml
     kind: conda
+  gurobi-julia:
+    kind: docker
+    image: gurobi-julia
+    path: envs/Dockerfile.gurobi-julia
+    user: root
 dependencies:
   - WLSACCESSID:
       kind: env-var
@@ -106,7 +111,7 @@ pipeline:
     genx-setup:
       kind: shell-command
       command: julia modules/CEM/setup.jl
-      environment: decider-2
+      environment: gurobi-julia
       inputs:
         - modules/CEM/Project.toml
       outputs:
@@ -114,7 +119,7 @@ pipeline:
     genx-run:
       kind: shell-command
       command: julia modules/CEM/Run.jl
-      environment: decider-2
+      environment: gurobi-julia
       inputs:
         - modules/CEM/Run.jl
       # - modules/CEM/juliapkg.json
