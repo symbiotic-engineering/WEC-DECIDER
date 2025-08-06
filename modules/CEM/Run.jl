@@ -52,13 +52,19 @@ function run_debug()
 end
 
 function run()
+    force = false # true to re-run cases that have already been run
+
     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
     num_cases = sum(occursin.("Case_", readdir(case_folder_dir)))
     for i=1:num_cases
         if occursin("Case_", readdir(case_folder_dir)[i])
-            println("Running GenX for case: ", readdir(case_folder_dir)[i], " of ", num_cases)
             case_dir = joinpath(case_folder_dir, readdir(case_folder_dir)[i])
-            run_genx_case!(case_dir, Gurobi.Optimizer)
+            already_run = isdir(joinpath(case_dir, "results"))
+            if already_run && !force
+                println("Skipping GenX case ", i, " of ", num_cases, " (already run)")
+            else
+                println("Running GenX for case ", i, " of ", num_cases)
+                run_genx_case!(case_dir, Gurobi.Optimizer)
         end
     end
 end
