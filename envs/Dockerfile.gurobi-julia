@@ -1,0 +1,8 @@
+FROM gurobi/optimizer:latest
+
+# Copy Julia and its env vars from image
+COPY --from=julia:1.9.4-bullseye /usr/local/julia /usr/local/julia
+ENV JULIA_PATH=/usr/local/julia \
+    PATH=$PATH:/usr/local/julia/bin \
+    JULIA_GPG=3673DF529D9049477F76B37566E3C7DC03D6E495 \
+    JULIA_VERSION=1.9.4

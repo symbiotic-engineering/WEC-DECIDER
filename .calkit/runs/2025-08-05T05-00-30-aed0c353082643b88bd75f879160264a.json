@@ -1,0 +1,186 @@
+{
+  "id": "aed0c353082643b88bd75f879160264a",
+  "system_id": "74f95eb17c1b32563cdc80de607ee53665e14974",
+  "start_time": "2025-08-05T05:00:30.579028+00:00",
+  "end_time": "2025-08-05T05:00:35.610789+00:00",
+  "targets": [],
+  "force": false,
+  "dvc_args": [],
+  "status": "failed",
+  "stages": {
+    "_check-env-decider-2": {
+      "start_time": "2025-08-05T05:00:30.930000",
+      "end_time": "2025-08-05T05:00:32.759000",
+      "status": "completed"
+    },
+    "_check-env-gurobi-julia": {
+      "start_time": "2025-08-05T05:00:32.759000",
+      "end_time": "2025-08-05T05:00:34.932000",
+      "status": "failed"
+    }
+  },
+  "git_rev": "92484bd592930794aa28ffd2510a19035c9b5d04",
+  "git_branch": "cem-ci",
+  "git_changed_files_before": [
+    ".devcontainer/docker-compose.yml",
+    "calkit.yaml",
+    "dvc.yaml"
+  ],
+  "git_staged_files_before": [],
+  "git_untracked_files_before": [
+    "envs/Dockerfile.gurobi-julia",
+    "envs/wec-decider-6.yml",
+    "envs/wec-decider-7.yml",
+    "modules/CEM/CEM_cost_sweep.pdf",
+    "waveEnergy.pdf",
+    "waveEnergy.tex",
+    "waveEnergy.tikz"
+  ],
+  "git_changed_files_after": [
+    ".devcontainer/docker-compose.yml",
+    "calkit.yaml",
+    "dvc.yaml"
+  ],
+  "git_staged_files_after": [],
+  "git_untracked_files_after": [
+    "envs/Dockerfile.gurobi-julia",
+    "envs/wec-decider-6.yml",
+    "envs/wec-decider-7.yml",
+    "modules/CEM/CEM_cost_sweep.pdf",
+    "waveEnergy.pdf",
+    "waveEnergy.tex",
+    "waveEnergy.tikz"
+  ],
+  "dvc_status_before": {
+    "_check-env-decider-2": [
+      "always changed"
+    ],
+    "_check-env-gurobi-julia": [
+      {
+        "changed deps": {
+          "envs/Dockerfile.gurobi-julia": "modified"
+        }
+      },
+      {
+        "changed outs": {
+          ".calkit/env-locks/gurobi-julia.json": "deleted"
+        }
+      },
+      "always changed"
+    ],
+    "genx-setup": [
+      {
+        "changed deps": {
+          ".calkit/env-locks/gurobi-julia.json": "deleted"
+        }
+      },
+      "changed command"
+    ],
+    "genx-run": [
+      {
+        "changed deps": {
+          ".calkit/env-locks/gurobi-julia.json": "deleted"
+        }
+      },
+      "changed command"
+    ]
+  },
+  "dvc_data_status_before": {
+    "not_in_cache": [],
+    "not_in_remote": [],
+    "committed": {},
+    "uncommitted": {},
+    "untracked": [],
+    "unchanged": [
+      "modules/CEM/Manifest.toml",
+      "modules/CEM/data_east/demand_segments_voll.csv",
+      "modules/CEM/data_east/settings/settings_management.yml",
+      "modules/CEM/data_east/cases/Case_4/inputs/",
+      "modules/CEM/data_east/misc_gen_inputs.csv",
+      "modules/CEM/data_CA/test_demand_segments_voll.csv",
+      "modules/CEM/data_east/emission_policies.csv",
+      "modules/CEM/data_east/resource_capacity_spur.csv",
+      "modules/CEM/data_east/scenario_input.csv",
+      "modules/CEM/data_east/cases/Case_2/inputs/",
+      "modules/CEM/data_CA/test_misc_gen_inputs.csv",
+      "modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml",
+      "modules/CEM/data_east/cases/Case_2/results/",
+      "modules/CEM/data_east/cases/Case_4/results/",
+      "modules/CEM/data_east/cases/Case_5/inputs/",
+      "modules/CEM/data_east/Reserves.csv",
+      "modules/CEM/data_east/cases/Case_1/results/",
+      "modules/CEM/data_east/cases/Case_3/inputs/",
+      "modules/CEM/data/",
+      "modules/CEM/data_east/cases/Case_1/inputs/",
+      "modules/CEM/data_east/cases/Case_3/results/",
+      "modules/CEM/data_east/wave_profiles/",
+      "modules/CEM/data_east/cases/Case_5/results/"
+    ]
+  },
+  "dvc_status_after": {
+    "_check-env-decider-2": [
+      "always changed"
+    ],
+    "_check-env-gurobi-julia": [
+      {
+        "changed deps": {
+          "envs/Dockerfile.gurobi-julia": "modified"
+        }
+      },
+      {
+        "changed outs": {
+          ".calkit/env-locks/gurobi-julia.json": "deleted"
+        }
+      },
+      "always changed"
+    ],
+    "genx-setup": [
+      {
+        "changed deps": {
+          ".calkit/env-locks/gurobi-julia.json": "deleted"
+        }
+      },
+      "changed command"
+    ],
+    "genx-run": [
+      {
+        "changed deps": {
+          ".calkit/env-locks/gurobi-julia.json": "deleted"
+        }
+      },
+      "changed command"
+    ]
+  },
+  "dvc_data_status_after": {
+    "not_in_cache": [],
+    "not_in_remote": [],
+    "committed": {},
+    "uncommitted": {},
+    "untracked": [],
+    "unchanged": [
+      "modules/CEM/Manifest.toml",
+      "modules/CEM/data_east/demand_segments_voll.csv",
+      "modules/CEM/data_east/settings/settings_management.yml",
+      "modules/CEM/data_east/cases/Case_4/inputs/",
+      "modules/CEM/data_east/misc_gen_inputs.csv",
+      "modules/CEM/data_CA/test_demand_segments_voll.csv",
+      "modules/CEM/data_east/emission_policies.csv",
+      "modules/CEM/data_east/resource_capacity_spur.csv",
+      "modules/CEM/data_east/scenario_input.csv",
+      "modules/CEM/data_east/cases/Case_2/inputs/",
+      "modules/CEM/data_CA/test_misc_gen_inputs.csv",
+      "modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml",
+      "modules/CEM/data_east/cases/Case_2/results/",
+      "modules/CEM/data_east/cases/Case_4/results/",
+      "modules/CEM/data_east/cases/Case_5/inputs/",
+      "modules/CEM/data_east/Reserves.csv",
+      "modules/CEM/data_east/cases/Case_1/results/",
+      "modules/CEM/data_east/cases/Case_3/inputs/",
+      "modules/CEM/data/",
+      "modules/CEM/data_east/cases/Case_1/inputs/",
+      "modules/CEM/data_east/cases/Case_3/results/",
+      "modules/CEM/data_east/wave_profiles/",
+      "modules/CEM/data_east/cases/Case_5/results/"
+    ]
+  }
+}
