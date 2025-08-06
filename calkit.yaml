@@ -7,10 +7,6 @@ notebooks:
     title: setup-sweep
   - path: modules/CEM/analyze_results.ipynb
     title: analyze-results
-  - path: modules/CEM/iterate_locations.ipynb
-    title: iterate-locations
-  - path: modules/CEM/make_batch_csv.ipynb
-    title: make-batch-csv
 environments:
   decider-2:
     path: envs/calkit-environment.yml
@@ -58,6 +54,39 @@ pipeline:
     setup-sweep:
       kind: jupyter-notebook
       environment: decider-2
+      args:
+        - "--zeta_range={zeta}"
+        - "--omega_n-range={omega_n}"
+        - "--D_f_range={D_f}"
+        - "--cap_costs={wave_cost}"
+        - "--P_lims={power_limit_x1000}"
+      iterate_over:
+        - arg_name: zeta
+          values:
+            - range:
+                start: 0.05
+                stop: 0.25
+                step: 0.1
+        - arg_name: omega_n
+          values:
+            - range:
+                start: 0.5
+                stop: 0.7
+                step: 0.1
+        - arg_name: D_f
+          values:
+            - 20
+        - arg_name: wave_cost
+          values:
+            - 2000
+            - 8500
+            - 15000
+        - arg_name: power_limit_x1000
+          values:
+            - 100
+            - 400
+            - 700
+            - 1000
       wdir:
       inputs:
         - modules/CEM/template/cost_mult_tech_map.yml
@@ -96,114 +125,7 @@ pipeline:
       # - modules/CEM/data_CA/cases/Case_3/inputs
       # - modules/CEM/data_CA/cases/Case_4/inputs
       # - modules/CEM/data_CA/cases/Case_5/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_900/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_500/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_700/inputs
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_900/inputs
+      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/inputs
     genx-setup:
       kind: shell-command
       command: julia modules/CEM/setup.jl
@@ -232,124 +154,12 @@ pipeline:
       # - modules/CEM/data_CA/cases/Case_3/results/
       # - modules/CEM/data_CA/cases/Case_4/results/
       # - modules/CEM/data_CA/cases/Case_5/results/
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_900/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_500/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_700/results
-      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_900/results
+      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/results
     analyze-results:
       kind: jupyter-notebook
       environment: decider-2
       wdir:
       inputs:
-      # - modules/CEM/data_CA/cases/Case_1/results/
-      # - modules/CEM/data_CA/cases/Case_2/results/
-      # - modules/CEM/data_CA/cases/Case_3/results/
-      # - modules/CEM/data_CA/cases/Case_4/results/
-      # - modules/CEM/data_CA/cases/Case_5/results/
         - from_stage_outputs: genx-run
         - modules/CEM/data_east/scenario_input.csv
       outputs: []
