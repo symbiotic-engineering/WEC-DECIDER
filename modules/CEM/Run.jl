@@ -65,6 +65,7 @@ function run()
             else
                 println("Running GenX for case ", i, " of ", num_cases)
                 run_genx_case!(case_dir, Gurobi.Optimizer)
+            end
         end
     end
 end
