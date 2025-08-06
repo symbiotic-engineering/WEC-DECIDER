@@ -17,13 +17,13 @@ stages:
     deps:
     - path: modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: a8eeac71d792f0a3aaa18948317d8edd
-      size: 616982
+      md5: 3cc6575890ee69f18b7cb0aa182ba6c4
+      size: 967114
     outs:
     - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 9308a8eeef4c68686784b73a2a651fc5
-      size: 22819
+      md5: 0c3ec7d11a7e5c0874ef5e011df07e3e
+      size: 25026
   powergenome-data-download:
     cmd: calkit xenv -n decider-2 --no-check -- python 
       ./modules/CEM/get-powergenome-data.py
@@ -84,8 +84,8 @@ stages:
       size: 16397
     - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 9308a8eeef4c68686784b73a2a651fc5
-      size: 22819
+      md5: 0c3ec7d11a7e5c0874ef5e011df07e3e
+      size: 25026
     - path: modules/CEM/template/cost_mult_tech_map.yml
       hash: md5
       md5: 1efa7f1c5e628c303d9f8aa636634867
@@ -94,29 +94,29 @@ stages:
     - path: 
         .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: e3f36af29b773241de4ac2e7cd5644f2
-      size: 616960
+      md5: fef1cde186eb1bc7ab100bd88fc63ea4
+      size: 456654
     - path: .calkit/notebooks/html/modules/CEM/make_additional_tech_csv.html
       hash: md5
-      md5: a7b335b6b2c79a07a5f08cc9b6f7fc39
-      size: 918163
+      md5: db66ce90dafec0b1a1bb94c89af47403
+      size: 769702
     - path: modules/CEM/data_east/scenario_input.csv
       hash: md5
-      md5: db85549f12fda82047939cb119e8915d
-      size: 1115
+      md5: 94ef5af76e80325948cb7ea1cfee6483
+      size: 22916
     - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       hash: md5
-      md5: 933a39e1ab30dba74d01bcf3415a7011
-      size: 2160
+      md5: 68715adc65e6a4c9b361ae94b9d7436a
+      size: 2007
     - path: modules/CEM/data_east/settings/settings_management.yml
       hash: md5
-      md5: 3f884ab8d29b6b2e02b3c26802247452
-      size: 10007
+      md5: f806dc5ee4421ace369c9c559ccc6719
+      size: 6451
     - path: modules/CEM/data_east/wave_profiles
       hash: md5
-      md5: c002274d308ba7bb73aebc0b41489c0d.dir
-      size: 113629080
-      nfiles: 60
+      md5: eaab0b605f235311e98bfec404fa050f.dir
+      size: 21460752
+      nfiles: 36
   _clean-nb-analyze-results:
     cmd: calkit nb clean "modules/CEM/analyze_results.ipynb"
     deps:
@@ -180,25 +180,25 @@ stages:
       size: 589
     - path: modules/CEM/data_east/scenario_input.csv
       hash: md5
-      md5: db85549f12fda82047939cb119e8915d
-      size: 1115
+      md5: 94ef5af76e80325948cb7ea1cfee6483
+      size: 22916
     - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       hash: md5
-      md5: 933a39e1ab30dba74d01bcf3415a7011
-      size: 2160
+      md5: 68715adc65e6a4c9b361ae94b9d7436a
+      size: 2007
     - path: modules/CEM/data_east/settings/settings_management.yml
       hash: md5
-      md5: 3f884ab8d29b6b2e02b3c26802247452
-      size: 10007
+      md5: f806dc5ee4421ace369c9c559ccc6719
+      size: 6451
     - path: modules/CEM/data_east/settings/test_settings_2.yml
       hash: md5
-      md5: ba7605b677694b462359bece8ffef542
-      size: 37026
+      md5: cc5739f4bed47f26aa4a59bd18e7c061
+      size: 37063
     - path: modules/CEM/data_east/wave_profiles/
       hash: md5
-      md5: c002274d308ba7bb73aebc0b41489c0d.dir
-      size: 113629080
-      nfiles: 60
+      md5: eaab0b605f235311e98bfec404fa050f.dir
+      size: 21460752
+      nfiles: 36
     - path: modules/CEM/pg-data-env.yml
       hash: md5
       md5: 074d35d12b035453df69209cef462f10
@@ -208,30 +208,575 @@ stages:
       md5: 2c4aadcffd0c25ea82056618be960748
       size: 1030
     outs:
-    - path: modules/CEM/data_east/cases/Case_1/inputs
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
       hash: md5
-      md5: 315ca62f2ca6119eb71f1a575df55776.dir
-      size: 1045497
+      md5: 6af4c8f052ae49b47d9160f0a0ec25ca.dir
+      size: 1044465
       nfiles: 30
-    - path: modules/CEM/data_east/cases/Case_2/inputs
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
       hash: md5
-      md5: 7cc4675b9a365c6aa797155d078e5117.dir
-      size: 1045503
+      md5: 7c414e06ee6755e065cfb3d46f4d7876.dir
+      size: 1044468
       nfiles: 30
-    - path: modules/CEM/data_east/cases/Case_3/inputs
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
       hash: md5
-      md5: aba194367d0a830514202f5ac2625efb.dir
-      size: 1045500
+      md5: b16fe8155fe78b98425e6dfaa1b5abc6.dir
+      size: 1044462
       nfiles: 30
-    - path: modules/CEM/data_east/cases/Case_4/inputs
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_1000/inputs
       hash: md5
-      md5: 70df1e1a103d1abb8627236082fcac30.dir
-      size: 1045503
+      md5: ba25240d9db73a5d07a063865a36420c.dir
+      size: 1044456
       nfiles: 30
-    - path: modules/CEM/data_east/cases/Case_5/inputs
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_3000/inputs
       hash: md5
-      md5: 2fa4cdf4d459f10217ed0e94b6c9d450.dir
-      size: 1045503
+      md5: 6dd2b44167a2945f5c7fa9aa9a28531a.dir
+      size: 1044465
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 64451bc3f55a95cf472b885e803867dc.dir
+      size: 1044459
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 96735d6e4dc6ec17af8903e92a3e4e3b.dir
+      size: 1044486
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 170ca688f46a487070539ab8905c937c.dir
+      size: 1044489
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 24795a032c36c191e6deba573dd57847.dir
+      size: 1044483
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 902fd4bbe4b3f5b3dc1c2e135cdb23fa.dir
+      size: 1044516
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: a788b0d6e8fe736eb773266b3496a796.dir
+      size: 1044519
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 18a6703ae40764bfc2030c5907e034bc.dir
+      size: 1044513
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 153b8b9b846e91a826c7ded173a966c4.dir
+      size: 1044492
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 2adbe8bc0a709cc4b73ca3072f1bb2b7.dir
+      size: 1044495
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: ec31e773f780e3f2c49ba1c39ca4d446.dir
+      size: 1044489
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 7d85414eae2b0c5a490b3f956f532d9a.dir
+      size: 1044213
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: de396ec7774122aab6fc354fd088b9c3.dir
+      size: 1044216
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 4cbb0f7a0e67eb4021806c2b1630b636.dir
+      size: 1044210
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: f29a9ab593d5536a33d96b45d201fab6.dir
+      size: 1044390
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 8af7494f6e5a6910a23788d5158e1263.dir
+      size: 1044393
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 6f3561edae9dbb1d487ccf0ab6ad7969.dir
+      size: 1044387
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 5c7a26c48b77e5a049413745db7f17d3.dir
+      size: 1044483
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 5395d43ad924a38455b4e89cd0494b95.dir
+      size: 1044486
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 5e9c2e401a5c16ef7b4771a7d436aef2.dir
+      size: 1044480
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: c0f3a1217a815f0a37c65f2699f67e70.dir
+      size: 1044423
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 0a80b8021215a34d0a04c99dc6dd4fd9.dir
+      size: 1044426
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: c27b41a916e416ffdaf82675d1639cbe.dir
+      size: 1044420
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 2292427fc4b60a9cb04bca6fbedc3097.dir
+      size: 1043160
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 9947775dafbde611aa3a6e115ed69a0c.dir
+      size: 1043163
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: e9ba0560e456192e0a3681f933760b49.dir
+      size: 1043157
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: a781517719ff5bbfd0f2553039985d5d.dir
+      size: 1044240
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: be6dc230cf99b80b61746aa4ca0dce41.dir
+      size: 1044243
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: d6c77dffbc4bb9f3e75c0ee1895c4d7f.dir
+      size: 1044237
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 017c28c1434b6b2797f5f604a3e05dc3.dir
+      size: 1044375
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 79afdcebead4dbc8cf7b69e7de2c4f83.dir
+      size: 1044501
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 132ac9d17f55488b3f2512fde0124e85.dir
+      size: 1044495
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 72ae15f19e8fbc752b0e68517cfb48e7.dir
+      size: 1044492
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: f028425c6a1f8b2a17433eb787599b98.dir
+      size: 1044495
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 3e0c9d6e04fccd159c9cd741b0eb049a.dir
+      size: 1044489
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 4a41b143a2311f892f8bd7f231014cf3.dir
+      size: 1044507
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 6dca321597bd3c39af1dd10eb3bf10ef.dir
+      size: 1044510
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 92c4b257a2898c2fbfdcd26c19183d63.dir
+      size: 1044504
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: a6b2d768cfdd670edeb4861bb1cf9bcd.dir
+      size: 1044480
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 5984a41df793b3527aeec75ae9ea0ec9.dir
+      size: 1044483
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: db0bd8dead0dd92baf852190378bab76.dir
+      size: 1044477
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 0c1ebc9f8ea1605bd2abebd02ca78ebe.dir
+      size: 1044528
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: d880a584f1297559b0588be1caf412f1.dir
+      size: 1044531
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 570158f15ce78ef0e74e78a0b7ecc66f.dir
+      size: 1044525
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: c845ca04ccac94dfa57cfcfb8dcf0368.dir
+      size: 1044417
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 22ff6012fac8c19bf8d039fc8f8b4d13.dir
+      size: 1044420
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: b09fd292395c74f6f095214845ed8242.dir
+      size: 1044414
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 568311532df3243fad47cb8a1fb368cf.dir
+      size: 1044501
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 7083d5d1741e95dd043cfd1a802d4737.dir
+      size: 1044504
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 2cd17b8113e60b8b46ff51da7d6ac9df.dir
+      size: 1044498
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: fb2f4c1b83635b0e8e40dec0ca3b504c.dir
+      size: 1044498
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 61ef6e214dfcda4292ba26e832d3559e.dir
+      size: 1044501
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: b10065d657674a190db559a9534a6053.dir
+      size: 1044495
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 38098b1e49713c784691e7d5078d346c.dir
+      size: 1044486
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 1388eeb29b42409af226070f6a7dbf34.dir
+      size: 1044489
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: a99949691acd8119c2b21d8704ecee04.dir
+      size: 1044483
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 31bb4102ae542cffe796d4df52a81199.dir
+      size: 1043295
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 247627f2b829db76a1b72a6b17c1acf8.dir
+      size: 1043298
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 2b8d433be2be67b5afbfcce553dbb835.dir
+      size: 1043292
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: cdb50cad48f99e594e36a81c3e0bd5d5.dir
+      size: 1044495
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 60cee7ced3ecec7083f6b223b26a1a98.dir
+      size: 1044498
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 0c1c1b11c1809fa4d24bbc248ba64b29.dir
+      size: 1044492
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: b87ef24e4fe93d5db3b3051187a48ab0.dir
+      size: 1044495
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 4d8951162479e7e5a9135ac6f63bed8a.dir
+      size: 1044498
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.15_omega_n_0.7_D_f_20_limited_700_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 3fcb8653db92adee85d5d1ebe46ad419.dir
+      size: 1044492
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 09f6b46c7e3436ec3abb45d658ae732e.dir
+      size: 1044504
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 432cedc82823740e95ba02be1e49a25e.dir
+      size: 1044507
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: eeb46fcc272333e4cb7a101f50b2095c.dir
+      size: 1044501
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: c2987b720aacf9284c0e8a1822d5a053.dir
+      size: 1044501
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 102b38b2123549f7c866bbc29d1241c2.dir
+      size: 1044504
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: d737e337ec28ab0c88ef6aafdfbe5ab1.dir
+      size: 1044516
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.5_D_f_20_limited_700_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: dae7836ea660c54851e62c6389a80221.dir
+      size: 1044510
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 6e0af561534e105828f72e37129bfe47.dir
+      size: 1044465
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 67a3034f53630959f914cfb38fb932a7.dir
+      size: 1044468
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 8f2530fff1a7e9cb43d8a5b27e1e7ccc.dir
+      size: 1044462
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 894efbc70019cf052284736a92ed7f46.dir
+      size: 1044465
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 47e5ef991f415f76bba5715d6bcd007e.dir
+      size: 1044468
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 5d637ab0c06a26c76b84a0a18a1583fa.dir
+      size: 1044462
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 15a4c05bc655beace52555b74b19c09a.dir
+      size: 1044465
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: deb4b92106907735213e1ddc393cf86f.dir
+      size: 1044468
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_400_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: db36e65c493d78135f7f157e9e84e1c8.dir
+      size: 1044462
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: f51efb1de886dca036ab5a8f5403009d.dir
+      size: 1044483
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 4027ac0261c00d772c36d3bf16cc71b0.dir
+      size: 1044486
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.6_D_f_20_limited_700_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: ddba6f03bb07019848db46cee428401e.dir
+      size: 1044480
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 1ce9005575368fd222384a48c450d69d.dir
+      size: 1044555
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: e3f90c0cd44a12c6621ecc0d272cb33b.dir
+      size: 1044558
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_1000_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 21b948daad0dd2e50e4b6ce66c7ba46f.dir
+      size: 1044552
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 7909c2d298eeb9d56e54e56c3a70890d.dir
+      size: 1043628
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_3000/inputs
+      hash: md5
+      md5: 4c1a0c001e71be41a0f2e1910fa8e43b.dir
+      size: 1043631
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_100_wave_cost_Wave_5000/inputs
+      hash: md5
+      md5: 8c2a0fbc0d4f54990be8294a64b365a6.dir
+      size: 1043625
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.25_omega_n_0.7_D_f_20_limited_400_wave_cost_Wave_1000/inputs
+      hash: md5
+      md5: 34f4391ffbd34ef54fce92749f5f3803.dir
+      size: 1044513
       nfiles: 30
   genx-run:
     cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
