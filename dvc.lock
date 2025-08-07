@@ -17,13 +17,13 @@ stages:
     deps:
     - path: modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 928ab30529151e1111a0d9d518bc1b2d
-      size: 857821
+      md5: db3effcb21359e8d5d9c6ebeed3c0fb5
+      size: 857827
     outs:
     - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: af82445173ae69dae51ae7d7ea357605
-      size: 25872
+      md5: 93c6542e7df2d093fdc7b7c3fa34c456
+      size: 25878
   powergenome-data-download:
     cmd: calkit xenv -n decider-2 --no-check -- python 
       ./modules/CEM/get-powergenome-data.py
@@ -84,12 +84,12 @@ stages:
       size: 16397
     - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: af82445173ae69dae51ae7d7ea357605
-      size: 25872
+      md5: 93c6542e7df2d093fdc7b7c3fa34c456
+      size: 25878
     - path: modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 928ab30529151e1111a0d9d518bc1b2d
-      size: 857821
+      md5: db3effcb21359e8d5d9c6ebeed3c0fb5
+      size: 857827
     - path: modules/CEM/template/cost_mult_tech_map.yml
       hash: md5
       md5: 1efa7f1c5e628c303d9f8aa636634867
@@ -98,28 +98,28 @@ stages:
     - path: 
         .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 0fdc7b600d0d6249740e2b5bcb79aa9c
-      size: 342788
+      md5: 8fd32b3d3912f78dfd01c2cea75dd8ae
+      size: 343788
     - path: .calkit/notebooks/html/modules/CEM/make_additional_tech_csv.html
       hash: md5
-      md5: 70312b98a58270e0d61e857dfac04fab
-      size: 660371
+      md5: 824d029f769f0ee9156320da103433b9
+      size: 660929
     - path: modules/CEM/data_east/scenario_input.csv
       hash: md5
-      md5: a70763e2aadc29b6339d744cc3d6fff4
-      size: 492
+      md5: 7c2b4ceb44b33f1ea8c9cade2b144b82
+      size: 701
     - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       hash: md5
-      md5: 7405dcb9b7c27c281d85a01a46a319bc
-      size: 1991
+      md5: 1c6197aedb151d35fd559d32010ffd6b
+      size: 2004
     - path: modules/CEM/data_east/settings/settings_management.yml
       hash: md5
-      md5: 8eb4fbfeb6efbed3d3f2c14953066e03
-      size: 939
+      md5: 4dc416945480f600e512cca8bf0266bf
+      size: 1002
     - path: modules/CEM/data_east/wave_profiles
       hash: md5
-      md5: b548e74d1a0f8bfeb06e1ce2e6b45d74.dir
-      size: 397452
+      md5: 07c2e44b38fe4943c861fe192f84cf0c.dir
+      size: 596114
       nfiles: 1
   _clean-nb-analyze-results:
     cmd: calkit nb clean "modules/CEM/analyze_results.ipynb"
@@ -287,30 +287,36 @@ stages:
       md5: 493cb73611110d1d4375df198252f528
       size: 19403
     - path: 
-        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_700/results
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_300/results
       hash: md5
-      md5: 931e2190e91db90cd7ebc2fe368a535c.dir
-      size: 1861911
+      md5: 17fedd3d34a0681653b9473ee38d5302.dir
+      size: 1770590
       nfiles: 30
     - path: 
-        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_900/results
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_400/results
       hash: md5
-      md5: 2cf6405b8446b7060633919083cc94ee.dir
-      size: 1859405
+      md5: 563a53f8e93980afcf65d381f30fa6e0.dir
+      size: 1803225
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/results
+      hash: md5
+      md5: 600ebf3704538c4b8ce228ff7806f093.dir
+      size: 1853509
       nfiles: 30
     - path: modules/CEM/data_east/scenario_input.csv
       hash: md5
-      md5: c8b74b389866a73d541fea99d5e17a57
-      size: 492
+      md5: 7c2b4ceb44b33f1ea8c9cade2b144b82
+      size: 701
     outs:
     - path: .calkit/notebooks/executed/modules/CEM/analyze_results.ipynb
       hash: md5
-      md5: 169f988c783888a930e9eef2f3f1bc4e
-      size: 54848
+      md5: 0d425b9c78a2338550b3d2b2e2b48669
+      size: 75132
     - path: .calkit/notebooks/html/modules/CEM/analyze_results.html
       hash: md5
-      md5: d90f990d424e80c6042247ee4b26876f
-      size: 379520
+      md5: a7f3a62a833ef998b8b71731a61212df
+      size: 399671
   _check-env-decider-2:
     cmd: calkit check environment --name decider-2
     deps:
@@ -352,3 +358,408 @@ stages:
       hash: md5
       md5: 9a0de9e92c7903a5d51d3eac7bfbc25e
       size: 45863
+  powergenome-run@0.05-0.5-20-300-400:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc 
+      ./modules/CEM/run_powergenome.sh
+    deps:
+    - path: ./modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 14c78f0038e32b1c362e142bca52e49c
+      size: 1021
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: 
+        .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
+      hash: md5
+      md5: 8fd32b3d3912f78dfd01c2cea75dd8ae
+      size: 343788
+    - path: .calkit/notebooks/html/modules/CEM/make_additional_tech_csv.html
+      hash: md5
+      md5: 824d029f769f0ee9156320da103433b9
+      size: 660929
+    - path: modules/CEM/data/
+      hash: md5
+      md5: 27e17359d4cdd2301e9566544a4ce19b.dir
+      size: 10462955246
+      nfiles: 222
+    - path: modules/CEM/data_CA/settings/test_settings.yml
+      hash: md5
+      md5: 28d1c8d2b5caee8f611a855ed4553907
+      size: 32620
+    - path: modules/CEM/data_CA/test_demand_segments_voll.csv
+      hash: md5
+      md5: c43e30e32fa5bc63a01dd279648e32cc
+      size: 122
+    - path: modules/CEM/data_CA/test_misc_gen_inputs.csv
+      hash: md5
+      md5: c72902fedbe39f69d4c943c520e085ff
+      size: 2087
+    - path: modules/CEM/data_east/Reserves.csv
+      hash: md5
+      md5: eb96009f00918d5d86ea890e94b2932f
+      size: 189
+    - path: modules/CEM/data_east/demand_segments_voll.csv
+      hash: md5
+      md5: 8434b5682b57411696689e4883dd46fd
+      size: 158
+    - path: modules/CEM/data_east/emission_policies.csv
+      hash: md5
+      md5: d67c56e902690315130682298d87cf83
+      size: 200
+    - path: modules/CEM/data_east/misc_gen_inputs.csv
+      hash: md5
+      md5: 685b36c27546ed661b2eef5a9d5abc4d
+      size: 2316
+    - path: modules/CEM/data_east/resource_capacity_spur.csv
+      hash: md5
+      md5: 7254e40ce132416ebc9c2ab3ca55cd2a
+      size: 589
+    - path: modules/CEM/data_east/scenario_input.csv
+      hash: md5
+      md5: 7c2b4ceb44b33f1ea8c9cade2b144b82
+      size: 701
+    - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
+      hash: md5
+      md5: 1c6197aedb151d35fd559d32010ffd6b
+      size: 2004
+    - path: modules/CEM/data_east/settings/settings_management.yml
+      hash: md5
+      md5: 4dc416945480f600e512cca8bf0266bf
+      size: 1002
+    - path: modules/CEM/data_east/settings/test_settings_2.yml
+      hash: md5
+      md5: cc5739f4bed47f26aa4a59bd18e7c061
+      size: 37063
+    - path: modules/CEM/data_east/wave_profiles
+      hash: md5
+      md5: 07c2e44b38fe4943c861fe192f84cf0c.dir
+      size: 596114
+      nfiles: 1
+    - path: modules/CEM/pg-data-env.yml
+      hash: md5
+      md5: 074d35d12b035453df69209cef462f10
+      size: 717
+    - path: modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 14c78f0038e32b1c362e142bca52e49c
+      size: 1021
+    outs:
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_300/inputs
+      hash: md5
+      md5: 47c43321f0f9d4a5f3bf5fc8cd61845f.dir
+      size: 1029196
+      nfiles: 30
+  powergenome-run@0.05-0.5-20-400-400:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc 
+      ./modules/CEM/run_powergenome.sh
+    deps:
+    - path: ./modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 14c78f0038e32b1c362e142bca52e49c
+      size: 1021
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: 
+        .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
+      hash: md5
+      md5: 8fd32b3d3912f78dfd01c2cea75dd8ae
+      size: 343788
+    - path: .calkit/notebooks/html/modules/CEM/make_additional_tech_csv.html
+      hash: md5
+      md5: 824d029f769f0ee9156320da103433b9
+      size: 660929
+    - path: modules/CEM/data/
+      hash: md5
+      md5: 27e17359d4cdd2301e9566544a4ce19b.dir
+      size: 10462955246
+      nfiles: 222
+    - path: modules/CEM/data_CA/settings/test_settings.yml
+      hash: md5
+      md5: 28d1c8d2b5caee8f611a855ed4553907
+      size: 32620
+    - path: modules/CEM/data_CA/test_demand_segments_voll.csv
+      hash: md5
+      md5: c43e30e32fa5bc63a01dd279648e32cc
+      size: 122
+    - path: modules/CEM/data_CA/test_misc_gen_inputs.csv
+      hash: md5
+      md5: c72902fedbe39f69d4c943c520e085ff
+      size: 2087
+    - path: modules/CEM/data_east/Reserves.csv
+      hash: md5
+      md5: eb96009f00918d5d86ea890e94b2932f
+      size: 189
+    - path: modules/CEM/data_east/demand_segments_voll.csv
+      hash: md5
+      md5: 8434b5682b57411696689e4883dd46fd
+      size: 158
+    - path: modules/CEM/data_east/emission_policies.csv
+      hash: md5
+      md5: d67c56e902690315130682298d87cf83
+      size: 200
+    - path: modules/CEM/data_east/misc_gen_inputs.csv
+      hash: md5
+      md5: 685b36c27546ed661b2eef5a9d5abc4d
+      size: 2316
+    - path: modules/CEM/data_east/resource_capacity_spur.csv
+      hash: md5
+      md5: 7254e40ce132416ebc9c2ab3ca55cd2a
+      size: 589
+    - path: modules/CEM/data_east/scenario_input.csv
+      hash: md5
+      md5: 7c2b4ceb44b33f1ea8c9cade2b144b82
+      size: 701
+    - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
+      hash: md5
+      md5: 1c6197aedb151d35fd559d32010ffd6b
+      size: 2004
+    - path: modules/CEM/data_east/settings/settings_management.yml
+      hash: md5
+      md5: 4dc416945480f600e512cca8bf0266bf
+      size: 1002
+    - path: modules/CEM/data_east/settings/test_settings_2.yml
+      hash: md5
+      md5: cc5739f4bed47f26aa4a59bd18e7c061
+      size: 37063
+    - path: modules/CEM/data_east/wave_profiles
+      hash: md5
+      md5: 07c2e44b38fe4943c861fe192f84cf0c.dir
+      size: 596114
+      nfiles: 1
+    - path: modules/CEM/pg-data-env.yml
+      hash: md5
+      md5: 074d35d12b035453df69209cef462f10
+      size: 717
+    - path: modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 14c78f0038e32b1c362e142bca52e49c
+      size: 1021
+    outs:
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_400/inputs
+      hash: md5
+      md5: 59b99bb2ae69e4a59c00a9df426ba3f8.dir
+      size: 1029205
+      nfiles: 30
+  powergenome-run@0.05-0.5-20-500-400:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc 
+      ./modules/CEM/run_powergenome.sh
+    deps:
+    - path: ./modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 14c78f0038e32b1c362e142bca52e49c
+      size: 1021
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: 
+        .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
+      hash: md5
+      md5: 8fd32b3d3912f78dfd01c2cea75dd8ae
+      size: 343788
+    - path: .calkit/notebooks/html/modules/CEM/make_additional_tech_csv.html
+      hash: md5
+      md5: 824d029f769f0ee9156320da103433b9
+      size: 660929
+    - path: modules/CEM/data/
+      hash: md5
+      md5: 27e17359d4cdd2301e9566544a4ce19b.dir
+      size: 10462955246
+      nfiles: 222
+    - path: modules/CEM/data_CA/settings/test_settings.yml
+      hash: md5
+      md5: 28d1c8d2b5caee8f611a855ed4553907
+      size: 32620
+    - path: modules/CEM/data_CA/test_demand_segments_voll.csv
+      hash: md5
+      md5: c43e30e32fa5bc63a01dd279648e32cc
+      size: 122
+    - path: modules/CEM/data_CA/test_misc_gen_inputs.csv
+      hash: md5
+      md5: c72902fedbe39f69d4c943c520e085ff
+      size: 2087
+    - path: modules/CEM/data_east/Reserves.csv
+      hash: md5
+      md5: eb96009f00918d5d86ea890e94b2932f
+      size: 189
+    - path: modules/CEM/data_east/demand_segments_voll.csv
+      hash: md5
+      md5: 8434b5682b57411696689e4883dd46fd
+      size: 158
+    - path: modules/CEM/data_east/emission_policies.csv
+      hash: md5
+      md5: d67c56e902690315130682298d87cf83
+      size: 200
+    - path: modules/CEM/data_east/misc_gen_inputs.csv
+      hash: md5
+      md5: 685b36c27546ed661b2eef5a9d5abc4d
+      size: 2316
+    - path: modules/CEM/data_east/resource_capacity_spur.csv
+      hash: md5
+      md5: 7254e40ce132416ebc9c2ab3ca55cd2a
+      size: 589
+    - path: modules/CEM/data_east/scenario_input.csv
+      hash: md5
+      md5: 7c2b4ceb44b33f1ea8c9cade2b144b82
+      size: 701
+    - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
+      hash: md5
+      md5: 1c6197aedb151d35fd559d32010ffd6b
+      size: 2004
+    - path: modules/CEM/data_east/settings/settings_management.yml
+      hash: md5
+      md5: 4dc416945480f600e512cca8bf0266bf
+      size: 1002
+    - path: modules/CEM/data_east/settings/test_settings_2.yml
+      hash: md5
+      md5: cc5739f4bed47f26aa4a59bd18e7c061
+      size: 37063
+    - path: modules/CEM/data_east/wave_profiles
+      hash: md5
+      md5: 07c2e44b38fe4943c861fe192f84cf0c.dir
+      size: 596114
+      nfiles: 1
+    - path: modules/CEM/pg-data-env.yml
+      hash: md5
+      md5: 074d35d12b035453df69209cef462f10
+      size: 717
+    - path: modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 14c78f0038e32b1c362e142bca52e49c
+      size: 1021
+    outs:
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/inputs
+      hash: md5
+      md5: 85628640326698066aed768e26a666d1.dir
+      size: 1029205
+      nfiles: 30
+  genx-run@0.05-0.5-20-300-400:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
+      "julia modules/CEM/Run.jl"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: modules/CEM/Manifest.toml
+      hash: md5
+      md5: 9a0de9e92c7903a5d51d3eac7bfbc25e
+      size: 45863
+    - path: modules/CEM/Run.jl
+      hash: md5
+      md5: c7492057aa7b25ced2d6c190b462ee28
+      size: 2986
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_300/inputs
+      hash: md5
+      md5: ed0a469ff7d234ca4d311e5242407ab5.dir
+      size: 1029196
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_400/inputs
+      hash: md5
+      md5: 3caa4a2d0fe5212c3cf63e3ae6d88871.dir
+      size: 1029205
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/inputs
+      hash: md5
+      md5: 85628640326698066aed768e26a666d1.dir
+      size: 1029205
+      nfiles: 30
+    outs:
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_300/results
+      hash: md5
+      md5: 17fedd3d34a0681653b9473ee38d5302.dir
+      size: 1770590
+      nfiles: 30
+  genx-run@0.05-0.5-20-400-400:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
+      "julia modules/CEM/Run.jl"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: modules/CEM/Manifest.toml
+      hash: md5
+      md5: 9a0de9e92c7903a5d51d3eac7bfbc25e
+      size: 45863
+    - path: modules/CEM/Run.jl
+      hash: md5
+      md5: c7492057aa7b25ced2d6c190b462ee28
+      size: 2986
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_300/inputs
+      hash: md5
+      md5: ed0a469ff7d234ca4d311e5242407ab5.dir
+      size: 1029196
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_400/inputs
+      hash: md5
+      md5: 3caa4a2d0fe5212c3cf63e3ae6d88871.dir
+      size: 1029205
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/inputs
+      hash: md5
+      md5: 85628640326698066aed768e26a666d1.dir
+      size: 1029205
+      nfiles: 30
+    outs:
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_400/results
+      hash: md5
+      md5: 563a53f8e93980afcf65d381f30fa6e0.dir
+      size: 1803225
+      nfiles: 30
+  genx-run@0.05-0.5-20-500-400:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
+      "julia modules/CEM/Run.jl"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: modules/CEM/Manifest.toml
+      hash: md5
+      md5: 9a0de9e92c7903a5d51d3eac7bfbc25e
+      size: 45863
+    - path: modules/CEM/Run.jl
+      hash: md5
+      md5: c7492057aa7b25ced2d6c190b462ee28
+      size: 2986
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_300/inputs
+      hash: md5
+      md5: ed0a469ff7d234ca4d311e5242407ab5.dir
+      size: 1029196
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_400/inputs
+      hash: md5
+      md5: 3caa4a2d0fe5212c3cf63e3ae6d88871.dir
+      size: 1029205
+      nfiles: 30
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/inputs
+      hash: md5
+      md5: 85628640326698066aed768e26a666d1.dir
+      size: 1029205
+      nfiles: 30
+    outs:
+    - path: 
+        modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_0.05_omega_n_0.5_D_f_20_limited_400_wave_cost_Wave_500/results
+      hash: md5
+      md5: 600ebf3704538c4b8ce228ff7806f093.dir
+      size: 1853509
+      nfiles: 30
