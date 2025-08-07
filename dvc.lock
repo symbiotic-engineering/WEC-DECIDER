@@ -17,13 +17,13 @@ stages:
     deps:
     - path: modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 3cc6575890ee69f18b7cb0aa182ba6c4
-      size: 967114
+      md5: cc9629dc248e71ea5077b05f91855c70
+      size: 967672
     outs:
     - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 0c3ec7d11a7e5c0874ef5e011df07e3e
-      size: 25026
+      md5: 4bef5c63b59d5f56d5adcbe7657243ef
+      size: 25576
   powergenome-data-download:
     cmd: calkit xenv -n decider-2 --no-check -- python 
       ./modules/CEM/get-powergenome-data.py
