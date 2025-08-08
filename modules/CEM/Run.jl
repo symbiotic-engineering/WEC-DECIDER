@@ -51,7 +51,7 @@ function run_debug()
     end
 end
 
-function run()
+function run_all()
     force = false # true to re-run cases that have already been run
 
     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
@@ -70,5 +70,18 @@ function run()
     end
 end
 
-# run_debug()
-run()
+function run_single(case_str)
+    case_folder_dir = joinpath(cem_dir, "data_east", "cases")
+    case_dir = joinpath(case_folder_dir, case_str)
+    run_genx_case!(case_dir, Gurobi.Optimizer)
+end
+
+if length(ARGS) > 0
+    case_str = ARGS[1]
+    println("Running single case: ", case_str)
+    run_single(case_str)
+else
+    println("Running all cases in data_east/cases")
+    run_all()
+end
+

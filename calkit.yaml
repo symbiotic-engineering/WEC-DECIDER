@@ -34,27 +34,24 @@ dependencies:
 parameters:
   zeta:
     - 0.05
-    # - range:
-    #     start: 0.05
-    #     stop: 0.25
-    #     step: 0.1
+    - 0.15
+    - 0.25
   omega_n:
-    - 0.5
-    # - range:
-    #     start: 0.5
-    #     stop: 0.7
-    #     step: 0.1
+    - range:
+        start: 0.5
+        stop: 0.7
+        step: 0.1
   D_f:
     - 20
   wave_cost:
     - 400
-    - 500
+    #- 500
     - 600
   power_limit_x1000:
-    - 400
+    - 1000
     # - range:
     #     start: 100
-    #     stop: 1000
+    #     stop: 1300
     #     step: 300
 pipeline:
   stages:
@@ -93,9 +90,9 @@ pipeline:
         - modules/CEM/data_east/scenario_input.csv
         - modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       notebook_path: modules/CEM/make_additional_tech_csv.ipynb
-      html_storage: git
-      executed_ipynb_storage: git
-      cleaned_ipynb_storage: null
+      html_storage: null
+      executed_ipynb_storage: dvc
+      cleaned_ipynb_storage: git
     powergenome-run:
       kind: shell-script
       script_path: ./modules/CEM/run_powergenome.sh
@@ -148,7 +145,7 @@ pipeline:
         - modules/CEM/Manifest.toml
     genx-run:
       kind: shell-command
-      command: julia modules/CEM/Run.jl
+      command: julia modules/CEM/Run.jl Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}
       environment: decider-2
       iterate_over:
         - arg_name: zeta
@@ -197,6 +194,6 @@ pipeline:
         - modules/CEM/data_east/scenario_input.csv
       outputs: []
       notebook_path: modules/CEM/analyze_results.ipynb
-      html_storage: git
-      executed_ipynb_storage: git
-      cleaned_ipynb_storage: null
+      html_storage: null
+      executed_ipynb_storage: dvc
+      cleaned_ipynb_storage: git
