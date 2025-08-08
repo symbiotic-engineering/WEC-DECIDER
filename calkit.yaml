@@ -129,11 +129,6 @@ pipeline:
         - from_stage_outputs: setup-sweep
         # - modules/CEM/data_CA/test_scenario_input.csv
       outputs:
-      # - modules/CEM/data_CA/cases/Case_1/inputs
-      # - modules/CEM/data_CA/cases/Case_2/inputs
-      # - modules/CEM/data_CA/cases/Case_3/inputs
-      # - modules/CEM/data_CA/cases/Case_4/inputs
-      # - modules/CEM/data_CA/cases/Case_5/inputs
       - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/inputs
     genx-setup:
       kind: shell-command
@@ -167,29 +162,14 @@ pipeline:
         - modules/CEM/Run.jl
       # - modules/CEM/juliapkg.json
         - modules/CEM/Manifest.toml
-      # - modules/CEM/data_CA/cases/Case_1/inputs
-      # - modules/CEM/data_CA/cases/Case_2/inputs
-      # - modules/CEM/data_CA/cases/Case_3/inputs
-      # - modules/CEM/data_CA/cases/Case_4/inputs
-      # - modules/CEM/data_CA/cases/Case_5/inputs
-        - from_stage_outputs: powergenome-run
+        - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/inputs
       outputs:
-      # - modules/CEM/data_CA/cases/Case_1/results/
-      # - modules/CEM/data_CA/cases/Case_2/results/
-      # - modules/CEM/data_CA/cases/Case_3/results/
-      # - modules/CEM/data_CA/cases/Case_4/results/
-      # - modules/CEM/data_CA/cases/Case_5/results/
         - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/results
     analyze-results:
       kind: jupyter-notebook
       environment: decider-2
       wdir:
       inputs:
-      # - modules/CEM/data_CA/cases/Case_1/results/
-      # - modules/CEM/data_CA/cases/Case_2/results/
-      # - modules/CEM/data_CA/cases/Case_3/results/
-      # - modules/CEM/data_CA/cases/Case_4/results/
-      # - modules/CEM/data_CA/cases/Case_5/results/
         - from_stage_outputs: genx-run
         - modules/CEM/data_east/scenario_input.csv
       outputs: []
