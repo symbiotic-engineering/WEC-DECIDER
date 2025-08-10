@@ -3,10 +3,10 @@ stages:
   _check-env-decider:
     cmd: calkit check environment --name decider
     deps:
-    - path: calkit-environment.yml
+    - path: envs/calkit-environment.yml
       hash: md5
-      md5: 5dfa8dfdaae0973402428743ca94d53c
-      size: 523
+      md5: 1106d6a58d71d8d9058a7af25ad9b991
+      size: 617
     outs:
     - path: .calkit/env-locks/decider.yml
       hash: md5
@@ -17,27 +17,35 @@ stages:
     deps:
     - path: modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 041c64a4ae2ffd9ea727332149a6e393
-      size: 942560
+      md5: a8eeac71d792f0a3aaa18948317d8edd
+      size: 616982
     outs:
     - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 60763924ef9977e62f4367fb1b61d82d
-      size: 15283
+      md5: 9308a8eeef4c68686784b73a2a651fc5
+      size: 22819
   powergenome-data-download:
-    cmd: bash modules/CEM/get-powergenome-data.sh
+    cmd: calkit xenv -n decider-2 --no-check -- python 
+      ./modules/CEM/get-powergenome-data.py
     deps:
-    - path: modules/CEM/get-powergenome-data.sh
+    - path: ./modules/CEM/get-powergenome-data.py
       hash: md5
-      md5: c9fd10966cf7628b9875c2cc74aa7c0d
-      size: 3054
-      isexec: true
+      md5: 82ee6f0dbc031a5dcb51fc695213cdab
+      size: 8618
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: modules/CEM/get-powergenome-data.py
+      hash: md5
+      md5: 82ee6f0dbc031a5dcb51fc695213cdab
+      size: 8618
     outs:
     - path: modules/CEM/data/
       hash: md5
-      md5: 16bb919bdee674c50f18d3e0f142f1a9.dir
-      size: 10513696494
-      nfiles: 223
+      md5: 27e17359d4cdd2301e9566544a4ce19b.dir
+      size: 10462955246
+      nfiles: 222
     - path: modules/CEM/data_CA/test_demand_segments_voll.csv
       hash: md5
       md5: c43e30e32fa5bc63a01dd279648e32cc
@@ -66,3 +74,320 @@ stages:
       hash: md5
       md5: 7254e40ce132416ebc9c2ab3ca55cd2a
       size: 589
+  setup-sweep:
+    cmd: calkit nb execute --environment decider-2 --no-check --to html 
+      "modules/CEM/make_additional_tech_csv.ipynb"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
+      hash: md5
+      md5: 9308a8eeef4c68686784b73a2a651fc5
+      size: 22819
+    - path: modules/CEM/template/cost_mult_tech_map.yml
+      hash: md5
+      md5: 1efa7f1c5e628c303d9f8aa636634867
+      size: 1965
+    outs:
+    - path: 
+        .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
+      hash: md5
+      md5: e3f36af29b773241de4ac2e7cd5644f2
+      size: 616960
+    - path: .calkit/notebooks/html/modules/CEM/make_additional_tech_csv.html
+      hash: md5
+      md5: a7b335b6b2c79a07a5f08cc9b6f7fc39
+      size: 918163
+    - path: modules/CEM/data_east/scenario_input.csv
+      hash: md5
+      md5: db85549f12fda82047939cb119e8915d
+      size: 1115
+    - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
+      hash: md5
+      md5: 933a39e1ab30dba74d01bcf3415a7011
+      size: 2160
+    - path: modules/CEM/data_east/settings/settings_management.yml
+      hash: md5
+      md5: 3f884ab8d29b6b2e02b3c26802247452
+      size: 10007
+    - path: modules/CEM/data_east/wave_profiles
+      hash: md5
+      md5: c002274d308ba7bb73aebc0b41489c0d.dir
+      size: 113629080
+      nfiles: 60
+  _clean-nb-analyze-results:
+    cmd: calkit nb clean "modules/CEM/analyze_results.ipynb"
+    deps:
+    - path: modules/CEM/analyze_results.ipynb
+      hash: md5
+      md5: 8a52a92087e41a82ad7d857b1aebfb83
+      size: 79023
+    outs:
+    - path: .calkit/notebooks/cleaned/modules/CEM/analyze_results.ipynb
+      hash: md5
+      md5: 23deed9dc3aff293f6ff7aefcaaf90c1
+      size: 13898
+  powergenome-run:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc 
+      ./modules/CEM/run_powergenome.sh
+    deps:
+    - path: ./modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 2c4aadcffd0c25ea82056618be960748
+      size: 1030
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: modules/CEM/data/
+      hash: md5
+      md5: 27e17359d4cdd2301e9566544a4ce19b.dir
+      size: 10462955246
+      nfiles: 222
+    - path: modules/CEM/data_CA/settings/test_settings.yml
+      hash: md5
+      md5: 28d1c8d2b5caee8f611a855ed4553907
+      size: 32620
+    - path: modules/CEM/data_CA/test_demand_segments_voll.csv
+      hash: md5
+      md5: c43e30e32fa5bc63a01dd279648e32cc
+      size: 122
+    - path: modules/CEM/data_CA/test_misc_gen_inputs.csv
+      hash: md5
+      md5: c72902fedbe39f69d4c943c520e085ff
+      size: 2087
+    - path: modules/CEM/data_east/Reserves.csv
+      hash: md5
+      md5: eb96009f00918d5d86ea890e94b2932f
+      size: 189
+    - path: modules/CEM/data_east/demand_segments_voll.csv
+      hash: md5
+      md5: 8434b5682b57411696689e4883dd46fd
+      size: 158
+    - path: modules/CEM/data_east/emission_policies.csv
+      hash: md5
+      md5: d67c56e902690315130682298d87cf83
+      size: 200
+    - path: modules/CEM/data_east/misc_gen_inputs.csv
+      hash: md5
+      md5: 685b36c27546ed661b2eef5a9d5abc4d
+      size: 2316
+    - path: modules/CEM/data_east/resource_capacity_spur.csv
+      hash: md5
+      md5: 7254e40ce132416ebc9c2ab3ca55cd2a
+      size: 589
+    - path: modules/CEM/data_east/scenario_input.csv
+      hash: md5
+      md5: db85549f12fda82047939cb119e8915d
+      size: 1115
+    - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
+      hash: md5
+      md5: 933a39e1ab30dba74d01bcf3415a7011
+      size: 2160
+    - path: modules/CEM/data_east/settings/settings_management.yml
+      hash: md5
+      md5: 3f884ab8d29b6b2e02b3c26802247452
+      size: 10007
+    - path: modules/CEM/data_east/settings/test_settings_2.yml
+      hash: md5
+      md5: ba7605b677694b462359bece8ffef542
+      size: 37026
+    - path: modules/CEM/data_east/wave_profiles/
+      hash: md5
+      md5: c002274d308ba7bb73aebc0b41489c0d.dir
+      size: 113629080
+      nfiles: 60
+    - path: modules/CEM/pg-data-env.yml
+      hash: md5
+      md5: 074d35d12b035453df69209cef462f10
+      size: 717
+    - path: modules/CEM/run_powergenome.sh
+      hash: md5
+      md5: 2c4aadcffd0c25ea82056618be960748
+      size: 1030
+    outs:
+    - path: modules/CEM/data_east/cases/Case_1/inputs
+      hash: md5
+      md5: 315ca62f2ca6119eb71f1a575df55776.dir
+      size: 1045497
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_2/inputs
+      hash: md5
+      md5: 7cc4675b9a365c6aa797155d078e5117.dir
+      size: 1045503
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_3/inputs
+      hash: md5
+      md5: aba194367d0a830514202f5ac2625efb.dir
+      size: 1045500
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_4/inputs
+      hash: md5
+      md5: 70df1e1a103d1abb8627236082fcac30.dir
+      size: 1045503
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_5/inputs
+      hash: md5
+      md5: 2fa4cdf4d459f10217ed0e94b6c9d450.dir
+      size: 1045503
+      nfiles: 30
+  genx-run:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
+      "julia modules/CEM/Run.jl"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: modules/CEM/Manifest.toml
+      hash: md5
+      md5: 9a0de9e92c7903a5d51d3eac7bfbc25e
+      size: 45863
+    - path: modules/CEM/Run.jl
+      hash: md5
+      md5: 9d952fabc1f9d9522f38d678bc835919
+      size: 2716
+    - path: modules/CEM/data_east/cases/Case_1/inputs
+      hash: md5
+      md5: 315ca62f2ca6119eb71f1a575df55776.dir
+      size: 1045497
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_2/inputs
+      hash: md5
+      md5: 7cc4675b9a365c6aa797155d078e5117.dir
+      size: 1045503
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_3/inputs
+      hash: md5
+      md5: aba194367d0a830514202f5ac2625efb.dir
+      size: 1045500
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_4/inputs
+      hash: md5
+      md5: 70df1e1a103d1abb8627236082fcac30.dir
+      size: 1045503
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_5/inputs
+      hash: md5
+      md5: 2fa4cdf4d459f10217ed0e94b6c9d450.dir
+      size: 1045503
+      nfiles: 30
+    outs:
+    - path: modules/CEM/data_east/cases/Case_1/results/
+      hash: md5
+      md5: b3a90918b73d5b131ec2669f369b7d91.dir
+      size: 1726351
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_2/results/
+      hash: md5
+      md5: 6847efccdfbf21a1183693608b717e49.dir
+      size: 1735617
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_3/results/
+      hash: md5
+      md5: b95980563de2b7c8304c786543d3a6b1.dir
+      size: 1758196
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_4/results/
+      hash: md5
+      md5: 1e36a6da7c7a71df0a7b2ab71030bff4.dir
+      size: 1756090
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_5/results/
+      hash: md5
+      md5: 262b04d68de27a407e990908b25a541d.dir
+      size: 1765538
+      nfiles: 30
+  analyze-results:
+    cmd: calkit nb execute --environment decider-2 --no-check --to html 
+      "modules/CEM/analyze_results.ipynb"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: .calkit/notebooks/cleaned/modules/CEM/analyze_results.ipynb
+      hash: md5
+      md5: 23deed9dc3aff293f6ff7aefcaaf90c1
+      size: 13898
+    - path: modules/CEM/data_east/cases/Case_1/results/
+      hash: md5
+      md5: b3a90918b73d5b131ec2669f369b7d91.dir
+      size: 1726351
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_2/results/
+      hash: md5
+      md5: 6847efccdfbf21a1183693608b717e49.dir
+      size: 1735617
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_3/results/
+      hash: md5
+      md5: b95980563de2b7c8304c786543d3a6b1.dir
+      size: 1758196
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_4/results/
+      hash: md5
+      md5: 1e36a6da7c7a71df0a7b2ab71030bff4.dir
+      size: 1756090
+      nfiles: 30
+    - path: modules/CEM/data_east/cases/Case_5/results/
+      hash: md5
+      md5: 262b04d68de27a407e990908b25a541d.dir
+      size: 1765538
+      nfiles: 30
+    - path: modules/CEM/data_east/scenario_input.csv
+      hash: md5
+      md5: db85549f12fda82047939cb119e8915d
+      size: 1115
+    outs:
+    - path: .calkit/notebooks/executed/modules/CEM/analyze_results.ipynb
+      hash: md5
+      md5: 56345190ca834ae617f46ea5e25662dc
+      size: 79024
+    - path: .calkit/notebooks/html/modules/CEM/analyze_results.html
+      hash: md5
+      md5: 682ca399dd83391f6a029d6a247474ed
+      size: 387243
+  _check-env-decider-2:
+    cmd: calkit check environment --name decider-2
+    deps:
+    - path: envs/calkit-environment.yml
+      hash: md5
+      md5: 1106d6a58d71d8d9058a7af25ad9b991
+      size: 617
+    outs:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+  setup-hsds:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
+      "envsubst < .hscfg > ~/.hscfg"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: .hscfg
+      hash: md5
+      md5: 303ce8189f6f66d8bed92cee0541e864
+      size: 116
+  genx-setup:
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
+      "julia modules/CEM/setup.jl"
+    deps:
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: modules/CEM/Project.toml
+      hash: md5
+      md5: dab2870f564996845086283eab7e155c
+      size: 445
+    outs:
+    - path: modules/CEM/Manifest.toml
+      hash: md5
+      md5: 9a0de9e92c7903a5d51d3eac7bfbc25e
+      size: 45863

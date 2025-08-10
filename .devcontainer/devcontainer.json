@@ -1,5 +1,8 @@
 {
-  "image": "ghcr.io/calkit/devcontainer:latest",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },

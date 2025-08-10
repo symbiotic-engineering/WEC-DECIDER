@@ -12,14 +12,52 @@ notebooks:
   - path: modules/CEM/make_batch_csv.ipynb
     title: make-batch-csv
 environments:
-  decider:
+  decider-2:
     path: envs/calkit-environment.yml
     kind: conda
+dependencies:
+  - WLSACCESSID:
+      kind: env-var
+      notes: Gurobi WLS Access ID (API key)
+  - WLSSECRET:
+      kind: env-var
+      notes: Gurobi WLS Secret
+  - LICENSEID:
+      kind: env-var
+      notes: Gurobi license ID
+  - HSDS_API_KEY:
+      kind: env-var
+      notes: HSDS API key
+  # - gurobi_cl:
+  #     kind: app
+  #     notes: Gurobi command line interface
 pipeline:
   stages:
+    setup-hsds:
+      kind: shell-command
+      command: envsubst < .hscfg > ~/.hscfg
+      environment: decider-2
+      inputs:
+        - .hscfg
+      outputs: []
+    powergenome-data-download:
+      kind: python-script
+      script_path: ./modules/CEM/get-powergenome-data.py
+      environment: decider-2
+      inputs:
+        - modules/CEM/get-powergenome-data.py
+      outputs:
+        - modules/CEM/data/
+        - modules/CEM/data_CA/test_misc_gen_inputs.csv
+        - modules/CEM/data_CA/test_demand_segments_voll.csv
+        - modules/CEM/data_east/Reserves.csv
+        - modules/CEM/data_east/emission_policies.csv
+        - modules/CEM/data_east/misc_gen_inputs.csv
+        - modules/CEM/data_east/resource_capacity_spur.csv
+        - modules/CEM/data_east/demand_segments_voll.csv
     setup-sweep:
       kind: jupyter-notebook
-      environment: decider
+      environment: decider-2
       wdir:
       inputs:
         - modules/CEM/template/cost_mult_tech_map.yml
@@ -29,12 +67,82 @@ pipeline:
         - modules/CEM/data_east/scenario_input.csv
         - modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       notebook_path: modules/CEM/make_additional_tech_csv.ipynb
-      html_storage: null
+      html_storage: git
       executed_ipynb_storage: git
       cleaned_ipynb_storage: null
+    powergenome-run:
+      kind: shell-script
+      script_path: ./modules/CEM/run_powergenome.sh
+      environment: decider-2
+      inputs:
+        - modules/CEM/run_powergenome.sh
+        - modules/CEM/data/
+        - modules/CEM/pg-data-env.yml
+        - modules/CEM/data_CA/test_misc_gen_inputs.csv
+        - modules/CEM/data_CA/test_demand_segments_voll.csv
+        - modules/CEM/data_CA/settings/test_settings.yml
+        - modules/CEM/data_east/Reserves.csv
+        - modules/CEM/data_east/emission_policies.csv
+        - modules/CEM/data_east/misc_gen_inputs.csv
+        - modules/CEM/data_east/resource_capacity_spur.csv
+        - modules/CEM/data_east/demand_segments_voll.csv
+        - modules/CEM/data_east/settings/settings_management.yml
+        - modules/CEM/data_east/settings/test_settings_2.yml
+        - modules/CEM/data_east/scenario_input.csv
+        - modules/CEM/data_east/wave_profiles/
+        - modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
+        # - modules/CEM/data_CA/test_scenario_input.csv
+      outputs:
+      # - modules/CEM/data_CA/cases/Case_1/inputs
+      # - modules/CEM/data_CA/cases/Case_2/inputs
+      # - modules/CEM/data_CA/cases/Case_3/inputs
+      # - modules/CEM/data_CA/cases/Case_4/inputs
+      # - modules/CEM/data_CA/cases/Case_5/inputs
+      - modules/CEM/data_east/cases/Case_1/inputs
+      - modules/CEM/data_east/cases/Case_2/inputs
+      - modules/CEM/data_east/cases/Case_3/inputs
+      - modules/CEM/data_east/cases/Case_4/inputs
+      - modules/CEM/data_east/cases/Case_5/inputs
+    genx-setup:
+      kind: shell-command
+      command: julia modules/CEM/setup.jl
+      environment: decider-2
+      inputs:
+        - modules/CEM/Project.toml
+      outputs:
+        - modules/CEM/Manifest.toml
+    genx-run:
+      kind: shell-command
+      command: julia modules/CEM/Run.jl
+      environment: decider-2
+      inputs:
+        - modules/CEM/Run.jl
+      # - modules/CEM/juliapkg.json
+        - modules/CEM/Manifest.toml
+      # - modules/CEM/data_CA/cases/Case_1/inputs
+      # - modules/CEM/data_CA/cases/Case_2/inputs
+      # - modules/CEM/data_CA/cases/Case_3/inputs
+      # - modules/CEM/data_CA/cases/Case_4/inputs
+      # - modules/CEM/data_CA/cases/Case_5/inputs
+        - modules/CEM/data_east/cases/Case_1/inputs
+        - modules/CEM/data_east/cases/Case_2/inputs
+        - modules/CEM/data_east/cases/Case_3/inputs
+        - modules/CEM/data_east/cases/Case_4/inputs
+        - modules/CEM/data_east/cases/Case_5/inputs
+      outputs:
+      # - modules/CEM/data_CA/cases/Case_1/results/
+      # - modules/CEM/data_CA/cases/Case_2/results/
+      # - modules/CEM/data_CA/cases/Case_3/results/
+      # - modules/CEM/data_CA/cases/Case_4/results/
+      # - modules/CEM/data_CA/cases/Case_5/results/
+      - modules/CEM/data_east/cases/Case_1/results/
+      - modules/CEM/data_east/cases/Case_2/results/
+      - modules/CEM/data_east/cases/Case_3/results/
+      - modules/CEM/data_east/cases/Case_4/results/
+      - modules/CEM/data_east/cases/Case_5/results/
     analyze-results:
       kind: jupyter-notebook
-      environment: decider
+      environment: decider-2
       wdir:
       inputs:
       # - modules/CEM/data_CA/cases/Case_1/results/
@@ -50,6 +158,6 @@ pipeline:
         - modules/CEM/data_east/scenario_input.csv
       outputs: []
       notebook_path: modules/CEM/analyze_results.ipynb
-      html_storage: null
+      html_storage: git
       executed_ipynb_storage: git
       cleaned_ipynb_storage: null
