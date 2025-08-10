@@ -15,6 +15,29 @@ environments:
   decider-2:
     path: envs/calkit-environment.yml
     kind: conda
+showcase:
+  - figure: modules/CEM/figs/CEM_sweep_system_cost.pdf
+  - publication: modules/CEM/publications/UMERC_2025_grid_value.pdf
+figures:
+  - path: modules/CEM/figs/CEM_sweep_wave_capacity.pdf
+    title: WEC Capacity
+    description: WEC capacity as a function of WEC cost, power limit, damping ratio, and natural frequency
+    stage: analyze-results
+  - path: modules/CEM/figs/CEM_sweep_system_cost.pdf
+    title: System cost
+    description: System cost as a function of WEC cost, power limit, damping ratio, and natural frequency
+    stage: analyze-results
+  - path: modules/CEM/figs/CEM_sweep_carbon.pdf
+    title: Carbon
+    description: Carbon emissions as a function of WEC cost, power limit, damping ratio, and natural frequency
+    stage: analyze-results
+publications:
+  - path: modules/CEM/publications/UMERC25-Grid-Econ-Enviro.pptx
+    kind: presentation
+    title: UMERC 2025 grid value slides
+  - path: modules/CEM/publications/UMERC_2025_grid_value.pdf
+    kind: conference-paper
+    title: UMERC 2025 grid value paper
 dependencies:
   - WLSACCESSID:
       kind: env-var
@@ -172,7 +195,10 @@ pipeline:
       inputs:
         - from_stage_outputs: genx-run
         - modules/CEM/data_east/scenario_input.csv
-      outputs: []
+      outputs:
+        - modules/CEM/figs/CEM_sweep_wave_capacity.pdf
+        - modules/CEM/figs/CEM_sweep_system_cost.pdf
+        - modules/CEM/figs/CEM_sweep_carbon.pdf
       notebook_path: modules/CEM/analyze_results.ipynb
       html_storage: null
       executed_ipynb_storage: dvc

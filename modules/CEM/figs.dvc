@@ -1,0 +1,6 @@
+outs:
+- md5: 73f4ed501ea39ffb49cc2798fe81c6ac.dir
+  size: 3205875
+  nfiles: 11
+  hash: md5
+  path: figs
