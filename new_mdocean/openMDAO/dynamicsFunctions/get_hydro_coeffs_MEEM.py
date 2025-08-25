@@ -1,6 +1,7 @@
 import numpy as np
 from ..meem.run_MEEM import run_MEEM
 from ..meem.group_velocity import group_velocity
+import openflash
 from spar_dynamics import spar_dynamics
 
 def get_hydro_coeffs_MEEM(a2, m0, d2, a1, d1, a3, h, g, w, harmonics, spar_excitation_coeffs):
@@ -22,6 +23,8 @@ def get_hydro_coeffs_MEEM(a2, m0, d2, a1, d1, a3, h, g, w, harmonics, spar_excit
         m0_meem = m0_meem.T  # ensure row vector
 
     # Run MEEM solver
+    #m = openflash.MEEMProblem
+    #e = openflash.MEEMEngine
     mu_nondim, lambda_nondim, gamma_phase_f = run_MEEM(
         heaving_IC, heaving_OC, auto_BCs,
         N_num, M_num, K_num,

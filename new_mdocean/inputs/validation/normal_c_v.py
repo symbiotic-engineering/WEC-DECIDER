@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 
+# verified
 def nominal_c_v():
 
-    filename = '../inputs/validation/RM3-CBS.xlsx'  # Spreadsheet containing RM3 "actual" power data
+    filename = 'RM3-CBS.xlsx'  # Spreadsheet containing RM3 "actual" power data
     sheet = 'Performance & Economics'  # Name of relevant sheet
 
     # Read the power matrix and joint probability distribution (JPD) from the Excel file
@@ -21,4 +22,4 @@ def nominal_c_v():
     return c_v
 
 
-
+print(nominal_c_v())
