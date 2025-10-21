@@ -1,0 +1,212 @@
+
+%%% Preamble Requirements %%%
+% \usepackage{geometry}
+% \usepackage{amsfonts}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{tikz}
+
+% Optional packages such as sfmath set through python interface
+% \usepackage{sfmath}
+
+% \usetikzlibrary{arrows,chains,positioning,scopes,shapes.geometric,shapes.misc,shadows}
+
+%%% End Preamble Requirements %%%
+
+\input{"C:/Users/rgm222/Anaconda3/envs/wec-decider-2024-05-02/lib/site-packages/pyxdsm/diagram_styles"}
+\begin{tikzpicture}
+
+\matrix[MatrixSetup]{
+%Row 0
+&
+\node [DataIO] (output_Driver) {$\begin{array}{c}D\_f^{(0)} \\ D\_s\_over\_D\_f^{(0)} \\ h\_f\_over\_D\_f^{(0)} \\ T\_s\_over\_h\_s^{(0)} \\ F\_max^{(0)} \\ B\_p^{(0)} \\ w\_n^{(0)}\end{array}$};&
+&
+&
+\node [DataIO] (output_dynamicsComponent) {$<map object at 0x000002652E251F10>$};&
+&
+\node [DataIO] (output_environmentComponent) {$<map object at 0x000002652E251EB0>$};&
+&
+&
+\\
+%Row 1
+\node [DataIO] (left_output_Driver) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};&
+\node [Optimization] (Driver) {$\text{\text{0, 9 $ \rightarrow $ 1: Driver}}$};&
+\node [DataInter] (Driver-ratioComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (Driver-geometryComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (Driver-dynamicsComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (Driver-structureComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (Driver-environmentComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (Driver-econComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\node [DataInter] (Driver-outcomeComponent) {$\begin{array}{c}D\_f \\ D\_s\_over\_D\_f \\ h\_f\_over\_D\_f \\ T\_s\_over\_h\_s \\ F\_max \\ B\_p \\ w\_n\end{array}$};&
+\\
+%Row 2
+\node [DataIO] (left_output_ratioComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};&
+&
+\node [Function] (ratioComponent) {$\text{\text{1: ratioComponent}}$};&
+\node [DataInter] (ratioComponent-geometryComponent) {$\begin{array}{c}D\_d \\ D\_s \\ T\_f \\ T\_s \\ h\_d \\ h\_f \\ h\_s\end{array}$};&
+\node [DataInter] (ratioComponent-dynamicsComponent) {$\begin{array}{c}D\_s \\ T\_f \\ T\_s \\ h\_f \\ h\_s\end{array}$};&
+\node [DataInter] (ratioComponent-structureComponent) {$\begin{array}{c}T\_s \\ h\_s\end{array}$};&
+&
+&
+\node [DataInter] (ratioComponent-outcomeComponent) {$\begin{array}{c}D\_d\end{array}$};&
+\\
+%Row 3
+\node [DataIO] (left_output_geometryComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};&
+&
+&
+\node [Function] (geometryComponent) {$\text{\text{2: geometryComponent}}$};&
+\node [DataInter] (geometryComponent-dynamicsComponent) {$\begin{array}{c}T \\ V\_d \\ m\_f\_tot\end{array}$};&
+\node [DataInter] (geometryComponent-structureComponent) {$\begin{array}{c}A\_c \\ A\_lat\_sub \\ I \\ r\_over\_t\end{array}$};&
+\node [DataInter] (geometryComponent-environmentComponent) {$\begin{array}{c}A\_fiberglass \\ m\_m\end{array}$};&
+\node [DataInter] (geometryComponent-econComponent) {$\begin{array}{c}m\_m\end{array}$};&
+\node [DataInter] (geometryComponent-outcomeComponent) {$\begin{array}{c}GM \\ V\_f\_pct \\ V\_s\_pct\end{array}$};&
+\\
+%Row 4
+\node [DataIO] (left_output_dynamicsComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};&
+&
+&
+&
+\node [Function] (dynamicsComponent) {$\text{\text{3: dynamicsComponent}}$};&
+\node [DataInter] (dynamicsComponent-structureComponent) {$\begin{array}{c}F\_heave\_max \\ F\_surge\_max\end{array}$};&
+&
+\node [DataInter] (dynamicsComponent-econComponent) {$\begin{array}{c}P\_elec\end{array}$};&
+\node [DataInter] (dynamicsComponent-outcomeComponent) {$\begin{array}{c}F\_ptrain\_max \\ P\_elec \\ P\_var \\ h\_s\_extra\end{array}$};&
+\\
+%Row 5
+\node [DataIO] (left_output_structureComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};&
+&
+&
+&
+&
+\node [Function] (structureComponent) {$\text{\text{4: structureComponent}}$};&
+&
+&
+\node [DataInter] (structureComponent-outcomeComponent) {$\begin{array}{c}FOS1Y \\ FOS2Y \\ FOS3Y \\ FOS\_buckling\end{array}$};&
+\\
+%Row 6
+\node [DataIO] (left_output_environmentComponent) {$\begin{array}{c}D\_f^{*} \\ D\_s\_over\_D\_f^{*} \\ h\_f\_over\_D\_f^{*} \\ T\_s\_over\_h\_s^{*} \\ F\_max^{*} \\ B\_p^{*} \\ w\_n^{*}\end{array}$};&
+&
+&
+&
+&
+&
+\node [Function] (environmentComponent) {$\text{\text{5: environmentComponent}}$};&
+&
+\node [DataInter] (environmentComponent-outcomeComponent) {$\begin{array}{c}eco\_value\end{array}$};&
+\\
+%Row 7
+\node [DataIO] (left_output_econComponent) {$\begin{array}{c}LCOE^{*}\end{array}$};&
+\node [DataInter] (econComponent-Driver) {$\begin{array}{c}LCOE\end{array}$};&
+&
+&
+&
+&
+&
+\node [Function] (econComponent) {$\text{\text{6: econComponent}}$};&
+\node [DataInter] (econComponent-outcomeComponent) {$\begin{array}{c}LCOE\end{array}$};&
+\\
+%Row 8
+\node [DataIO] (left_output_outcomeComponent) {$\begin{array}{c}g\_0^{*} \\ g\_1^{*} \\ g\_2^{*} \\ g\_3^{*} \\ g\_4^{*} \\ g\_5^{*} \\ g\_6^{*} \\ g\_7^{*} \\ g\_8^{*} \\ g\_9^{*} \\ g\_10^{*} \\ g\_11^{*} \\ g\_12^{*} \\ g\_13^{*}\end{array}$};&
+\node [DataInter] (outcomeComponent-Driver) {$\begin{array}{c}g\_0 \\ g\_1 \\ g\_2 \\ g\_3 \\ g\_4 \\ g\_5 \\ g\_6 \\ g\_7 \\ g\_8 \\ g\_9 \\ g\_10 \\ g\_11 \\ g\_12 \\ g\_13\end{array}$};&
+&
+&
+&
+&
+&
+&
+\node [Function] (outcomeComponent) {$\text{\text{7: outcomeComponent}}$};&
+\\
+%Row 9
+&
+&
+&
+&
+&
+&
+&
+&
+&
+\\
+};
+
+% XDSM process chains
+{ [start chain=process]
+ \begin{pgfonlayer}{process} 
+\chainin (Driver);
+\chainin (ratioComponent) [join=by ProcessHV];
+\chainin (geometryComponent) [join=by ProcessHV];
+\chainin (dynamicsComponent) [join=by ProcessHV];
+\chainin (structureComponent) [join=by ProcessHV];
+\chainin (environmentComponent) [join=by ProcessHV];
+\chainin (econComponent) [join=by ProcessHV];
+\chainin (outcomeComponent) [join=by ProcessHV];
+\chainin (Driver) [join=by ProcessHV];
+\end{pgfonlayer}
+}
+
+\begin{pgfonlayer}{data}
+\path
+% Horizontal edges
+(Driver) edge [DataLine] (Driver-dynamicsComponent)
+(Driver) edge [DataLine] (Driver-outcomeComponent)
+(Driver) edge [DataLine] (Driver-ratioComponent)
+(Driver) edge [DataLine] (Driver-geometryComponent)
+(Driver) edge [DataLine] (Driver-structureComponent)
+(Driver) edge [DataLine] (Driver-econComponent)
+(Driver) edge [DataLine] (Driver-environmentComponent)
+(econComponent) edge [DataLine] (econComponent-Driver)
+(outcomeComponent) edge [DataLine] (outcomeComponent-Driver)
+(dynamicsComponent) edge [DataLine] (dynamicsComponent-structureComponent)
+(dynamicsComponent) edge [DataLine] (dynamicsComponent-outcomeComponent)
+(dynamicsComponent) edge [DataLine] (dynamicsComponent-econComponent)
+(econComponent) edge [DataLine] (econComponent-outcomeComponent)
+(environmentComponent) edge [DataLine] (environmentComponent-outcomeComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-structureComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-environmentComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-outcomeComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-dynamicsComponent)
+(geometryComponent) edge [DataLine] (geometryComponent-econComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-geometryComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-outcomeComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-dynamicsComponent)
+(ratioComponent) edge [DataLine] (ratioComponent-structureComponent)
+(structureComponent) edge [DataLine] (structureComponent-outcomeComponent)
+(dynamicsComponent) edge [DataLine] (left_output_dynamicsComponent)
+(Driver) edge [DataLine] (left_output_Driver)
+(outcomeComponent) edge [DataLine] (left_output_outcomeComponent)
+(ratioComponent) edge [DataLine] (left_output_ratioComponent)
+(geometryComponent) edge [DataLine] (left_output_geometryComponent)
+(structureComponent) edge [DataLine] (left_output_structureComponent)
+(econComponent) edge [DataLine] (left_output_econComponent)
+(environmentComponent) edge [DataLine] (left_output_environmentComponent)
+% Vertical edges
+(Driver-dynamicsComponent) edge [DataLine] (dynamicsComponent)
+(Driver-outcomeComponent) edge [DataLine] (outcomeComponent)
+(Driver-ratioComponent) edge [DataLine] (ratioComponent)
+(Driver-geometryComponent) edge [DataLine] (geometryComponent)
+(Driver-structureComponent) edge [DataLine] (structureComponent)
+(Driver-econComponent) edge [DataLine] (econComponent)
+(Driver-environmentComponent) edge [DataLine] (environmentComponent)
+(econComponent-Driver) edge [DataLine] (Driver)
+(outcomeComponent-Driver) edge [DataLine] (Driver)
+(dynamicsComponent-structureComponent) edge [DataLine] (structureComponent)
+(dynamicsComponent-outcomeComponent) edge [DataLine] (outcomeComponent)
+(dynamicsComponent-econComponent) edge [DataLine] (econComponent)
+(econComponent-outcomeComponent) edge [DataLine] (outcomeComponent)
+(environmentComponent-outcomeComponent) edge [DataLine] (outcomeComponent)
+(geometryComponent-structureComponent) edge [DataLine] (structureComponent)
+(geometryComponent-environmentComponent) edge [DataLine] (environmentComponent)
+(geometryComponent-outcomeComponent) edge [DataLine] (outcomeComponent)
+(geometryComponent-dynamicsComponent) edge [DataLine] (dynamicsComponent)
+(geometryComponent-econComponent) edge [DataLine] (econComponent)
+(ratioComponent-geometryComponent) edge [DataLine] (geometryComponent)
+(ratioComponent-outcomeComponent) edge [DataLine] (outcomeComponent)
+(ratioComponent-dynamicsComponent) edge [DataLine] (dynamicsComponent)
+(ratioComponent-structureComponent) edge [DataLine] (structureComponent)
+(structureComponent-outcomeComponent) edge [DataLine] (outcomeComponent)
+(Driver) edge [DataLine] (output_Driver)
+(dynamicsComponent) edge [DataLine] (output_dynamicsComponent)
+(environmentComponent) edge [DataLine] (output_environmentComponent);
+\end{pgfonlayer}
+
+\end{tikzpicture}
