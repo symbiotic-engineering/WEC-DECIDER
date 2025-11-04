@@ -7,9 +7,14 @@ Instructions for use:
 2. Install Julia using the instructions [here](https://julialang.org/downloads/). Use julia version 1.8 (recommend setting it as default).
 3. Install Gurobi Optimizer using the "full installation" instructions [here](https://support.gurobi.com/hc/en-us/articles/4534161999889-How-do-I-install-Gurobi-Optimizer).
 4. Obtain a Gurobi license (ie academic single-user) and install it (ie using `grbgetkey`). If the command is not found, use the full filepath, as described [here](https://support.gurobi.com/hc/en-us/articles/360040113232-How-do-I-resolve-the-error-grbgetkey-command-not-found-or-grbgetkey-is-not-recognized).
-5. Configure `h5pyd` according to the instructions [here](https://mhkit-software.github.io/MHKiT/WPTO_hindcast_example.html).
+5. Configure `h5pyd` according to the instructions [here](https://mhkit-software.github.io/MHKiT/WPTO_hindcast_example.html):
+  ```
+  conda activate wec-decider-decider-2
+  hsconfigure
+  (now paste your nrel code in here when prompted)
+  ```
 6. `cd` to the `WEC-DECIDER` folder and run `bash -i modules/CEM/run_all.sh`. This defines the sweep, downloads PowerGenome data inputs, runs PowerGenome, runs GenX, and plots results. (Eventually this step will be replaced by `calkit run`).
-7. If making any updates, re-run individual parts of the process as needed using the commands in `run_all.sh`. If you want to run GenX from the interactive Julia REPL, use the following commands: 
+8. If making any updates, re-run individual parts of the process as needed using the commands in `run_all.sh`. If you want to run GenX from the interactive Julia REPL, use the following commands: 
 ```
 julia # enter julia REPL
 using Pkg # load package manager
