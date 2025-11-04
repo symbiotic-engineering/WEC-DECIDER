@@ -15,6 +15,7 @@ Instructions for use:
   ```
 6. `cd` to the `WEC-DECIDER` folder and run `bash -i modules/CEM/run_all.sh`. This defines the sweep, downloads PowerGenome data inputs, runs PowerGenome, runs GenX, and plots results. (Eventually this step will be replaced by `calkit run`).
 If PowerGenome gives an error 'No resource groups specified {paths}', that probably means your download of power genome data failed. This can be solved by manually downloading the relvant files from google drive: https://drive.google.com/drive/folders/1K5GWF5lbe-mKSTUSuJxnFdYGCdyDJ7iE (this link is from the power genome readme). You will need to place them in the correct subfolder in the data folder.
+Also note that some of the powergenome google drive resource groups have metadata that doesn't match the filenames. They will need to be manually fixed by adding `_lcoe` to the metadata jsons - see [here](https://github.com/PowerGenome/PowerGenome/issues/395).
 
 8. If making any updates, re-run individual parts of the process as needed using the commands in `run_all.sh`. If you want to run GenX from the interactive Julia REPL, use the following commands: 
 ```
