@@ -12,17 +12,101 @@ notebooks:
   - path: modules/CEM/make_batch_csv.ipynb
     title: make-batch-csv
 environments:
-  decider:
+  decider-2:
     path: envs/calkit-environment.yml
     kind: conda
+showcase:
+  - figure: modules/CEM/figs/CEM_sweep_system_cost.pdf
+  - publication: modules/CEM/publications/UMERC_2025_grid_value.pdf
+figures:
+  - path: modules/CEM/figs/CEM_sweep_wave_capacity.pdf
+    title: WEC Capacity
+    description: WEC capacity as a function of WEC cost, power limit, damping ratio, and natural frequency
+    stage: analyze-results
+  - path: modules/CEM/figs/CEM_sweep_system_cost.pdf
+    title: System cost
+    description: System cost as a function of WEC cost, power limit, damping ratio, and natural frequency
+    stage: analyze-results
+  - path: modules/CEM/figs/CEM_sweep_carbon.pdf
+    title: Carbon
+    description: Carbon emissions as a function of WEC cost, power limit, damping ratio, and natural frequency
+    stage: analyze-results
+publications:
+  - path: modules/CEM/publications/UMERC25-Grid-Econ-Enviro.pptx
+    kind: presentation
+    title: UMERC 2025 grid value slides
+  - path: modules/CEM/publications/UMERC_2025_grid_value.pdf
+    kind: conference-paper
+    title: UMERC 2025 grid value paper
+dependencies:
+  - WLSACCESSID:
+      kind: env-var
+      notes: Gurobi WLS Access ID (API key)
+  - WLSSECRET:
+      kind: env-var
+      notes: Gurobi WLS Secret
+  - LICENSEID:
+      kind: env-var
+      notes: Gurobi license ID
+  - HSDS_API_KEY:
+      kind: env-var
+      notes: HSDS API key
+  # - gurobi_cl:
+  #     kind: app
+  #     notes: Gurobi command line interface
+parameters:
+  zeta:
+    - 0.05
+    - 0.15
+    - 0.25
+  omega_n:
+    - range:
+        start: 0.5
+        stop: 0.7
+        step: 0.1
+  D_f:
+    - 20
+  wave_cost:
+    - 400
+    #- 500
+    - 600
+  power_limit_x1000:
+    - 1000
+    # - range:
+    #     start: 100
+    #     stop: 1300
+    #     step: 300
 pipeline:
   stages:
+    setup-hsds:
+      kind: shell-command
+      command: envsubst < .hscfg > ~/.hscfg
+      environment: decider-2
+      inputs:
+        - .hscfg
+      outputs: []
+    powergenome-data-download:
+      kind: python-script
+      script_path: ./modules/CEM/get-powergenome-data.py
+      environment: decider-2
+      inputs:
+        - modules/CEM/get-powergenome-data.py
+      outputs:
+        - modules/CEM/data/
+        - modules/CEM/data_CA/test_misc_gen_inputs.csv
+        - modules/CEM/data_CA/test_demand_segments_voll.csv
+        - modules/CEM/data_east/Reserves.csv
+        - modules/CEM/data_east/emission_policies.csv
+        - modules/CEM/data_east/misc_gen_inputs.csv
+        - modules/CEM/data_east/resource_capacity_spur.csv
+        - modules/CEM/data_east/demand_segments_voll.csv
     setup-sweep:
       kind: jupyter-notebook
-      environment: decider
+      environment: decider-2
       wdir:
       inputs:
         - modules/CEM/template/cost_mult_tech_map.yml
+        - modules/CEM/make_additional_tech_csv.ipynb
       outputs:
         - modules/CEM/data_east/wave_profiles
         - modules/CEM/data_east/settings/settings_management.yml
@@ -30,26 +114,92 @@ pipeline:
         - modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       notebook_path: modules/CEM/make_additional_tech_csv.ipynb
       html_storage: null
-      executed_ipynb_storage: git
-      cleaned_ipynb_storage: null
+      executed_ipynb_storage: dvc
+      cleaned_ipynb_storage: git
+    powergenome-run:
+      kind: shell-script
+      script_path: ./modules/CEM/run_powergenome.sh
+      environment: decider-2
+      iterate_over:
+        - arg_name: zeta
+          values:
+            - parameter: zeta
+        - arg_name: omega_n
+          values:
+            - parameter: omega_n
+        - arg_name: D_f
+          values:
+            - parameter: D_f
+        - arg_name: wave_cost
+          values:
+            - parameter: wave_cost
+        - arg_name: power_limit_x1000
+          values:
+            - parameter: power_limit_x1000
+      inputs:
+        - modules/CEM/run_powergenome.sh
+        - modules/CEM/data/
+        - modules/CEM/pg-data-env.yml
+        - modules/CEM/data_CA/test_misc_gen_inputs.csv
+        - modules/CEM/data_CA/test_demand_segments_voll.csv
+        - modules/CEM/data_CA/settings/test_settings.yml
+        - modules/CEM/data_east/Reserves.csv
+        - modules/CEM/data_east/emission_policies.csv
+        - modules/CEM/data_east/misc_gen_inputs.csv
+        - modules/CEM/data_east/resource_capacity_spur.csv
+        - modules/CEM/data_east/demand_segments_voll.csv
+        - modules/CEM/data_east/settings/test_settings_2.yml
+        - from_stage_outputs: setup-sweep
+        # - modules/CEM/data_CA/test_scenario_input.csv
+      outputs:
+      - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/inputs
+    genx-setup:
+      kind: shell-command
+      command: julia modules/CEM/setup.jl
+      environment: decider-2
+      inputs:
+        - modules/CEM/Project.toml
+      outputs:
+        - modules/CEM/Manifest.toml
+    genx-run:
+      kind: shell-command
+      command: julia modules/CEM/Run.jl Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}
+      environment: decider-2
+      iterate_over:
+        - arg_name: zeta
+          values:
+            - parameter: zeta
+        - arg_name: omega_n
+          values:
+            - parameter: omega_n
+        - arg_name: D_f
+          values:
+            - parameter: D_f
+        - arg_name: wave_cost
+          values:
+            - parameter: wave_cost
+        - arg_name: power_limit_x1000
+          values:
+            - parameter: power_limit_x1000
+      inputs:
+        - modules/CEM/Run.jl
+      # - modules/CEM/juliapkg.json
+        - modules/CEM/Manifest.toml
+        - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/inputs
+      outputs:
+        - modules/CEM/data_east/cases/Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}/results
     analyze-results:
       kind: jupyter-notebook
-      environment: decider
+      environment: decider-2
       wdir:
       inputs:
-      # - modules/CEM/data_CA/cases/Case_1/results/
-      # - modules/CEM/data_CA/cases/Case_2/results/
-      # - modules/CEM/data_CA/cases/Case_3/results/
-      # - modules/CEM/data_CA/cases/Case_4/results/
-      # - modules/CEM/data_CA/cases/Case_5/results/
-        - modules/CEM/data_east/cases/Case_1/results/
-        - modules/CEM/data_east/cases/Case_2/results/
-        - modules/CEM/data_east/cases/Case_3/results/
-        - modules/CEM/data_east/cases/Case_4/results/
-        - modules/CEM/data_east/cases/Case_5/results/
+        - from_stage_outputs: genx-run
         - modules/CEM/data_east/scenario_input.csv
-      outputs: []
+      outputs:
+        - modules/CEM/figs/CEM_sweep_wave_capacity.pdf
+        - modules/CEM/figs/CEM_sweep_system_cost.pdf
+        - modules/CEM/figs/CEM_sweep_carbon.pdf
       notebook_path: modules/CEM/analyze_results.ipynb
       html_storage: null
-      executed_ipynb_storage: git
-      cleaned_ipynb_storage: null
+      executed_ipynb_storage: dvc
+      cleaned_ipynb_storage: git

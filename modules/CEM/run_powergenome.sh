@@ -12,8 +12,8 @@ function run_for_one_location {
 
     run_powergenome_multiple -sf "$script_dir/$location/settings/" -rf "$script_dir/$location/cases"
     for i in "$script_dir/$location/cases"/Case_*; do
-        mkdir "$i/settings"
-        cp -r "$script_dir/template/settings/" "$i/settings/."
+        mkdir -p "$i/settings" # -p creates directory only if it does not already exist
+        cp -r "$script_dir/template/settings/" "$i/."
     done
 
     echo "PowerGenome ran for $location."
