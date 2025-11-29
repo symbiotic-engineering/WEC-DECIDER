@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy.matlib
 from mhkit import wave
 import pandas as pd
 import os
+import csv
 import yaml
 import re
 from pathlib import Path
 from scipy.special import hankel1 as Hankel
+import h5pyd
 
 # Determine root_dir
 if "__file__" in globals():
@@ -33,6 +34,7 @@ parameters = [
     'peak_period',
     'spectral_width'
 ]
+
 lat_lon = (43.5, -70) # off coast of Maine
 data, metadata = wave.io.hindcast.hindcast.request_wpto_point_data(data_type, parameters, lat_lon, year)
 data.head()
@@ -49,21 +51,27 @@ data_mod["ratio_power_density"] = data_mod["omni-directional_wave_power_0"] / da
 
 data_mod.head()
 
-#convert timeseries to matrix
-Hs_hourly = np.interp(np.arange(0, 8760), np.arange(0, 8760, 3), data_mod[:,3])
-T_hourly = np.interp(np.arange(0, 8760), np.arange(0, 8760, 3), data_mod[:,4])
+#interpolate the wave height and period
+Hs_hourly = np.interp(np.arange(0, 8760), np.arange(0, 8760, 3), data_mod["significant_wave_height_0"])
+T_hourly = np.interp(np.arange(0, 8760), np.arange(0, 8760, 3), data_mod["energy_period_0"])
 
+#write the wave height and period to a csv
+with open('hs_and_t.csv','w',newline='') as csvfile:
+    write_to_csv = csv.writer(csvfile)
+    write_to_csv.writerow(["Hs_hourly", "T_hourly"])
+    for i in range(len(Hs_hourly)):
+        write_to_csv.writerow([Hs_hourly[i], T_hourly[i]])
 
 def load_case_results(this_case_folder):
-    #case_result_folder = os.path.join(this_case_folder,'results','results_p1')
+    case_result_folder = os.path.join(this_case_folder,'results','results_p1')
     #carbon_file   = os.path.join(case_result_folder,'emissions.csv')
-    #carbon_plant_file = os.path.join(case_result_folder,'emissions_plant.csv')
+    carbon_plant_file = os.path.join(case_result_folder,'emissions_plant.csv')
 
-    carbon_df        = pd.read_csv(carbon_file,   index_col='Total') # units: tonnes CO2
+    #carbon_df = pd.read_csv(carbon_file,   index_col='Total') # units: tonnes CO2
     carbon_plant_df = pd.read_csv(carbon_plant_file, index_col='Total')
     
-    carbon = carbon_df['Total'].loc['AnnualSum']
+    #carbon = carbon_df['Total'].loc['AnnualSum']
     carbon_plant = carbon_plant_df['Total'].loc['AnnualSum']
 
-    outputs = [carbon, carbon_plant]
+    outputs = [carbon_plant, Hs_hourly, T_hourly]
     return outputs
