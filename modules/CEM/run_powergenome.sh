@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e # if any command fails, exit immediately. Comment this out if you are using a debugger and have breakpoints on errors.
+set -e # if any command fails, exit immediately. Comment this out if you are using a python debugger and have breakpoints on errors in the python code.
 
 script_dir=$(cd "$(dirname "$0")" && pwd) # absolute path to this script
 
