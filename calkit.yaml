@@ -15,6 +15,10 @@ environments:
   decider-2:
     path: envs/calkit-environment.yml
     kind: conda
+  julia-env:
+    path: modules/CEM/Project.toml
+    kind: julia
+    julia: "1.8"
 showcase:
   - figure: modules/CEM/figs/CEM_sweep_system_cost.pdf
   - publication: modules/CEM/publications/UMERC_2025_grid_value.pdf
@@ -57,19 +61,18 @@ dependencies:
 parameters:
   zeta:
     - 0.05
-    - 0.15
-    - 0.25
+    # - 0.15
+    # - 0.25
   omega_n:
-    - range:
-        start: 0.5
-        stop: 0.7
-        step: 0.1
+    - 0.5
+    # - range:
+    #     start: 0.5
+    #     stop: 0.7
+    #     step: 0.1
   D_f:
     - 20
   wave_cost:
-    - 400
-    #- 500
-    - 600
+    - 13000
   power_limit_x1000:
     - 1000
     # - range:
@@ -156,15 +159,15 @@ pipeline:
     genx-setup:
       kind: shell-command
       command: julia modules/CEM/setup.jl
-      environment: decider-2
+      environment: julia-env
       inputs:
         - modules/CEM/Project.toml
-      outputs:
-        - modules/CEM/Manifest.toml
+      #outputs:
+      #  - modules/CEM/Manifest.toml
     genx-run:
       kind: shell-command
       command: julia modules/CEM/Run.jl Case_year_2030_electrification_ref_carbon_constraint_med_wave_variability_Avail_zeta_{zeta}_omega_n_{omega_n}_D_f_{D_f}_limited_{power_limit_x1000}_wave_cost_Wave_{wave_cost}
-      environment: decider-2
+      environment: julia-env
       iterate_over:
         - arg_name: zeta
           values:
