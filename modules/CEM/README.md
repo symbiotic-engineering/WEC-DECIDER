@@ -28,8 +28,14 @@ st # status - check that packages installed correctly
 backspace or ctrl-C  # exit package manager
 Pkg.build("Gurobi") # first time only
 cd("modules/CEM")
+ # option 1: run all cases
+include("Run.jl")
+# option 2: run single case
+ARGS = ["your_case_folder_name_here"]
 include("Run.jl")
 ```
+
+If you want to modify GenX locally, clone it and do so. To use the local version, add `Pkg.dvelop(PackageSpec(path="/path/to/local/GenX.jl"))` to the top of `Run.jl`, comment out GenX from the `Project.toml` and delete it from the `juliapkg.json`, and add extra packages (ie JuMP) as prompted (ie add `using JuMP` in `Run.jl`).
 
 For details on the methodology and results, see the report `old/report.pdf` for early work, and the conference paper [here](https://github.com/symbiotic-engineering/MDOcean/tree/decider-pub/pubs/UMERC-2025-grid-value) for more recent work.
 
