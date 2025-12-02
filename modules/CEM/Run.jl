@@ -6,10 +6,19 @@ Pkg.activate(cem_dir)
 
 cd(cem_dir)
 
+# allows us to use the GenX.jl file in our local directory to get cMin/MaxPowerThermal
+Pkg.develop(PackageSpec(path="../../../GenX.jl")) 
+
 using Gurobi
 using GenX
-using Infiltrator
+# using Infiltrator
 using YAML
+Pkg.add("JuMP")
+Pkg.add("CSV")
+Pkg.add("DataFrames")
+
+include("run_genx_case_custom.jl")
+using .RunGenXCaseCustom: run_genx_case_simple!
 
 # Include and run the case runner logic
 # uncomment to run caserunner from 3rd party
@@ -44,7 +53,7 @@ function run_debug()
             mysetup["MultiStageSettingsDict"] = settings
             num = mysetup["MultiStageSettingsDict"]["NumStages"]
             println("Number of Stages: ", num)
-            @infiltrate # creates a breakpoint for inspecting settings
+            #@infiltrate # creates a breakpoint for inspecting settings
 
             run_genx_case_multistage!(case_dir, mysetup, Gurobi.Optimizer)
         end
@@ -70,11 +79,27 @@ function run_all()
     end
 end
 
+# Original run_single --------------------------------------------->
+
+# function run_single(case_str)
+#     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
+#     case_dir = joinpath(case_folder_dir, case_str)
+#     run_genx_case_simple!(case_dir, Gurobi.Optimizer)
+# end
+
 function run_single(case_str)
     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
     case_dir = joinpath(case_folder_dir, case_str)
-    run_genx_case!(case_dir, Gurobi.Optimizer)
+
+    # Build the setup dict
+    genx_settings = GenX.get_settings_path(case_dir, "genx_settings.yml")
+    write_settings = GenX.get_settings_path(case_dir, "output_settings.yml")
+    mysetup = GenX.configure_settings(genx_settings, write_settings)
+
+    # Now call the function correctly
+    run_genx_case_simple!(case_dir, mysetup, Gurobi.Optimizer)
 end
+
 
 if length(ARGS) > 0
     case_str = ARGS[1]
