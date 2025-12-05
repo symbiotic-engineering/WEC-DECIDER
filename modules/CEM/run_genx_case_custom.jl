@@ -132,9 +132,9 @@ function run_genx_case_simple!(case::AbstractString, mysetup::Dict, optimizer::A
         end
     end
 
-    #This is what gets rid of multistage retirement thingie
-    mysetup["MultiStage"] = 0
-    mysetup["MultiStageSettingsDict"] = Dict()
+   # Commenting these out to keep multistage active
+   # mysetup["MultiStage"] = 0
+   # mysetup["MultiStageSettingsDict"] = Dict()
 
 
     # if !haskey(mysetup, "OPEXMULT")
