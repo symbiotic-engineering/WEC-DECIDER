@@ -36,7 +36,6 @@ jobs:
       - name: Run Calkit
         id: run_calkit
         uses: rebeccamccabe/run-action@v2
-      - # run: calkit run --verbose
         env:
           WLSACCESSID: ${{ secrets.WLSACCESSID }}
           WLSSECRET: ${{ secrets.WLSSECRET }}
