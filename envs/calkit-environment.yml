@@ -23,6 +23,6 @@ dependencies:
   - pip:
       #- calkit-python
       - mhkit[wave]
- #     - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/@fix-int-cap-recovery-period
+      - powergenome@git+https://github.com/rebeccamccabe/PowerGenome/@fix-int-cap-recovery-period
       #- wecopttool[geometry]
       #- omxdsm@https://github.com/onodip/OpenMDAO-XDSM/tarball/master
