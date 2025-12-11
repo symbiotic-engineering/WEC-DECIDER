@@ -51,7 +51,13 @@ jobs:
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia 1.9")'
           jupyter kernelspec list
-      
+
+      - name: Install Python Jupyter kernel
+        shell: bash -l {0}
+        run: |
+          python -m pip install ipykernel
+          python -m ipykernel install --user --name python3
+          
       # Install Gurobi
       - name: Install Gurobi
         if: matrix.os == 'ubuntu-latest'
