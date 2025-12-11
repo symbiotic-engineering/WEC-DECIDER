@@ -25,6 +25,15 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/lib/jvm
+          df -h    
+
       - run: pip install calkit-python uv
 
       - name: Restore DVC cache
@@ -64,4 +73,5 @@ jobs:
         with:
           path: .dvc/cache
           key: ${{ runner.os }}-dvc-cache
+
 
