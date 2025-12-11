@@ -37,6 +37,11 @@ jobs:
       - uses: julia-actions/setup-julia@v2 # Setup Julia environment
         with:
           version: ${{ matrix.julia-version }}
+      - name: Install and register IJulia kernel
+        run: |
+          julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia 1.9")'
+          jupyter kernelspec list
+          
       - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
