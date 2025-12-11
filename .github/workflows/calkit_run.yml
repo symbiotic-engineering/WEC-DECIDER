@@ -33,7 +33,13 @@ jobs:
         env:
           CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
       - run: dvc pull
-      - run: calkit run --verbose
+      - name: Run Calkit
+        id: run_calkit
+        uses: rebeccamccabe/run-action@v2
+        with:
+          dvc_token: ${{ secrets.CALKIT_DVC_TOKEN }}
+          run_args: --ignore-errors --log
+          save: false
         env:
           WLSACCESSID: ${{ secrets.WLSACCESSID }}
           WLSSECRET: ${{ secrets.WLSSECRET }}
