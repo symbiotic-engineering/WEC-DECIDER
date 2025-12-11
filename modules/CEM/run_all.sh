@@ -7,9 +7,10 @@ function run_notebook() {
     jupyter nbconvert --execute "$folder/$notebook_path" --to notebook --output "$notebook_path"
 }
 
-echo "$(date +"%Y-%m-%d %H:%M:%S") Activating conda environment"
+#echo "$(date +"%Y-%m-%d %H:%M:%S") Activating conda environment"
 # to avoid conda error, run this script as "bash -i modules/CEM/run_all.sh"
-conda activate wec-decider-decider-2 # a clone of wec-decider-7-pg-edit but with calkit/nbconvert installed
+#conda init
+#conda activate wec-decider-decider-2 # a clone of wec-decider-7-pg-edit but with calkit/nbconvert installed
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") Creating sweep inputs"
 run_notebook modules/CEM make_additional_tech_csv.ipynb
