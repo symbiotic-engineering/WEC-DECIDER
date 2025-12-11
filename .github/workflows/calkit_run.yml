@@ -46,16 +46,22 @@ jobs:
           WLSSECRET: ${{ secrets.WLSSECRET }}
           LICENSEID: ${{ secrets.LICENSEID }}
           HSDS_API_KEY: ${{ secrets.HSDS_API_KEY }}
-      - name: DVC push
-        if: always()
-        run: calkit save dvc.lock dvc.yaml -m "Run pipeline" --force
-        continue-on-error: true
-        env:
-          CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
+          
+      - name: Restore DVC cache
+      id: cache-dvc-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: .dvc/cache
+         key: ${{ runner.os }}-dvc-cache
+
+
+      - name: DVC pull
+      shell: bash -l {0}
+      run: dvc pull --force || true
+
       - name: Save DVC cache
-        if: always()
-        id: cache-dvc-save
-        uses: actions/cache/save@v4
-        with:
+      if: always()
+      uses: actions/cache/save@v4
+      with:
           path: .dvc/cache
-          key: ${{ steps.cache-dvc-restore.outputs.cache-primary-key }}
+          key: ${{ runner.os }}-dvc-cache
