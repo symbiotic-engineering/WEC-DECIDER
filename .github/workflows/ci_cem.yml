@@ -49,18 +49,15 @@ jobs:
       - name: Install and register IJulia kernel
         shell: bash -l {0}
         run: |
-          source /usr/share/miniconda/etc/profile.d/conda.sh
-          conda activate wec-decider-decider-2
           julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia 1.9")'
           jupyter kernelspec list
 
       - name: Install Python Jupyter kernel
         shell: bash -l {0}
         run: |
-          source /usr/share/miniconda/etc/profile.d/conda.sh
-          conda activate wec-decider-decider-2
-          python -m pip install ipykernel
-          python -m ipykernel install --user --name python3
+          python -m pip install --upgrade pip
+          python -m pip install ipykernel jupyter nbconvert
+          python -m ipykernel install --name "python3" --display-name "Python (CEM)" --sys-prefix
           
       # Install Gurobi
       - name: Install Gurobi
@@ -108,4 +105,3 @@ jobs:
         run: |
           ./modules/CEM/run_all.sh
         
-
