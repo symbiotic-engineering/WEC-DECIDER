@@ -90,8 +90,8 @@ stages:
       size: 26354
     - path: modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: c88f41fbe5b874279249b9b0999fcf64
-      size: 344500
+      md5: ed8f621bda47f97147aabebe31ea585c
+      size: 24305
     - path: modules/CEM/template/cost_mult_tech_map.yml
       hash: md5
       md5: 1efa7f1c5e628c303d9f8aa636634867
@@ -100,8 +100,8 @@ stages:
     - path: 
         .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: ec3bb06effeb894c6bb36d4057043bbc
-      size: 348217
+      md5: 949897af2038f156065cdc3806d02e57
+      size: 348216
     - path: modules/CEM/data_east/scenario_input.csv
       hash: md5
       md5: 893447f62265f6ef3467857a043aa900
