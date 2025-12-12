@@ -32,11 +32,10 @@ stages:
       hash: md5
       md5: 82ee6f0dbc031a5dcb51fc695213cdab
       size: 8618
-    - path: .calkit/env-locks/decider-2
+    - path: .calkit/env-locks/decider-2.yml
       hash: md5
-      md5: f988fb21e2fef83617e127b0cc523904.dir
-      size: 13084
-      nfiles: 1
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
     - path: modules/CEM/get-powergenome-data.py
       hash: md5
       md5: 82ee6f0dbc031a5dcb51fc695213cdab
@@ -44,9 +43,9 @@ stages:
     outs:
     - path: modules/CEM/data/
       hash: md5
-      md5: 0cf373d0b30c2f942c6dda032192e5cf.dir
-      size: 9271766185
-      nfiles: 80
+      md5: 27e17359d4cdd2301e9566544a4ce19b.dir
+      size: 10462955246
+      nfiles: 222
     - path: modules/CEM/data_CA/test_demand_segments_voll.csv
       hash: md5
       md5: c43e30e32fa5bc63a01dd279648e32cc
@@ -76,22 +75,21 @@ stages:
       md5: 7254e40ce132416ebc9c2ab3ca55cd2a
       size: 589
   setup-sweep:
-    cmd: calkit nb execute --environment decider-2 --no-check --language python 
+    cmd: calkit nb execute --environment decider-2 --no-check 
       "modules/CEM/make_additional_tech_csv.ipynb"
     deps:
-    - path: .calkit/env-locks/decider-2
+    - path: .calkit/env-locks/decider-2.yml
       hash: md5
-      md5: f988fb21e2fef83617e127b0cc523904.dir
-      size: 13084
-      nfiles: 1
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
     - path: .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: b78eeb097fcd62df559ea03eed6a5a48
-      size: 26354
+      md5: 20f0140a630ae6c0f4b44c18ee0caa07
+      size: 25892
     - path: modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: ed8f621bda47f97147aabebe31ea585c
-      size: 24305
+      md5: 2247b1b34e6087023b9c17c1ad5017de
+      size: 857844
     - path: modules/CEM/template/cost_mult_tech_map.yml
       hash: md5
       md5: 1efa7f1c5e628c303d9f8aa636634867
@@ -100,25 +98,25 @@ stages:
     - path: 
         .calkit/notebooks/executed/modules/CEM/make_additional_tech_csv.ipynb
       hash: md5
-      md5: 949897af2038f156065cdc3806d02e57
-      size: 348216
+      md5: ab68cbb9dbc35d8228fa761681d603c4
+      size: 596387
     - path: modules/CEM/data_east/scenario_input.csv
       hash: md5
-      md5: 893447f62265f6ef3467857a043aa900
-      size: 289
+      md5: 9eabb51022b5230c77f1459bfedbc94f
+      size: 22700
     - path: modules/CEM/data_east/settings/cost_mult_tech_map_updated.yml
       hash: md5
-      md5: d45148729984bae3032eab705b537815
-      size: 1980
+      md5: a0de31c8720d1bf450a7053bdb4360db
+      size: 2004
     - path: modules/CEM/data_east/settings/settings_management.yml
       hash: md5
-      md5: 1249527997459b8f15b18a5241098cbf
-      size: 882
+      md5: 8b0827ad91dc20d51b75623095f6941d
+      size: 6445
     - path: modules/CEM/data_east/wave_profiles
       hash: md5
-      md5: 1aff1538ef4d70a8175b0962dea31256.dir
-      size: 198802
-      nfiles: 1
+      md5: 30256f941eaa77a283f07dfa3b557f46.dir
+      size: 20808360
+      nfiles: 36
   _clean-nb-analyze-results:
     cmd: calkit nb clean "modules/CEM/analyze_results.ipynb"
     deps:
@@ -328,22 +326,17 @@ stages:
       md5: 3be0a3c62ed6a651731c50b34c2a87b9
       size: 16397
   setup-hsds:
-    cmd: ' bash --noprofile --norc -c "envsubst < .hscfg.template > .hscfg && cp .hscfg
-      modules/CEM/.hscfg"'
+    cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
+      "envsubst < .hscfg > ~/.hscfg"
     deps:
-    - path: .hscfg.template
+    - path: .calkit/env-locks/decider-2.yml
+      hash: md5
+      md5: 3be0a3c62ed6a651731c50b34c2a87b9
+      size: 16397
+    - path: .hscfg
       hash: md5
       md5: 303ce8189f6f66d8bed92cee0541e864
       size: 116
-    outs:
-    - path: .hscfg
-      hash: md5
-      md5: 5b34846dc3b8b71f1d653b031eec0824
-      size: 141
-    - path: modules/CEM/.hscfg
-      hash: md5
-      md5: 5b34846dc3b8b71f1d653b031eec0824
-      size: 141
   genx-setup:
     cmd: calkit xenv -n decider-2 --no-check -- bash --noprofile --norc -c 
       "julia modules/CEM/setup.jl"
