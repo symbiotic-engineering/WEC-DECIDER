@@ -4,10 +4,10 @@ function [carbon_contour,price_contour] = timeseries_to_sea_state_matrix(Hs,T,jp
 p.Hs = [0; jpd_Hs];
 p.T = [0, jpd_T];
 
-%find the average price or carbon value for a slice on the xy plane
+
+%find the average price or carbon value for each bin
 price_contour=zeros(length(p.Hs)-1,length(p.T)-1);
 carbon_contour=zeros(length(p.Hs)-1,length(p.T)-1);
-
 count = 1;
 for i = 1:length(p.Hs)-1
     for j = 1:length(p.T)-1
@@ -20,24 +20,25 @@ for i = 1:length(p.Hs)-1
     end
 end
 
-figure
-hold on
-for i = 1:length(p.Hs)
-    yline(p.Hs(i))
-end
-for j = 1:length(p.T)
-    xline(p.T(j))
-end
-xlabel("Wave Period (s)")
-ylabel("Wave Height (m)")
-xticks(p.T)
-yticks(p.Hs)
-hold off
-title('Wave Height vs. Wave Period')
-improvePlot
-
-%make contour plots
 if ploton == true
+    %graph the bins
+    figure
+    hold on
+    for i = 1:length(p.Hs)
+         yline(p.Hs(i))
+    end
+    for j = 1:length(p.T)
+         xline(p.T(j))
+    end
+    xlabel("Wave Period (s)")
+    ylabel("Wave Height (m)")
+        title('Wave Height vs. Wave Period')
+    xticks(p.T)
+    yticks(p.Hs)
+    hold off
+    improvePlot
+
+    %plot timeseries
     t = linspace(1,8760,8760);
     subplot(2,2,1)
     plot(t, T)
@@ -71,8 +72,10 @@ if ploton == true
     xlim([0,8760])
     improvePlot
 
+    %make contour plots
     [T_mdocean,Hs_mdocean] = meshgrid(p.T(2:end),p.Hs(2:end));
-    subplot(2,1,1)
+    figure
+    subplot(1,2,1)
     contourf(T_mdocean, Hs_mdocean, price_contour)
     xlabel('T (s)')
     ylabel('H_{s} (m)')
@@ -80,7 +83,7 @@ if ploton == true
     colorbar
     improvePlot
     
-    subplot(2,1,2)
+    subplot(1,2,2)
     contourf(T_mdocean, Hs_mdocean, carbon_contour)
     title('Carbon (kg/kWh)')
     xlabel('T (s)')
