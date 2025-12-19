@@ -9,8 +9,10 @@ function run_notebook() {
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") Activating conda environment"
 # to avoid conda error, run this script as "bash -i modules/CEM/run_all.sh"
-conda init
+source /usr/share/miniconda/etc/profile.d/conda.sh
+conda activate wec-decider-decider-2
 # conda activate wec-decider-backup # a clone of wec-decider-7-pg-edit but with calkit/nbconvert installed
+source /usr/share/miniconda/etc/profile.d/conda.sh
 conda activate wec-decider-decider-2 # a clone of wec-decider-7-pg-edit but with calkit/nbconvert installed
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") Creating sweep inputs"

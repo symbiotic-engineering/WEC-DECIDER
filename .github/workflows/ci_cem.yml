@@ -34,9 +34,10 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: julia-actions/setup-julia@v2 # Setup Julia environment
+      - uses: julia-actions/setup-julia@v2
         with:
           version: ${{ matrix.julia-version }}
+
       - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
@@ -44,7 +45,20 @@ jobs:
           environment-file: envs/calkit-environment.yml
           auto-activate-base: false
           python-version: ${{ matrix.python-version }}
-      
+
+      - name: Install and register IJulia kernel
+        shell: bash -l {0}
+        run: |
+          julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia 1.9")'
+          jupyter kernelspec list
+
+      - name: Install Python Jupyter kernel
+        shell: bash -l {0}
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ipykernel jupyter nbconvert
+          python -m ipykernel install --name "python3" --display-name "Python (CEM)" --sys-prefix
+          
       # Install Gurobi
       - name: Install Gurobi
         if: matrix.os == 'ubuntu-latest'
