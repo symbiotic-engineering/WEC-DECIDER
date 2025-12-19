@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e # if any command fails, exit immediately. Comment this out if you are using a debugger and have breakpoints on errors.
+set -e # if any command fails, exit immediately. Comment this out if you are using a python debugger and have breakpoints on errors in the python code.
 
 script_dir=$(cd "$(dirname "$0")" && pwd) # absolute path to this script
 
@@ -12,8 +12,8 @@ function run_for_one_location {
 
     run_powergenome_multiple -sf "$script_dir/$location/settings/" -rf "$script_dir/$location/cases"
     for i in "$script_dir/$location/cases"/Case_*; do
-        mkdir "$i/settings"
-        cp -r "$script_dir/template/settings/" "$i/settings/."
+        mkdir -p "$i/settings" # -p creates directory only if it does not already exist
+        cp -r "$script_dir/template/settings/" "$i/."
     done
 
     echo "PowerGenome ran for $location."

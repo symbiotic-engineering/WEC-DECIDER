@@ -1,0 +1,68 @@
+name: Run pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  main:
+    name: Run calkit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - run: pip install calkit-python uv
+
+      - name: Restore DVC cache
+        id: cache-dvc-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: .dvc/cache
+          key: ${{ runner.os }}-dvc-cache
+
+      - run: calkit config remote-auth
+        env:
+          CALKIT_DVC_TOKEN: ${{ secrets.CALKIT_DVC_TOKEN }}
+
+      - run: dvc pull --force
+        continue-on-error: true
+
+      - name: Run Calkit
+        id: run_calkit
+        uses: rebeccamccabe/run-action@v2
+        with:
+          dvc_token: ${{ secrets.CALKIT_DVC_TOKEN }}
+          run_args: --ignore-errors --log
+          save: false
+        env:
+          WLSACCESSID: ${{ secrets.WLSACCESSID }}
+          WLSSECRET: ${{ secrets.WLSSECRET }}
+          LICENSEID: ${{ secrets.LICENSEID }}
+          HSDS_API_KEY: ${{ secrets.HSDS_API_KEY }}
+
+      - name: DVC pull (post-run) # Pull again get updated artifacts
+        shell: bash -l {0}
+        run: dvc pull --force || true
+
+      - name: Save DVC cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .dvc/cache
+          key: ${{ runner.os }}-dvc-cache
+
+

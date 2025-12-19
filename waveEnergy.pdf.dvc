@@ -1,0 +1,5 @@
+outs:
+- md5: c41386eb7b09b41cd98487af10cf79d3
+  size: 57565
+  hash: md5
+  path: waveEnergy.pdf

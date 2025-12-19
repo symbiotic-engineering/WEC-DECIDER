@@ -12,14 +12,14 @@ dependencies:
  # - wecopttool
  # - pyxdsm
  # - openmdao
-  - gdown
+ # - gdown
   - ipykernel
   - pip
-  - catalystcoop.pudl <= 2022.11.30, >= 0.6.0
-  - pydantic[email] >= 1.7, <2 # for pudl 2022.11.30
-  - pyarrow = 7
+ # - catalystcoop.pudl <= 2022.11.30, >= 0.6.0
+ # - pydantic[email] >= 1.7, <2 # for pudl 2022.11.30
+ # - pyarrow = 7
   - nbconvert # calkit
-  - pyogrio
+ # - pyogrio
   - pip:
       #- calkit-python
       - mhkit[wave]

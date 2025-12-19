@@ -202,3 +202,4 @@ data/*
 # calkit notebooks
 .calkit/notebooks/cleaned/modules/CEM/make_additional_tech_csv.ipynb
 .calkit/notebooks/cleaned/modules/CEM/analyze_results.ipynb
+/waveEnergy.pdf

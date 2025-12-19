@@ -6,10 +6,19 @@ Pkg.activate(cem_dir)
 
 cd(cem_dir)
 
+# allows us to use the GenX.jl file in our local directory to get cMin/MaxPowerThermal
+Pkg.develop(PackageSpec(path="../../../GenX.jl")) 
+
 using Gurobi
 using GenX
-using Infiltrator
+# using Infiltrator
 using YAML
+Pkg.add("JuMP")
+Pkg.add("CSV")
+Pkg.add("DataFrames")
+
+include("run_genx_case_custom.jl")
+using .RunGenXCaseCustom: run_genx_case_simple!
 
 # Include and run the case runner logic
 # uncomment to run caserunner from 3rd party
@@ -44,24 +53,60 @@ function run_debug()
             mysetup["MultiStageSettingsDict"] = settings
             num = mysetup["MultiStageSettingsDict"]["NumStages"]
             println("Number of Stages: ", num)
-            @infiltrate # creates a breakpoint for inspecting settings
+            #@infiltrate # creates a breakpoint for inspecting settings
 
             run_genx_case_multistage!(case_dir, mysetup, Gurobi.Optimizer)
         end
     end
 end
 
-function run()
+function run_all()
+    force = false # true to re-run cases that have already been run
+
     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
     num_cases = sum(occursin.("Case_", readdir(case_folder_dir)))
     for i=1:num_cases
         if occursin("Case_", readdir(case_folder_dir)[i])
-            println("Running GenX for case: ", readdir(case_folder_dir)[i], " of ", num_cases)
             case_dir = joinpath(case_folder_dir, readdir(case_folder_dir)[i])
-            run_genx_case!(case_dir, Gurobi.Optimizer)
+            already_run = isdir(joinpath(case_dir, "results"))
+            if already_run && !force
+                println("Skipping GenX case ", i, " of ", num_cases, " (already run)")
+            else
+                println("Running GenX for case ", i, " of ", num_cases)
+                run_genx_case!(case_dir, Gurobi.Optimizer)
+            end
         end
     end
 end
 
-# run_debug()
-run()
+# Original run_single --------------------------------------------->
+
+# function run_single(case_str)
+#     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
+#     case_dir = joinpath(case_folder_dir, case_str)
+#     run_genx_case_simple!(case_dir, Gurobi.Optimizer)
+# end
+
+function run_single(case_str)
+    case_folder_dir = joinpath(cem_dir, "data_east", "cases")
+    case_dir = joinpath(case_folder_dir, case_str)
+
+    # Build the setup dict
+    genx_settings = GenX.get_settings_path(case_dir, "genx_settings.yml")
+    write_settings = GenX.get_settings_path(case_dir, "output_settings.yml")
+    mysetup = GenX.configure_settings(genx_settings, write_settings)
+
+    # Now call the function correctly
+    run_genx_case_simple!(case_dir, mysetup, Gurobi.Optimizer)
+end
+
+
+if length(ARGS) > 0
+    case_str = ARGS[1]
+    println("Running single case: ", case_str)
+    run_single(case_str)
+else
+    println("Running all cases in data_east/cases")
+    run_all()
+end
+
