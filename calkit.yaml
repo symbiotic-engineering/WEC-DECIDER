@@ -43,18 +43,18 @@ publications:
     kind: conference-paper
     title: UMERC 2025 grid value paper
 dependencies:
-  - WLSACCESSID:
-      kind: env-var
-      notes: Gurobi WLS Access ID (API key)
-  - WLSSECRET:
-      kind: env-var
-      notes: Gurobi WLS Secret
-  - LICENSEID:
-      kind: env-var
-      notes: Gurobi license ID
-  - HSDS_API_KEY:
-      kind: env-var
-      notes: HSDS API key
+  - kind: env-var
+    name: WLSACCESSID
+    notes: Gurobi WLS Access ID (API key)
+  - kind: env-var
+    name: WLSSECRET
+    notes: Gurobi WLS Secret
+  - kind: env-var
+    name: LICENSEID
+    notes: Gurobi license ID
+  - kind: env-var
+    name: HSDS_API_KEY
+    notes: HSDS API key
   # - gurobi_cl:
   #     kind: app
   #     notes: Gurobi command line interface
@@ -83,11 +83,15 @@ pipeline:
   stages:
     setup-hsds:
       kind: shell-command
-      command: envsubst < .hscfg > ~/.hscfg
-      environment: decider-2
+      command: envsubst < .hscfg.template > .hscfg && cp .hscfg modules/CEM/.hscfg
+      environment: _system
       inputs:
-        - .hscfg
-      outputs: []
+        - .hscfg.template
+      outputs:
+        - path: .hscfg
+          storage: null
+        - path: modules/CEM/.hscfg
+          storage: null
     powergenome-data-download:
       kind: python-script
       script_path: ./modules/CEM/get-powergenome-data.py
