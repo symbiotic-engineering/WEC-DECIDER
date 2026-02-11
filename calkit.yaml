@@ -112,13 +112,18 @@ pipeline:
         - modules/CEM/data_east/demand_segments_voll.csv
     powergenome-manual-data-download:
       kind: shell-command
-      command: calkit manual-step --message "Manually download any failed gdown files: typically the resource_groups/ipm_regions/ files"
+      command: calkit manual-step --message "Manually download any failed gdown files from https://drive.google.com/drive/folders/1K5GWF5lbe-mKSTUSuJxnFdYGCdyDJ7iE: typically the resource_groups/ipm_regions/ files"
       outputs: 
         - modules/CEM/data/resource_groups/ipm_regions/ipm_offshorewind_fixed_False_group.json
-        # fixme fill in
+        # fixme fill in filenames of other manually downloaded files
     powergenome-change-filenames:
       kind: shell-command
-      command: echo "insert command here" # fixme fill in
+      command: mv modules/CEM/data/resource_groups/ipm_regions/offshorewind_lcoe_fixed_False_eastern_interconnect.csv modules/CEM/data/resource_groups/ipm_regions/offshorewind_fixed_False_eastern_interconnect.csv
+      # fixme check filenames for bash command, inputs, and outputs to automatically remove _lcoe from the resource groups csv name so it matches the metadata jsons: see https://github.com/PowerGenome/PowerGenome/issues/395
+      inputs:
+        - modules/CEM/data/resource_groups/ipm_regions/offshorewind_lcoe_fixed_False_eastern_interconnect.csv
+      outputs:
+        - modules/CEM/data/resource_groups/ipm_regions/offshorewind_fixed_False_eastern_interconnect.csv
     setup-sweep:
       kind: jupyter-notebook
       environment: decider-2
