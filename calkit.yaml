@@ -1,6 +1,6 @@
 name: WEC-DECIDER
 title: WEC DECIDER
-description: Wave Energy Converter Design Convergence Impact Driven 
+description: Wave Energy Converter Design Convergence Impact Driven
   Engineering Roadmap
 notebooks:
   - path: modules/CEM/make_additional_tech_csv.ipynb
@@ -89,11 +89,11 @@ pipeline:
         - .hscfg
       outputs: []
     powergenome-data-download:
-      kind: python-script
-      script_path: ./modules/CEM/get-powergenome-data.py
+      kind: shell-script
+      script_path: ./modules/CEM/get-powergenome-data.sh
       environment: decider-2
       inputs:
-        - modules/CEM/get-powergenome-data.py
+        - modules/CEM/get-powergenome-data.sh
       outputs:
         - modules/CEM/data/cambium/
         - modules/CEM/data/efs/
