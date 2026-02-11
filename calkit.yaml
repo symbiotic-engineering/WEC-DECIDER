@@ -95,7 +95,14 @@ pipeline:
       inputs:
         - modules/CEM/get-powergenome-data.py
       outputs:
-        - modules/CEM/data/
+        - modules/CEM/data/cambium/
+        - modules/CEM/data/efs/
+        - modules/CEM/data/extra-inputs/
+        - modules/CEM/data/network_costs/
+        - modules/CEM/data/pg/
+        - modules/CEM/data/pudl/
+        - modules/CEM/data/resource_groups/ipm_regions/existing_resource_groups/
+        - modules/CEM/data/resource_profiles/
         - modules/CEM/data_CA/test_misc_gen_inputs.csv
         - modules/CEM/data_CA/test_demand_segments_voll.csv
         - modules/CEM/data_east/Reserves.csv
@@ -103,6 +110,15 @@ pipeline:
         - modules/CEM/data_east/misc_gen_inputs.csv
         - modules/CEM/data_east/resource_capacity_spur.csv
         - modules/CEM/data_east/demand_segments_voll.csv
+    powergenome-manual-data-download:
+      kind: shell-command
+      command: calkit manual-step --message "Manually download any failed gdown files: typically the resource_groups/ipm_regions/ files"
+      outputs: 
+        - modules/CEM/data/resource_groups/ipm_regions/ipm_offshorewind_fixed_False_group.json
+        # fixme fill in
+    powergenome-change-filenames:
+      kind: shell-command
+      command: echo "insert command here" # fixme fill in
     setup-sweep:
       kind: jupyter-notebook
       environment: decider-2
