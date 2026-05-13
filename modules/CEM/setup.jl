@@ -3,6 +3,7 @@ using Pkg
 project_path = @__DIR__
 Pkg.activate(project_path)
 
+Pkg.add(url="https://github.com/symbiotic-engineering/GenX.git", rev="minmax_power_thermal_constraints")
 Pkg.instantiate() # This is necessary every time Project.toml is modified
 
 function ensure_gurobi_works()

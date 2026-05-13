@@ -6,8 +6,8 @@ Pkg.activate(cem_dir)
 
 cd(cem_dir)
 
-# allows us to use the GenX.jl file in our local directory to get cMin/MaxPowerThermal
-Pkg.develop(PackageSpec(path="../../../GenX.jl")) 
+# the line below allows us to use the GenX.jl file in our local directory to get cMin/MaxPowerThermal
+# Pkg.develop(PackageSpec(path="../../../GenX.jl")) 
 
 using Gurobi
 using GenX
@@ -17,8 +17,11 @@ Pkg.add("JuMP")
 Pkg.add("CSV")
 Pkg.add("DataFrames")
 
-include("run_genx_case_custom.jl")
-using .RunGenXCaseCustom: run_genx_case_simple!
+include("run_genx_case_simple.jl")
+using .RunGenXCaseSimple: run_genx_case_simple!
+
+include("run_genx_case_multistage.jl")
+using .RunGenXCaseMultiStage: run_genx_case_multistage!
 
 # Include and run the case runner logic
 # uncomment to run caserunner from 3rd party
@@ -81,12 +84,6 @@ end
 
 # Original run_single --------------------------------------------->
 
-# function run_single(case_str)
-#     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
-#     case_dir = joinpath(case_folder_dir, case_str)
-#     run_genx_case_simple!(case_dir, Gurobi.Optimizer)
-# end
-
 function run_single(case_str)
     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
     case_dir = joinpath(case_folder_dir, case_str)
@@ -96,9 +93,21 @@ function run_single(case_str)
     write_settings = GenX.get_settings_path(case_dir, "output_settings.yml")
     mysetup = GenX.configure_settings(genx_settings, write_settings)
 
-    # Now call the function correctly
     run_genx_case_simple!(case_dir, mysetup, Gurobi.Optimizer)
 end
+
+# function run_single(case_str)
+#     case_folder_dir = joinpath(cem_dir, "data_east", "cases")
+#     case_dir = joinpath(case_folder_dir, case_str)
+
+#     # Build the setup dict
+#     genx_settings = GenX.get_settings_path(case_dir, "genx_settings.yml")
+#     write_settings = GenX.get_settings_path(case_dir, "output_settings.yml")
+#     mysetup = GenX.configure_settings(genx_settings, write_settings)
+
+#     # Now call the function correctly
+#     run_genx_case_multistage!(case_dir, mysetup, Gurobi.Optimizer)
+# end
 
 
 if length(ARGS) > 0
@@ -109,4 +118,3 @@ else
     println("Running all cases in data_east/cases")
     run_all()
 end
-

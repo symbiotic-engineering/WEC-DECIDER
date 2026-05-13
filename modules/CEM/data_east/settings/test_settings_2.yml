@@ -798,11 +798,11 @@ atb_new_gen:
   - [NaturalGas, CCCCSAvgCF, Low, 500] # ATB CCCCS conservative case represents current technology.
   - [NaturalGas, CCAvgCF, Mid, 500]
   - [NaturalGas, CTAvgCF, Mid, 100]
-  - [LandbasedWind, LTRG10, Mid, 1]
-  - [OffShoreWind, OTRG10, Mid, 1]
+  - [LandbasedWind, LTRG10, Mid, 1] #LTRG10
+  - [OffShoreWind, OTRG10, Mid, 1] #OTRG10
   - [UtilityPV, Chicago, Mid, 1]
   - [Battery, "*", Mid, 1]
-  # - [Nuclear, Nuclear, Moderate, 500]
+#  - [Nuclear, Nuclear, Moderate, 500]
 
 renewables_clusters:
   - region: all
