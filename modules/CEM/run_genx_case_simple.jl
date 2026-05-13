@@ -107,30 +107,6 @@ function run_genx_case_simple!(case::AbstractString, mysetup::Dict, optimizer::A
 
     println("Writing the marginal thermal duals")
     #Prints the thermal generators max and min power constraints
-    
-    # open(joinpath(case, "thermal_duals_marginal.txt"), "w") do io
-    #     println(io, "gen\ttime\tcMinPowerThermal\tcMaxPowerThermal\tcRampUpThermal\tcRampDownThermal")
-
-    #     for t in 1:480
-    #         for g in 4:27
-    #             # Access named constraint references directly
-    #             min_con = EP[:cMinPowerThermal][g,t]
-    #             max_con = EP[:cMaxPowerThermal][g,t]
-    #             ramp_up_con = EP[:cRampUpThermal][g,t]
-    #             ramp_down_con = EP[:cRampDownThermal][g,t]
-
-    #             # Get dual values
-    #             min_val = try dual(min_con) catch; missing end
-    #             max_val = try dual(max_con) catch; missing end
-    #             ramp_up_val = try dual(ramp_up_con) catch; missing end
-    #             ramp_down_val = try dual(ramp_down_con) catch; missing end
-
-    #             if (min_val == 0.0 && max_val == 0.0 && ramp_up_val == 0.0 && ramp_down_val == 0.0)
-    #                 println(io, g, "\t", t, "\t", min_val, "\t", max_val, "\t", ramp_up_val, "\t", ramp_down_val)
-    #             end
-    #         end
-    #     end
-    # end
 
     rows = DataFrame(
     gen = Int[],
@@ -209,92 +185,6 @@ function run_genx_case_simple!(case::AbstractString, mysetup::Dict, optimizer::A
     sort!(tdm_out, :time)
 
     CSV.write("filtered_generators.csv", tdm_out)
-
-    # rows = DataFrame(time = Int[], gen = Int[])
-    # for t in 1:480
-    #     gens = tdm[tdm.time .== t, :gen]
-
-    #     for g in gens
-    #         push!(rows, (t, g))
-    #     end
-    # end
-
-    # CSV.write("TEST.csv", rows)
-
-    
-    # # -----------------------------
-    # # Priority groups (explicit)
-    # # -----------------------------
-    # group1 = Set([4])
-
-    # group2 = Set([
-    #     5,6,7,10,11,12,15,16,17,19,20,21,22,23,24,25,26,27
-    # ])
-
-    # group3 = Set([8,9,13,14,18])
-
-    # # -----------------------------
-    # # Step 1: build dataset
-    # # -----------------------------
-    # rows = DataFrame(
-    #     gen = Int[],
-    #     time = Int[],
-    #     cMinPowerThermal = Any[],
-    #     cMaxPowerThermal = Any[],
-    #     cRampUpThermal = Any[],
-    #     cRampDownThermal = Any[]
-    # )
-
-    # for t in 1:480
-    #     for g in 4:27
-    #         push!(rows, (
-    #             g,
-    #             t,
-    #             try dual(EP[:cMinPowerThermal][g,t]) catch; missing end,
-    #             try dual(EP[:cMaxPowerThermal][g,t]) catch; missing end,
-    #             try dual(EP[:cRampUpThermal][g,t]) catch; missing end,
-    #             try dual(EP[:cRampDownThermal][g,t]) catch; missing end
-    #         ))
-    #     end
-    # end
-
-    # # -----------------------------
-    # # Step 2: pick ONE generator per time step
-    # # -----------------------------
-    # filtered = DataFrame()
-
-    # for t in unique(rows.time)
-    #     sub = rows[rows.time .== t, :]
-
-    #     chosen = nothing
-
-    #     # 1. priority group 1 (gen 4)
-    #     g1 = sub[in.(sub.gen, Ref(group1)), :]
-    #     if nrow(g1) > 0
-    #         chosen = g1[1, :]
-    #     else
-    #         # 2. group 2
-    #         g2 = sub[in.(sub.gen, Ref(group2)), :]
-    #         if nrow(g2) > 0
-    #             chosen = g2[1, :]
-    #         else
-    #             # 3. group 3
-    #             g3 = sub[in.(sub.gen, Ref(group3)), :]
-    #             if nrow(g3) > 0
-    #                 chosen = g3[1, :]
-    #             end
-    #         end
-    #     end
-
-    #     push!(filtered, chosen)
-    # end
-
-    # sort!(filtered, :time)
-
-    # # -----------------------------
-    # # Step 3: write CSV
-    # # -----------------------------
-    # CSV.write(joinpath(case, "thermal_duals_marginal_filtered.csv"), filtered)
 
     ### Write outputs and optionally run MGA / Morris
     if has_values(EP)
